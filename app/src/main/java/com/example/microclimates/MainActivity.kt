@@ -7,10 +7,9 @@ import android.app.Activity
 import android.bluetooth.*
 import android.bluetooth.BluetoothAdapter.*
 import android.bluetooth.BluetoothDevice.*
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Color
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 
@@ -18,27 +17,19 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
-import android.os.ParcelUuid
+import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.PermissionChecker.PERMISSION_DENIED
 import android.support.v4.content.PermissionChecker.PERMISSION_GRANTED
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_main.view.*
 import android.widget.Button
-import java.io.BufferedReader
-import java.io.InputStreamReader
-import java.util.*
-
 
 class MainActivity : AppCompatActivity() {
+
     val REQUEST_ENABLE_BT = 1
 
     companion object {
@@ -46,9 +37,13 @@ class MainActivity : AppCompatActivity() {
         val SENSOR_DEVICE_NAME = "raspberrypi"
     }
 
+    var foundDevices: Map<String, BluetoothDevice> = mutableMapOf()
+
     lateinit var bluetoothAdapter: BluetoothAdapter
 
-    var bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
+    val bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
+
+    lateinit var peripheralSetupClient: BluetoothPeripheralSetupClient
 
     /**
      * The [android.support.v4.view.PagerAdapter] that will provide
@@ -64,13 +59,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        bluetoothEvents.setOnFoundHandler {
-            onFound(it)
-        }
-
-        bluetoothEvents.setOnBondedHandler {
-            onBonded(it)
-        }
+        bluetoothEvents.setOnFoundHandler { onFound(it) }
+        bluetoothEvents.setOnBondedHandler { onBonded(it) }
+        peripheralSetupClient = BluetoothPeripheralSetupClient(findViewById(R.id.main_content))
 
         setSupportActionBar(toolbar)
         // Create the adapter that will return a fragment for each of the three
@@ -86,69 +77,60 @@ class MainActivity : AppCompatActivity() {
         }
 
         requestLocationPermissions {
+            Toast.makeText(applicationContext, "Acquired bluetooth and location permissions", Toast.LENGTH_LONG).show()
             registerBluetoothEvents()
             setupBluetoothAdapter()
-            setupBluetoothTriggers()
+            setupBluetoothButtons()
         }
+    }
+
+    fun removeDevice(device: BluetoothDevice): Unit {
+        println("Removing device ${device.name} with hash ${device.hashCode()} to parent view")
+        foundDevices -= device.address
+        val deviceUIId = Math.abs(device.hashCode())
+        val buttonToRemove = findViewById<Button>(deviceUIId)
+        (buttonToRemove.parent as ViewGroup).removeView(buttonToRemove)
+        println("Finished removing device ${device.name} with hash ${device.hashCode()} to parent view")
+    }
+
+    fun renderDeviceSetupButton(device: BluetoothDevice): Unit {
+        println("Adding new device ${device.name} with hash ${device.hashCode()} to parent view")
+        val deviceUIId = Math.abs(device.hashCode())
+        val parentLayout = findViewById<CoordinatorLayout>(R.id.main_content)
+        val button = Button(this)
+
+        button.setTextColor(Color.BLACK)
+        button.setBackgroundColor(Color.WHITE)
+        button.text = "Setup ${device.name}"
+
+        val layoutParams = CoordinatorLayout.LayoutParams(
+            CoordinatorLayout.LayoutParams.MATCH_PARENT,
+            CoordinatorLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.gravity = Gravity.TOP
+        layoutParams.setMargins(0, 140, 0, 0)
+        button.layoutParams = CoordinatorLayout.LayoutParams(layoutParams)
+
+        button.setId(deviceUIId)
+        button.setOnClickListener { peripheralSetupClient.setupDevice(device) }
+        parentLayout.addView(button)
+        println("Finished adding device ${device.name} with hash ${device.hashCode()} from parent view")
     }
 
     fun onFound(device: BluetoothDevice): Unit {
         val deviceHardwareAddress = device.address
-        println(deviceHardwareAddress)
+        foundDevices += Pair(deviceHardwareAddress, device)
+
+        renderDeviceSetupButton(device)
 
         val bonding = device.createBond()
-
-        println("Bonding $bonding")
+        Toast.makeText(applicationContext, "Found ${device.name}, starting bonding with ${device.name}", Toast.LENGTH_LONG)
+        println("Bonding status with ${device.name}: $bonding")
     }
 
     fun onBonded(device: BluetoothDevice): Unit {
-        Toast.makeText(applicationContext, "${device.name} is paired", Toast.LENGTH_LONG)
-    }
-
-    fun triggerInformationExchange() {
-        var message = ""
-        try {
-            val serverSocket: BluetoothServerSocket =
-                bluetoothAdapter.listenUsingRfcommWithServiceRecord(
-                    "mysocket",
-                    UUID.fromString("94f39d29-7d6d-437d-973b-fba39e49d4ee")
-                )
-
-            val connectedSocket: BluetoothSocket = serverSocket.accept(30000)
-            println("Connected a bluetooth socket")
-            serverSocket.close()
-            println("Closed server socket")
-
-            val inputStream = connectedSocket.inputStream
-
-            println("Input stream created")
-
-            val bufferSize = 1024
-            val buffer = ByteArray(bufferSize)
-            var bytesRead = -1
-
-            while(true) {
-                println("attempting to read")
-                bytesRead = inputStream.read(buffer)
-
-                if (bytesRead == -1) {
-                    break
-                }
-
-                println("read some bytes")
-                val str: String = String(buffer)
-
-                message += str
-            }
-
-            connectedSocket.close()
-
-        } catch (error: Exception) {
-            println("Something happened to the bluetooth server: $error")
-            Toast.makeText(applicationContext, "Failed to connect to socket: $error", Toast.LENGTH_LONG)
-        } finally {
-            println("found message $message")
-        }
+        Toast.makeText(applicationContext, "Paired with ${device.name}. Proceed by pressing the ${device.name} setup button.", Toast.LENGTH_LONG)
     }
 
     override fun onPause() {
@@ -172,11 +154,10 @@ class MainActivity : AppCompatActivity() {
                     if (foundDevice != null) {
                         onBonded(foundDevice)
                     } else {
-                        Toast.makeText(applicationContext, "Bluetooh enabled. Looking for sensors", Toast.LENGTH_LONG).show()
-                        bluetoothAdapter.startDiscovery()
+                        Toast.makeText(applicationContext, "Bluetooth enabled.", Toast.LENGTH_LONG).show()
                     }
                 } else {
-                    Toast.makeText(applicationContext, "You must enable bluetooth", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "You must enable bluetooth in order to setup sensors.", Toast.LENGTH_LONG).show()
                 }
 
             else -> println("Request with code $requestCode not recognized")
@@ -256,24 +237,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun setupBluetoothTriggers(): Unit {
-        val startDiscoveryButton = findViewById<Button>(R.id.start_discovery)
-        val stopDiscoveryButton = findViewById<Button>(R.id.stop_discovery)
-        val bltClientContact = findViewById<Button>(R.id.contact_BLT_client)
-
-        bltClientContact.setOnClickListener {
-            triggerInformationExchange()
-        }
+    fun setupBluetoothButtons(): Unit {
+        val startDiscoveryButton = findViewById<Button>(R.id.start_discovery) // TODO enable disable at right times
 
         startDiscoveryButton.setOnClickListener(View.OnClickListener {
             bluetoothAdapter.startDiscovery()
         })
-
-        stopDiscoveryButton.setOnClickListener(View.OnClickListener {
-            bluetoothAdapter.cancelDiscovery()
-        })
-
-
     }
 
     fun setupBluetoothAdapter(): Unit {
@@ -304,6 +273,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun requestLocationPermissions(block: () -> Unit): Unit {
+        Toast.makeText(applicationContext, "Checking bluetooth and location permissions", Toast.LENGTH_LONG).show()
+
         if (ContextCompat.checkSelfPermission(this@MainActivity, ACCESS_FINE_LOCATION) == PERMISSION_DENIED) {
             ActivityCompat.requestPermissions(this@MainActivity,
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
@@ -322,63 +293,4 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(applicationContext, "You must enable bluetooth and location permissions", Toast.LENGTH_LONG).show()
     }
 
-}
-
-class BluetoothEventListener : BroadcastReceiver() {
-
-    var onFound: (BluetoothDevice) -> Unit = {}
-
-    var onBonded: (BluetoothDevice) -> Unit = {}
-
-    fun setOnFoundHandler(value: (BluetoothDevice) -> Unit) {
-        onFound = value
-    }
-
-    fun setOnBondedHandler(value: (BluetoothDevice) -> Unit) {
-        onBonded = value
-    }
-
-    override fun onReceive(context: Context?, nullableIntent: Intent?) {
-        if (nullableIntent != null) {
-            val intent = nullableIntent!!
-            val action: String = intent.action
-
-            when(action) {
-                ACTION_PAIRING_REQUEST  -> {
-                    println("PAIRING REQUEST")
-                    BluetoothDevice.EXTRA_PAIRING_KEY
-                    BluetoothDevice.EXTRA_PAIRING_VARIANT
-                }
-                ACTION_BOND_STATE_CHANGED -> {
-                    val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    val currentBondState = device.getBondState()
-
-                    val bondingStatus = when(currentBondState) {
-                        BOND_BONDED -> "BOND_BONDED"
-                        BOND_BONDING -> "BOND_BONDING"
-                        BOND_NONE -> "BOND_NONE"
-                        else -> "didn't account for this bonding state $currentBondState"
-                    }
-
-                    println("ACTION_BOND_STATE_CHANGED: $currentBondState A.K.A. $bondingStatus")
-
-                    if (currentBondState == BluetoothDevice.BOND_BONDED) {
-                        onBonded(device)
-                    }
-                }
-                BluetoothDevice.ACTION_FOUND -> {
-                    val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    val deviceName = device.name
-                    val deviceHardwareAddress = device.address
-
-                    if (deviceName == MainActivity.SENSOR_DEVICE_NAME) {
-                        println("found sensor device: deviceName $deviceName deviceHardwareAddress $deviceHardwareAddress")
-                        Toast.makeText(context, "found the device", Toast.LENGTH_SHORT).show()
-                        onFound(device)
-                    }
-                }
-                else -> println("Not watching for action $action")
-            }
-        }
-    }
 }
