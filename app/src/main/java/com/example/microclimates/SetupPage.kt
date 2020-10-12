@@ -22,9 +22,6 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
 class SetupPage : Fragment() {
     val REQUEST_ENABLE_BT = 1
 
@@ -35,13 +32,9 @@ class SetupPage : Fragment() {
     val bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
 
     lateinit var peripheralSetupClient: BluetoothPeripheralSetupClient
-    private var param1: String? = null
-    private var param2: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        println("CREATE FRAGMENT")
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onPause() {
@@ -57,13 +50,9 @@ class SetupPage : Fragment() {
         super.onResume()
         requestLocationPermissions {
             Toast.makeText(context, "Acquired bluetooth and location permissions", Toast.LENGTH_LONG).show()
+
             setupBluetoothAdapter()
             registerBluetoothEvents()
-            val bondedDevices = bluetoothAdapter.bondedDevices
-            val foundDevice = bondedDevices.find { it.name == SENSOR_DEVICE_NAME }
-            if (foundDevice != null) {
-                onBonded(foundDevice)
-            }
         }
     }
 
@@ -72,6 +61,11 @@ class SetupPage : Fragment() {
             REQUEST_ENABLE_BT ->
                 if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(context, "Bluetooth enabled.", Toast.LENGTH_LONG).show()
+                    val bondedDevices = bluetoothAdapter.bondedDevices
+                    val foundDevice = bondedDevices.find { it.name == SENSOR_DEVICE_NAME }
+                    if (foundDevice != null) {
+                        onBonded(foundDevice)
+                    }
                 } else {
                     Toast.makeText(context, "You must enable bluetooth in order to setup sensors.", Toast.LENGTH_LONG).show()
                 }
@@ -82,7 +76,7 @@ class SetupPage : Fragment() {
 
     fun requestLocationPermissions(block: () -> Unit): Unit {
         Toast.makeText(context, "Checking bluetooth and location permissions", Toast.LENGTH_LONG).show()
-        doOrWarnIfActivityNotExists({
+        return doOrWarnIfActivityNotExists({
             val applicationContext: Context = context!!
             val fragmentActivity = activity!!
 
@@ -110,10 +104,10 @@ class SetupPage : Fragment() {
                     ) == PermissionChecker.PERMISSION_GRANTED
                 ) {
                     block()
+                } else {
+                    Toast.makeText(applicationContext, "You must enable bluetooth and location permissions", Toast.LENGTH_LONG).show()
                 }
             }
-
-            Toast.makeText(applicationContext, "You must enable bluetooth and location permissions", Toast.LENGTH_LONG).show()
         }, "Can't check for bluetooth permissions, activity doesn't exist")
     }
 
