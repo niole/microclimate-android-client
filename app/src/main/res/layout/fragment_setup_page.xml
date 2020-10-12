@@ -7,6 +7,7 @@
         android:layout_height="match_parent">
     <Button
             android:id="@+id/start_discovery"
+            android:enabled="false"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_gravity="end|bottom"

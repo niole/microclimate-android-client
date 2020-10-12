@@ -39,18 +39,14 @@ class SetupPage : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        if (activity != null) {
+        doOrWarnIfActivityNotExists({ ->
             activity?.unregisterReceiver(bluetoothEvents)
-        } else {
-            println("Activity did not exist when attempting to unregister a bluetooth event receiver in setup page")
-        }
+        }, "Activity did not exist when attempting to unregister a bluetooth event receiver in setup page")
     }
 
     override fun onResume() {
         super.onResume()
         requestLocationPermissions {
-            Toast.makeText(context, "Acquired bluetooth and location permissions", Toast.LENGTH_LONG).show()
-
             setupBluetoothAdapter()
             registerBluetoothEvents()
         }
@@ -61,6 +57,9 @@ class SetupPage : Fragment() {
             REQUEST_ENABLE_BT ->
                 if (resultCode == Activity.RESULT_OK) {
                     Toast.makeText(context, "Bluetooth enabled.", Toast.LENGTH_LONG).show()
+
+                    view?.findViewById<Button>(R.id.start_discovery)?.isEnabled = true
+
                     val bondedDevices = bluetoothAdapter.bondedDevices
                     val foundDevice = bondedDevices.find { it.name == SENSOR_DEVICE_NAME }
                     if (foundDevice != null) {
@@ -127,7 +126,7 @@ class SetupPage : Fragment() {
     }
 
     fun setupBluetoothButtons(view: View): Unit {
-        val startDiscoveryButton = view.findViewById<Button>(R.id.start_discovery) // TODO enable disable at right times
+        val startDiscoveryButton = view.findViewById<Button>(R.id.start_discovery)
 
         startDiscoveryButton.setOnClickListener(View.OnClickListener {
             bluetoothAdapter.startDiscovery()
