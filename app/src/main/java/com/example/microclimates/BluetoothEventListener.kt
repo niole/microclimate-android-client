@@ -51,7 +51,7 @@ class BluetoothEventListener : BroadcastReceiver() {
                     val deviceName = device.name
                     val deviceHardwareAddress = device.address
 
-                    if (deviceName == MainActivity.SENSOR_DEVICE_NAME) { // TODO this won't always be so straightforward
+                    if (deviceName == SetupPage.SENSOR_DEVICE_NAME) { // TODO this won't always be so straightforward
                         // how do we differentiate between devices
                         println("found sensor device: deviceName $deviceName deviceHardwareAddress $deviceHardwareAddress")
                         Toast.makeText(context, "Found device $deviceName", Toast.LENGTH_SHORT).show()

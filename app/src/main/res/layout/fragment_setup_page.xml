@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/peripheral_setup_page"
+        android:name="com.example.microclimates.SetupPage"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:text="setup page" />
+    <Button
+            android:id="@+id/start_discovery"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_gravity="end|bottom"
+            android:text="Start Discovery" />
+</LinearLayout>
