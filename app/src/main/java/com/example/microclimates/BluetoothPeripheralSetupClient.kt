@@ -9,11 +9,11 @@ import android.widget.Toast
 import java.util.*
 
 class BluetoothPeripheralSetupClient(view: View) {
-    val view: View = view
+    private val view: View = view
 
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
-    var connectedSocket: BluetoothSocket? = null
+    private var connectedSocket: BluetoothSocket? = null
 
     fun setupDevice(device: BluetoothDevice) {
         val host = getHost()

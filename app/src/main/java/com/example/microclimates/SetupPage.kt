@@ -173,10 +173,16 @@ class SetupPage : Fragment() {
             button.layoutParams = CoordinatorLayout.LayoutParams(layoutParams)
 
             button.setId(deviceUIId)
-            button.setOnClickListener { peripheralSetupClient.setupDevice(device) }
+            button.setOnClickListener { setupDevice(device) }
             parentLayout?.addView(button)
             println("Finished adding device ${device.name} with hash ${device.hashCode()} from parent view")
         }, "View was null when attempting to add pairing button for device ${device.name}")
+    }
+
+    private fun setupDevice(device: BluetoothDevice): Unit {
+        Thread(Runnable {
+            peripheralSetupClient.setupDevice(device)
+        }).start()
     }
 
     fun removeDevice(device: BluetoothDevice): Unit {
