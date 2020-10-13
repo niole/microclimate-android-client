@@ -20,6 +20,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 
 class SetupPage : Fragment() {
@@ -112,13 +113,15 @@ class SetupPage : Fragment() {
 
     fun onFound(device: BluetoothDevice): Unit {
         val deviceHardwareAddress = device.address
-        foundDevices += Pair(deviceHardwareAddress, device)
+        if (!foundDevices.contains(deviceHardwareAddress)) {
+            foundDevices += Pair(deviceHardwareAddress, device)
 
-        renderDeviceSetupButton(device)
+            renderDeviceSetupButton(device)
 
-        val bonding = device.createBond()
-        Toast.makeText(context, "Found ${device.name}, starting bonding with ${device.name}", Toast.LENGTH_LONG)
-        println("Bonding status with ${device.name}: $bonding")
+            val bonding = device.createBond()
+            Toast.makeText(context, "Found ${device.name}, starting bonding with ${device.name}", Toast.LENGTH_LONG)
+            println("Bonding status with ${device.name}: $bonding")
+        }
     }
 
     fun onBonded(device: BluetoothDevice): Unit {
@@ -155,26 +158,14 @@ class SetupPage : Fragment() {
     fun renderDeviceSetupButton(device: BluetoothDevice): Unit {
         doOrWarnIfViewNotExists({ ->
             println("Adding new device ${device.name} with hash ${device.hashCode()} to parent view")
-            val deviceUIId = Math.abs(device.hashCode())
             val parentLayout = view?.findViewById<LinearLayout>(R.id.peripheral_setup_page)
-            val button = Button(context)
+            val buttons = layoutInflater.inflate(R.layout.pair_management_buttons, (parentLayout as ViewGroup))
+            val deviceUIId = Math.abs(device.hashCode())
+            buttons.id = deviceUIId
+            buttons.findViewById<TextView>(R.id.device_name).text = device.name
+            buttons.findViewById<Button>(R.id.pair_button).setOnClickListener { setupDevice(device) }
+            buttons.findViewById<Button>(R.id.remove_button).setOnClickListener { removeDevice(device) }
 
-            button.setTextColor(Color.BLACK)
-            button.setBackgroundColor(Color.WHITE)
-            button.text = "Setup ${device.name}"
-
-            val layoutParams = CoordinatorLayout.LayoutParams(
-                CoordinatorLayout.LayoutParams.MATCH_PARENT,
-                CoordinatorLayout.LayoutParams.WRAP_CONTENT
-            )
-
-            layoutParams.gravity = Gravity.TOP
-            layoutParams.setMargins(0, 140, 0, 0)
-            button.layoutParams = CoordinatorLayout.LayoutParams(layoutParams)
-
-            button.setId(deviceUIId)
-            button.setOnClickListener { setupDevice(device) }
-            parentLayout?.addView(button)
             println("Finished adding device ${device.name} with hash ${device.hashCode()} from parent view")
         }, "View was null when attempting to add pairing button for device ${device.name}")
     }
@@ -188,11 +179,14 @@ class SetupPage : Fragment() {
     fun removeDevice(device: BluetoothDevice): Unit {
         doOrWarnIfViewNotExists({ ->
             println("Removing device ${device.name} with hash ${device.hashCode()} to parent view")
+
             foundDevices -= device.address
             val deviceUIId = Math.abs(device.hashCode())
-            val buttonToRemove = view?.findViewById<Button>(deviceUIId)
-            (buttonToRemove?.parent as ViewGroup).removeView(buttonToRemove)
+            val buttonGroup = view?.findViewById<LinearLayout>(deviceUIId)
+            (buttonGroup?.parent as ViewGroup).removeView(buttonGroup)
+
             println("Finished removing device ${device.name} with hash ${device.hashCode()} to parent view")
+
         }, "Could not remove device from view, view does not exist")
     }
 
@@ -202,7 +196,6 @@ class SetupPage : Fragment() {
         } else {
             println(warning)
         }
-
     }
 
     fun setupBluetoothAdapter(): Unit {
