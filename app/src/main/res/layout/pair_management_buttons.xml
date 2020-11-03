@@ -10,6 +10,12 @@
             android:layout_height="wrap_content"
             android:text=""></TextView>
 
+    <TextView
+            android:id="@+id/pair_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""></TextView>
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
