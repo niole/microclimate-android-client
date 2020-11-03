@@ -6,10 +6,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <Button
-            android:id="@+id/start_discovery"
+            android:id="@+id/discovery_button"
             android:enabled="false"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_gravity="end|bottom"
-            android:text="Start Discovery" />
+            android:text="+" />
 </LinearLayout>

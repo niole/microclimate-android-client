@@ -1,5 +1,6 @@
 package com.example.microclimates
 
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,6 +13,12 @@ class BluetoothEventListener : BroadcastReceiver() {
 
     var onBonded: (BluetoothDevice) -> Unit = {}
 
+    var onDiscoveryStarted: () -> Unit = {}
+
+    var onDeviceBondStateChangedHandler: (BluetoothDevice) -> Unit = {}
+
+    var onDiscoveryStopped: () -> Unit = {}
+
     fun setOnFoundHandler(value: (BluetoothDevice) -> Unit) {
         onFound = value
     }
@@ -20,18 +27,43 @@ class BluetoothEventListener : BroadcastReceiver() {
         onBonded = value
     }
 
+    fun setOnDiscoveryStoppecHandler(value: () -> Unit): Unit {
+        onDiscoveryStopped = value
+    }
+
+    fun setOnDiscoveryStartedHandler(value: () -> Unit): Unit {
+        onDiscoveryStarted = value
+    }
+
+    fun setOnDeviceBondStateChanged(value: (BluetoothDevice) -> Unit): Unit {
+        onDeviceBondStateChangedHandler = value
+    }
+
     override fun onReceive(context: Context?, nullableIntent: Intent?) {
         if (nullableIntent != null) {
             val intent = nullableIntent!!
             val action: String = intent.action
 
             when(action) {
-                BluetoothDevice.ACTION_PAIRING_REQUEST -> {
-                    println("PAIRING REQUEST")
+                BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
+                    println("Action discovery started received")
+                    onDiscoveryStarted()
                 }
+
+                BluetoothAdapter.ACTION_DISCOVERY_FINISHED -> {
+                    println("Action discovery finished received")
+                    onDiscoveryStopped()
+                }
+
+                BluetoothDevice.ACTION_PAIRING_REQUEST -> {
+                    println("Action pairing request received")
+                }
+
                 BluetoothDevice.ACTION_BOND_STATE_CHANGED -> {
                     val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
                     val currentBondState = device.getBondState()
+
+                    onDeviceBondStateChangedHandler(device)
 
                     val bondingStatus = when(currentBondState) {
                         BluetoothDevice.BOND_BONDED -> "BOND_BONDED"
@@ -40,7 +72,7 @@ class BluetoothEventListener : BroadcastReceiver() {
                         else -> "didn't account for this bonding state $currentBondState"
                     }
 
-                    println("ACTION_BOND_STATE_CHANGED: $currentBondState A.K.A. $bondingStatus")
+                    println("Bonding state for ${device.name} is $bondingStatus")
 
                     if (currentBondState == BluetoothDevice.BOND_BONDED) {
                         onBonded(device)
@@ -51,12 +83,12 @@ class BluetoothEventListener : BroadcastReceiver() {
                     val deviceName = device.name
                     val deviceHardwareAddress = device.address
 
-                    if (deviceName == SetupPage.SENSOR_DEVICE_NAME) { // TODO this won't always be so straightforward
+                    //if (deviceName == SetupPage.SENSOR_DEVICE_NAME) { // TODO this won't always be so straightforward
                         // how do we differentiate between devices
                         println("found sensor device: deviceName $deviceName deviceHardwareAddress $deviceHardwareAddress")
                         Toast.makeText(context, "Found device $deviceName", Toast.LENGTH_SHORT).show()
                         onFound(device)
-                    }
+                   // }
                 }
                 else -> println("Not watching for action $action")
             }

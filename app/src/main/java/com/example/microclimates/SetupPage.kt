@@ -7,14 +7,11 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.CoordinatorLayout
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.PermissionChecker
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,10 +54,7 @@ class SetupPage : Fragment() {
         when(requestCode) {
             REQUEST_ENABLE_BT ->
                 if (resultCode == Activity.RESULT_OK) {
-                    Toast.makeText(context, "Bluetooth enabled.", Toast.LENGTH_LONG).show()
-
-                    view?.findViewById<Button>(R.id.start_discovery)?.isEnabled = true
-
+                    getDiscoverButton(view)?.isEnabled = true
                     val bondedDevices = bluetoothAdapter.bondedDevices
                     val foundDevice = bondedDevices.find { it.name == SENSOR_DEVICE_NAME }
                     if (foundDevice != null) {
@@ -129,12 +123,21 @@ class SetupPage : Fragment() {
     }
 
     fun setupBluetoothButtons(view: View): Unit {
-        val startDiscoveryButton = view.findViewById<Button>(R.id.start_discovery)
-
-        startDiscoveryButton.setOnClickListener(View.OnClickListener {
+        println("Setting up bluetooth buttons")
+        getDiscoverButton(view)?.setOnClickListener(View.OnClickListener {
             bluetoothAdapter.startDiscovery()
         })
     }
+
+    private fun getDiscoverButton(view: View?): Button? {
+        if (view != null) {
+            return view?.findViewById<Button>(R.id.discovery_button)
+        } else {
+            println("Couldn't find the discovery button. Returning nothing.")
+        }
+        return null
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -144,6 +147,9 @@ class SetupPage : Fragment() {
         setupBluetoothButtons(view)
         bluetoothEvents.setOnFoundHandler { onFound(it) }
         bluetoothEvents.setOnBondedHandler { onBonded(it) }
+        bluetoothEvents.setOnDiscoveryStartedHandler { getDiscoverButton(view)?.text = "x" }
+        bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(view)?.text = "+" }
+        bluetoothEvents.setOnDeviceBondStateChanged { device -> updateDeviceBondingState(device)}
         peripheralSetupClient = BluetoothPeripheralSetupClient(view.findViewById(R.id.peripheral_setup_page))
 
         return view
@@ -155,19 +161,46 @@ class SetupPage : Fragment() {
         fun newInstance() = SetupPage()
     }
 
+    private fun getDeviceSetupButton(device: BluetoothDevice): LinearLayout? {
+        if (view != null) {
+            val deviceUIId = Math.abs(device.hashCode())
+            return view?.findViewById(deviceUIId)
+        }
+        println("Couldn't get device setup button in view. Returning null")
+        return null
+    }
+
     fun renderDeviceSetupButton(device: BluetoothDevice): Unit {
         doOrWarnIfViewNotExists({ ->
             println("Adding new device ${device.name} with hash ${device.hashCode()} to parent view")
-            val parentLayout = view?.findViewById<LinearLayout>(R.id.peripheral_setup_page)
-            val buttons = layoutInflater.inflate(R.layout.pair_management_buttons, (parentLayout as ViewGroup))
+            println(device)
+            val buttons = layoutInflater.inflate(R.layout.pair_management_buttons, (view as ViewGroup))
             val deviceUIId = Math.abs(device.hashCode())
             buttons.id = deviceUIId
             buttons.findViewById<TextView>(R.id.device_name).text = device.name
+            buttons.findViewById<TextView>(R.id.pair_status).text = getDeviceBondStateLabel(device.bondState)
             buttons.findViewById<Button>(R.id.pair_button).setOnClickListener { setupDevice(device) }
             buttons.findViewById<Button>(R.id.remove_button).setOnClickListener { removeDevice(device) }
 
             println("Finished adding device ${device.name} with hash ${device.hashCode()} from parent view")
         }, "View was null when attempting to add pairing button for device ${device.name}")
+    }
+
+    private fun updateDeviceBondingState(device: BluetoothDevice): Unit {
+        val pairStatusView = getDeviceSetupButton(device)?.findViewById<TextView>(R.id.pair_status)
+        pairStatusView?.text = getDeviceBondStateLabel(device.bondState)
+    }
+
+    private fun getDeviceBondStateLabel(bondState: Int): String {
+        return when(bondState) {
+            BluetoothDevice.BOND_BONDED -> "paired"
+            BluetoothDevice.BOND_BONDING -> "pairing"
+            BluetoothDevice.BOND_NONE -> "unpaired"
+            else -> {
+                println("Unforseen bond state received: ${bondState}")
+                return ""
+            }
+        }
     }
 
     private fun setupDevice(device: BluetoothDevice): Unit {
@@ -190,7 +223,7 @@ class SetupPage : Fragment() {
         }, "Could not remove device from view, view does not exist")
     }
 
-    fun doOrWarnIfViewNotExists(block: () -> Unit, warning: String): Unit {
+    private fun doOrWarnIfViewNotExists(block: () -> Unit, warning: String): Unit {
         if (view != null) {
             return block()
         } else {
