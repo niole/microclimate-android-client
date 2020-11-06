@@ -22,23 +22,40 @@ import android.widget.Toast
 
 class SetupPage : Fragment() {
     val REQUEST_ENABLE_BT = 1
-
-    var foundDevices: Map<String, BluetoothDevice> = mutableMapOf()
-
-    lateinit var bluetoothAdapter: BluetoothAdapter
-
     val bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
-
     lateinit var peripheralSetupClient: BluetoothPeripheralSetupClient
+    lateinit var bluetoothAdapter: BluetoothAdapter
+    lateinit var parentLayout: View
+    var foundDevices: Map<String, DeviceViewModel> = mutableMapOf()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        parentLayout = inflater.inflate(R.layout.fragment_setup_page, container, false)
+
+        setupBluetoothButtons(parentLayout)
+        bluetoothEvents.setOnFoundHandler { onFound(it) }
+        bluetoothEvents.setOnBondedHandler { onBonded(it) }
+        bluetoothEvents.setOnDiscoveryStartedHandler { getDiscoverButton(parentLayout)?.text = "x" }
+        bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(parentLayout)?.text = "+" }
+        bluetoothEvents.setOnDeviceBondStateChanged { device -> updateDeviceBondingState(device)}
+        peripheralSetupClient = BluetoothPeripheralSetupClient(parentLayout.findViewById(R.id.peripheral_setup_page))
+
+        return parentLayout
+    }
+
+    companion object {
+        val SENSOR_DEVICE_NAME = "raspberrypi"
+        fun newInstance() = SetupPage()
     }
 
     override fun onPause() {
         super.onPause()
-        doOrWarnIfActivityNotExists({ ->
-            activity?.unregisterReceiver(bluetoothEvents)
+        doOrWarnIfActivityNotExists({ nonNullActivity ->
+            nonNullActivity.unregisterReceiver(bluetoothEvents)
         }, "Activity did not exist when attempting to unregister a bluetooth event receiver in setup page")
     }
 
@@ -70,30 +87,30 @@ class SetupPage : Fragment() {
 
     fun requestLocationPermissions(block: () -> Unit): Unit {
         Toast.makeText(context, "Checking bluetooth and location permissions", Toast.LENGTH_LONG).show()
-        return doOrWarnIfActivityNotExists({
-            val applicationContext: Context = context!!
-            val fragmentActivity = activity!!
 
-            if (ContextCompat.checkSelfPermission(fragmentActivity,
+        return doOrWarnIfActivityNotExists({ nonNullActivity ->
+            val applicationContext: Context = context!!
+
+            if (ContextCompat.checkSelfPermission(nonNullActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PermissionChecker.PERMISSION_DENIED
             ) {
-                ActivityCompat.requestPermissions(fragmentActivity,
+                ActivityCompat.requestPermissions(nonNullActivity,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
             }
 
-            if (ContextCompat.checkSelfPermission(fragmentActivity,
+            if (ContextCompat.checkSelfPermission(nonNullActivity,
                     Manifest.permission.ACCESS_FINE_LOCATION
                 ) == PermissionChecker.PERMISSION_GRANTED
             ) {
-                if (ContextCompat.checkSelfPermission(fragmentActivity,
+                if (ContextCompat.checkSelfPermission(nonNullActivity,
                         Manifest.permission.BLUETOOTH_ADMIN
                     ) == PermissionChecker.PERMISSION_DENIED
                 ) {
-                    ActivityCompat.requestPermissions(fragmentActivity,
+                    ActivityCompat.requestPermissions(nonNullActivity,
                         arrayOf(Manifest.permission.BLUETOOTH_ADMIN), 1)
                 }
-                if (ContextCompat.checkSelfPermission(fragmentActivity,
+                if (ContextCompat.checkSelfPermission(nonNullActivity,
                         Manifest.permission.BLUETOOTH_ADMIN
                     ) == PermissionChecker.PERMISSION_GRANTED
                 ) {
@@ -108,7 +125,11 @@ class SetupPage : Fragment() {
     fun onFound(device: BluetoothDevice): Unit {
         val deviceHardwareAddress = device.address
         if (!foundDevices.contains(deviceHardwareAddress)) {
-            foundDevices += Pair(deviceHardwareAddress, device)
+            val viewModel = DeviceViewModel(
+                View.generateViewId(),
+                device
+            )
+            foundDevices += Pair(deviceHardwareAddress, viewModel)
 
             renderDeviceSetupButton(device)
 
@@ -138,57 +159,44 @@ class SetupPage : Fragment() {
         return null
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_setup_page, container, false)
-
-        setupBluetoothButtons(view)
-        bluetoothEvents.setOnFoundHandler { onFound(it) }
-        bluetoothEvents.setOnBondedHandler { onBonded(it) }
-        bluetoothEvents.setOnDiscoveryStartedHandler { getDiscoverButton(view)?.text = "x" }
-        bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(view)?.text = "+" }
-        bluetoothEvents.setOnDeviceBondStateChanged { device -> updateDeviceBondingState(device)}
-        peripheralSetupClient = BluetoothPeripheralSetupClient(view.findViewById(R.id.peripheral_setup_page))
-
-        return view
-    }
-
-    companion object {
-        val SENSOR_DEVICE_NAME = "raspberrypi"
-
-        fun newInstance() = SetupPage()
-    }
 
     private fun getDeviceSetupButton(device: BluetoothDevice): LinearLayout? {
-        if (view != null) {
-            val deviceUIId = Math.abs(device.hashCode())
-            return view?.findViewById(deviceUIId)
+        val viewId = foundDevices.get(device.address)?.id
+        if (viewId != null) {
+            return parentLayout.findViewById(viewId)
         }
         println("Couldn't get device setup button in view. Returning null")
         return null
     }
 
     fun renderDeviceSetupButton(device: BluetoothDevice): Unit {
-        doOrWarnIfViewNotExists({ ->
-            println("Adding new device ${device.name} with hash ${device.hashCode()} to parent view")
-            println(device)
-            val buttons = layoutInflater.inflate(R.layout.pair_management_buttons, (view as ViewGroup))
-            val deviceUIId = Math.abs(device.hashCode())
-            buttons.id = deviceUIId
-            buttons.findViewById<TextView>(R.id.device_name).text = device.name
+        println("Adding new device ${device.name} with hash ${device.hashCode()} to parent view")
+        val buttons = layoutInflater.inflate(R.layout.pair_management_buttons, null)
+        val viewModel = foundDevices.get(device.address)
+        if (viewModel != null) {
+            buttons.id = viewModel.id
+            buttons.findViewById<TextView>(R.id.device_name).text = device.address
             buttons.findViewById<TextView>(R.id.pair_status).text = getDeviceBondStateLabel(device.bondState)
+
             buttons.findViewById<Button>(R.id.pair_button).setOnClickListener { setupDevice(device) }
             buttons.findViewById<Button>(R.id.remove_button).setOnClickListener { removeDevice(device) }
 
+            parentLayout
+                .findViewById<LinearLayout>(R.id.peripheral_setup_page)
+                .addView(buttons)
+
             println("Finished adding device ${device.name} with hash ${device.hashCode()} from parent view")
-        }, "View was null when attempting to add pairing button for device ${device.name}")
+        } else {
+            println("Couldn't find device ${device.address} in found devices")
+        }
     }
 
     private fun updateDeviceBondingState(device: BluetoothDevice): Unit {
-        val pairStatusView = getDeviceSetupButton(device)?.findViewById<TextView>(R.id.pair_status)
-        pairStatusView?.text = getDeviceBondStateLabel(device.bondState)
+        val setupButtonView = getDeviceSetupButton(device)
+        getOrWarn<TextView>(setupButtonView?.findViewById<TextView>(R.id.pair_status), {
+            pairStatusView  ->
+                pairStatusView.text = getDeviceBondStateLabel(device.bondState)
+        }, "Couldn't update bonding state view for device ${device.name} ${device.address}")
     }
 
     private fun getDeviceBondStateLabel(bondState: Int): String {
@@ -204,34 +212,22 @@ class SetupPage : Fragment() {
     }
 
     private fun setupDevice(device: BluetoothDevice): Unit {
-        Thread(Runnable {
-            peripheralSetupClient.setupDevice(device)
-        }).start()
+        Thread(Runnable { peripheralSetupClient.setupDevice(device) }).start()
     }
 
     fun removeDevice(device: BluetoothDevice): Unit {
-        doOrWarnIfViewNotExists({ ->
-            println("Removing device ${device.name} with hash ${device.hashCode()} to parent view")
-
+        println("Removing device ${device.name} with hash ${device.address} to parent view")
+        val viewModel = foundDevices.get(device.address)
+        if (viewModel != null) {
             foundDevices -= device.address
-            val deviceUIId = Math.abs(device.hashCode())
-            val buttonGroup = view?.findViewById<LinearLayout>(deviceUIId)
-            (buttonGroup?.parent as ViewGroup).removeView(buttonGroup)
-
-            println("Finished removing device ${device.name} with hash ${device.hashCode()} to parent view")
-
-        }, "Could not remove device from view, view does not exist")
-    }
-
-    private fun doOrWarnIfViewNotExists(block: () -> Unit, warning: String): Unit {
-        if (view != null) {
-            return block()
-        } else {
-            println(warning)
+            val deviceUIId = viewModel.id
+            parentLayout
+                .findViewById<LinearLayout>(R.id.peripheral_setup_page)
+                .removeView(parentLayout.findViewById<LinearLayout>(deviceUIId))
         }
     }
 
-    fun setupBluetoothAdapter(): Unit {
+    private fun setupBluetoothAdapter(): Unit {
         val adapter = BluetoothAdapter.getDefaultAdapter()
         if (adapter == null) {
             throw Exception("This device doesn't support Bluetooth. Crash")
@@ -247,7 +243,7 @@ class SetupPage : Fragment() {
     }
 
     fun registerBluetoothEvents(): Unit {
-        doOrWarnIfActivityNotExists({ ->
+        doOrWarnIfActivityNotExists({ nonNullActivity ->
             val filter = IntentFilter()
             filter.addAction(BluetoothDevice.ACTION_PAIRING_REQUEST)
             filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED)
@@ -256,15 +252,21 @@ class SetupPage : Fragment() {
             filter.addAction(BluetoothDevice.ACTION_FOUND)
             filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
 
-            activity?.registerReceiver(bluetoothEvents, filter)
+            nonNullActivity.registerReceiver(bluetoothEvents, filter)
         }, "Activity doesn't exist, couldn't register bluetooth events")
     }
 
-    fun doOrWarnIfActivityNotExists(block: () -> Unit, warning: String): Unit {
-        if (activity != null) {
-            return block()
-        } else {
+    fun doOrWarnIfActivityNotExists(block: (activity: Activity) -> Unit, warning: String): Unit {
+        getOrWarn<Activity>(activity, block, warning)
+    }
+
+    fun <T>getOrWarn(o: T?, block: (o: T) -> Unit, warning: String? = null): Unit {
+        val nonNullO = o
+        if (nonNullO != null) {
+           block(nonNullO)
+        } else if (warning != null) {
             println(warning)
         }
     }
+
 }
