@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
+import java.util.*
 
 class PeripheralListViewAdapter(
     val pageViewModel: SetupPageViewModel,
@@ -40,7 +41,8 @@ class PeripheralListViewAdapter(
 
             val device = viewModel.device
             buttons.id = viewModel.id
-            buttons.findViewById<TextView>(R.id.device_name).text = device.address
+            buttons.findViewById<TextView>(R.id.device_address).text = device.address
+            buttons.findViewById<TextView>(R.id.device_name).text = if (device.name == null) "unnamed" else device.name
             buttons.findViewById<TextView>(R.id.pair_status).text = when(viewModel.bondStatus) {
                 BondStatus.PAIRING -> "connecting..."
                 BondStatus.NOT_PAIRED -> "not connected"

@@ -8,13 +8,19 @@
             android:id="@+id/device_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="no name"></TextView>
+            android:text="unnamed"></TextView>
+
+    <TextView
+            android:id="@+id/device_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="address unknown"></TextView>
 
     <TextView
             android:id="@+id/pair_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="unknown"></TextView>
+            android:text="status unknown"></TextView>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="fill_parent"

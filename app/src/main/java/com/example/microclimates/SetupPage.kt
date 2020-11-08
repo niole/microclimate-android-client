@@ -28,7 +28,7 @@ class SetupPage : Fragment() {
     lateinit var parentLayout: View
     lateinit var viewModel: SetupPageViewModel
     lateinit var peripheralsListAdapter: PeripheralListViewAdapter
-    var devices: List<DeviceViewModel> = mutableListOf()
+    private var devices: List<DeviceViewModel> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,6 +60,12 @@ class SetupPage : Fragment() {
         bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(parentLayout)?.text = "+" }
         bluetoothEvents.setOnDeviceBondStateChanged { device -> viewModel.updateDevice(device) }
 
+        requestLocationPermissions {
+            bluetoothAdapter = setupBluetoothAdapter()
+            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
+            setupBluetoothButtons(parentLayout, bluetoothAdapter)
+        }
+
         return parentLayout
     }
 
@@ -76,9 +82,6 @@ class SetupPage : Fragment() {
     override fun onResume() {
         super.onResume()
         requestLocationPermissions {
-            bluetoothAdapter = setupBluetoothAdapter()
-            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
-            setupBluetoothButtons(parentLayout, bluetoothAdapter)
             registerBluetoothEvents()
         }
     }
@@ -150,7 +153,11 @@ class SetupPage : Fragment() {
     private fun setupBluetoothButtons(view: View, bluetoothAdapter: BluetoothAdapter): Unit {
         Log.d(SETUP_PAGE_TAG, "Setting up bluetooth buttons")
         getDiscoverButton(view)?.setOnClickListener(View.OnClickListener {
-            bluetoothAdapter.startDiscovery()
+            if (!bluetoothAdapter.isDiscovering) {
+                bluetoothAdapter.startDiscovery()
+            } else {
+                bluetoothAdapter.cancelDiscovery()
+            }
         })
     }
 
