@@ -8,8 +8,7 @@ import android.view.View
 import android.widget.Toast
 import java.util.*
 
-class BluetoothPeripheralSetupClient(view: View) {
-    private val view: View = view
+class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: SetupPageViewModel) {
 
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
 
@@ -21,23 +20,13 @@ class BluetoothPeripheralSetupClient(view: View) {
         sendMessage(message, device)
     }
 
-    fun cancelSetup() {
-        if (connectedSocket != null) {
-            println("Closing connected socket upon request.")
-            connectedSocket?.close()
-        } else {
-            println("No socket exists to close.")
-        }
-    }
-
     private fun getHost(): String {
         return "ec2-35-161-83-246.us-west-2.compute.amazonaws.com" // TODO get from a db
     }
 
     private fun sendMessage(message: String, device: BluetoothDevice): Unit {
-        // TODO post message to main activity for toasting
         view.post {
-            Toast.makeText(view.context, "Sending setup data to ${device.name}", Toast.LENGTH_LONG)
+            setupPageViewModel.setPairing(device)
         }
 
         println("Sending setup data: ${message}, to device: ${device}")
@@ -59,6 +48,11 @@ class BluetoothPeripheralSetupClient(view: View) {
 
         } catch (error: Exception) {
             println("Something happened when sending a message to ${device.name}: $error")
+            view.post {
+                setupPageViewModel.setPairingFailed(device)
+                Toast.makeText(view.context, "Sending setup data to ${device.name}", Toast.LENGTH_LONG)
+            }
+
         } finally {
             connectedSocket?.close()
             connectedSocket = null
