@@ -4,14 +4,13 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.*
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
+import android.util.Log
 import android.view.View
-import android.widget.Toast
 import java.util.*
 
 class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: SetupPageViewModel) {
-
+    private val LOG_TAG = "BluetoothPeripheralSetupClient"
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
-
     private var connectedSocket: BluetoothSocket? = null
 
     fun setupDevice(device: BluetoothDevice) {
@@ -29,28 +28,27 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
             setupPageViewModel.setPairing(device)
         }
 
-        println("Sending setup data: ${message}, to device: ${device}")
+        Log.d(LOG_TAG,"Sending setup data: ${message}, to device: ${device}")
 
         try {
             connectedSocket = device.createRfcommSocketToServiceRecord(serviceUuid)
 
             connectedSocket?.connect()
 
-            println("Connected to socket for ${device.name}")
+            Log.d(LOG_TAG,"Connected to socket for ${device.name}")
 
             val outputStream = connectedSocket?.outputStream
 
-            println("Writing to socket for ${device.name}")
+            Log.d(LOG_TAG,"Writing to socket for ${device.name}")
 
             outputStream?.write(message.toByteArray())
 
-            println("Wrote to socket for ${device.name}")
+            Log.d(LOG_TAG,"Wrote to socket for ${device}")
 
         } catch (error: Exception) {
-            println("Something happened when sending a message to ${device.name}: $error")
+            Log.e(LOG_TAG,"Something happened when sending a message to ${device.name}: $error")
             view.post {
                 setupPageViewModel.setPairingFailed(device)
-                Toast.makeText(view.context, "Sending setup data to ${device.name}", Toast.LENGTH_LONG)
             }
 
         } finally {
