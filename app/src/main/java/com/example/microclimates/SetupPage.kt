@@ -60,12 +60,6 @@ class SetupPage : Fragment() {
         bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(parentLayout)?.text = "+" }
         bluetoothEvents.setOnDeviceBondStateChanged { device -> viewModel.updateDevice(device) }
 
-        requestLocationPermissions {
-            bluetoothAdapter = setupBluetoothAdapter()
-            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
-            setupBluetoothButtons(parentLayout, bluetoothAdapter)
-        }
-
         return parentLayout
     }
 
@@ -82,6 +76,9 @@ class SetupPage : Fragment() {
     override fun onResume() {
         super.onResume()
         requestLocationPermissions {
+            bluetoothAdapter = setupBluetoothAdapter()
+            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
+            setupBluetoothButtons(parentLayout, bluetoothAdapter)
             registerBluetoothEvents()
         }
     }
