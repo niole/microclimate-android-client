@@ -41,23 +41,12 @@ class SetupPage : Fragment() {
             parentLayout.findViewById(R.id.peripheral_setup_page),
             viewModel
         )
-        peripheralsListAdapter = PeripheralListViewAdapter(
-            viewModel,
-            peripheralSetupClient,
-            activity!!,
-            R.layout.pair_management_buttons,
-            devices
-        )
-        val listView = parentLayout.findViewById(R.id.peripherals_list) as ListView
-        listView.adapter = peripheralsListAdapter
-
-        setupBluetoothButtons(parentLayout)
+        peripheralsListAdapter = setupPeripheralList(viewModel, peripheralSetupClient)
         bluetoothEvents.setOnFoundHandler { device ->
             // TODO should use something that's meant for this instead of my hand made
             // callbacks
             viewModel.addDevice(device)
-            val bonding = device.createBond() // TODO should we call this here
-            Log.i(SETUP_PAGE_TAG,"Bonding status with ${device.name}: $bonding")
+            Log.i(SETUP_PAGE_TAG,"Bonding status with ${device.name}: ${device.bondState}")
         }
         bluetoothEvents.setOnBondedHandler { device ->
             viewModel.updateDevice(device)
@@ -87,7 +76,9 @@ class SetupPage : Fragment() {
     override fun onResume() {
         super.onResume()
         requestLocationPermissions {
-            setupBluetoothAdapter()
+            bluetoothAdapter = setupBluetoothAdapter()
+            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
+            setupBluetoothButtons(parentLayout, bluetoothAdapter)
             registerBluetoothEvents()
         }
     }
@@ -109,9 +100,7 @@ class SetupPage : Fragment() {
         }
     }
 
-    fun requestLocationPermissions(block: () -> Unit): Unit {
-        Toast.makeText(context, "Checking bluetooth and location permissions", Toast.LENGTH_LONG).show()
-
+    private fun requestLocationPermissions(block: () -> Unit): Unit {
         return doOrWarnIfActivityNotExists({ nonNullActivity ->
             val applicationContext: Context = context!!
 
@@ -158,7 +147,7 @@ class SetupPage : Fragment() {
         }, "Can't check for bluetooth permissions, activity doesn't exist")
     }
 
-    fun setupBluetoothButtons(view: View): Unit {
+    private fun setupBluetoothButtons(view: View, bluetoothAdapter: BluetoothAdapter): Unit {
         Log.d(SETUP_PAGE_TAG, "Setting up bluetooth buttons")
         getDiscoverButton(view)?.setOnClickListener(View.OnClickListener {
             bluetoothAdapter.startDiscovery()
@@ -174,14 +163,28 @@ class SetupPage : Fragment() {
         return null
     }
 
-    private fun setupBluetoothAdapter(): Unit {
+    private fun setupPeripheralList(
+        viewModel: SetupPageViewModel,
+        setupClient: BluetoothPeripheralSetupClient
+    ): PeripheralListViewAdapter {
+        val listAdaper = PeripheralListViewAdapter(
+            viewModel,
+            peripheralSetupClient,
+            activity!!,
+            R.layout.pair_management_buttons,
+            devices
+        )
+        val listView = parentLayout.findViewById(R.id.peripherals_list) as ListView
+        listView.adapter = listAdaper
+        return listAdaper
+    }
+
+    private fun setupBluetoothAdapter(): BluetoothAdapter {
         val adapter = BluetoothAdapter.getDefaultAdapter()
         if (adapter == null) {
             throw Exception("This device doesn't support Bluetooth. Crash")
-        } else {
-            bluetoothAdapter = adapter
-            viewModel.setBluetoothEnabled(adapter.isEnabled)
         }
+        return adapter
     }
 
     fun registerBluetoothEvents(): Unit {
@@ -230,7 +233,6 @@ class SetupPage : Fragment() {
         pageViewModel.getDevices().observe(this, {
             val devices = it
             if (devices != null) {
-                Log.d(SETUP_PAGE_TAG,"Device change")
                 peripheralsListAdapter.clear()
                 peripheralsListAdapter.addAll(devices.map { it.value })
             }

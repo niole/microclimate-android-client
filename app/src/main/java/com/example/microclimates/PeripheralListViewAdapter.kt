@@ -48,6 +48,7 @@ class PeripheralListViewAdapter(
             }
 
             buttons.findViewById<Button>(R.id.pair_button).setOnClickListener {
+                device.createBond()
                 Thread(Runnable { peripheralSetupClient.setupDevice(device) }).start()
             }
             buttons.findViewById<Button>(R.id.remove_button).setOnClickListener {
