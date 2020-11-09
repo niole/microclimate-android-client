@@ -5,9 +5,10 @@ import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.widget.Toast
+import android.util.Log
 
 class BluetoothEventListener : BroadcastReceiver() {
+    private val LOG_TAG = "BluetoothEventListener"
 
     var onFound: (BluetoothDevice) -> Unit = {}
 
@@ -72,7 +73,7 @@ class BluetoothEventListener : BroadcastReceiver() {
                         else -> "didn't account for this bonding state $currentBondState"
                     }
 
-                    println("Bonding state for ${device.name} is $bondingStatus")
+                    Log.i(LOG_TAG,"Bonding state for $device is $bondingStatus")
 
                     if (currentBondState == BluetoothDevice.BOND_BONDED) {
                         onBonded(device)
@@ -80,18 +81,18 @@ class BluetoothEventListener : BroadcastReceiver() {
                 }
                 BluetoothDevice.ACTION_FOUND -> {
                     val device: BluetoothDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE)
-                    val deviceName = device.name
-                    val deviceHardwareAddress = device.address
-
-                    //if (deviceName == SetupPage.SENSOR_DEVICE_NAME) { // TODO this won't always be so straightforward
-                        // how do we differentiate between devices
-                        println("found sensor device: deviceName $deviceName deviceHardwareAddress $deviceHardwareAddress")
-                        Toast.makeText(context, "Found device $deviceName", Toast.LENGTH_SHORT).show()
+                    if (isPeripheral(device)) {
                         onFound(device)
-                   // }
+                    }
                 }
-                else -> println("Not watching for action $action")
+                else -> Log.d(LOG_TAG,"Not watching for action $action")
             }
         }
     }
+
+   private fun isPeripheral(device: BluetoothDevice): Boolean {
+       // TODO implement
+       // peripherals device names are their hardwareids
+       return true
+   }
 }
