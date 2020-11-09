@@ -30,18 +30,28 @@ class SetupPage : Fragment() {
     lateinit var peripheralsListAdapter: PeripheralListViewAdapter
     private var devices: List<DeviceViewModel> = mutableListOf()
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        viewModel = setupPageViewModel()
+        requestLocationPermissions {
+            bluetoothAdapter = setupBluetoothAdapter()
+            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         parentLayout = inflater.inflate(R.layout.fragment_setup_page, container, false)
-        viewModel = setupPageViewModel()
         peripheralSetupClient = BluetoothPeripheralSetupClient(
             parentLayout.findViewById(R.id.peripheral_setup_page),
             viewModel
         )
         peripheralsListAdapter = setupPeripheralList(viewModel, peripheralSetupClient)
+        setupBluetoothButtons(parentLayout, bluetoothAdapter)
+
         bluetoothEvents.setOnFoundHandler { device ->
             // TODO should use something that's meant for this instead of my hand made
             // callbacks
@@ -50,11 +60,7 @@ class SetupPage : Fragment() {
         }
         bluetoothEvents.setOnBondedHandler { device ->
             viewModel.updateDevice(device)
-            Toast.makeText(
-                context,
-                "Paired with ${device.name}. Proceed by pressing the ${device.name} setup button.",
-                Toast.LENGTH_LONG
-            )
+            Log.i(SETUP_PAGE_TAG, "Paired with ${device.name}.")
         }
         bluetoothEvents.setOnDiscoveryStartedHandler { getDiscoverButton(parentLayout)?.text = "x" }
         bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(parentLayout)?.text = "+" }
@@ -76,9 +82,6 @@ class SetupPage : Fragment() {
     override fun onResume() {
         super.onResume()
         requestLocationPermissions {
-            bluetoothAdapter = setupBluetoothAdapter()
-            viewModel.setBluetoothEnabled(bluetoothAdapter.isEnabled)
-            setupBluetoothButtons(parentLayout, bluetoothAdapter)
             registerBluetoothEvents()
         }
     }
@@ -149,7 +152,9 @@ class SetupPage : Fragment() {
 
     private fun setupBluetoothButtons(view: View, bluetoothAdapter: BluetoothAdapter): Unit {
         Log.d(SETUP_PAGE_TAG, "Setting up bluetooth buttons")
-        getDiscoverButton(view)?.setOnClickListener(View.OnClickListener {
+        val discoveryButton = getDiscoverButton(view)
+        discoveryButton?.text = if (bluetoothAdapter.isDiscovering) "x" else "+"
+        discoveryButton?.setOnClickListener(View.OnClickListener {
             if (!bluetoothAdapter.isDiscovering) {
                 bluetoothAdapter.startDiscovery()
             } else {
