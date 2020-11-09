@@ -47,40 +47,14 @@ class MainActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
-            if (position == 0) {
-                return SetupPage()
+            return when(position) {
+                0 -> SetupPage()
+                else -> SetupPage()
             }
-            return PlaceholderFragment.newInstance(position + 1)
         }
 
         override fun getCount(): Int {
             return 1
-        }
-    }
-
-    class PlaceholderFragment : Fragment() {
-
-        override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View? {
-            val sectionNumber = arguments?.getInt(ARG_SECTION_NUMBER)
-            if (sectionNumber == 1) {
-                return inflater.inflate(R.layout.fragment_setup_page, container, false)
-            }
-            return inflater.inflate(R.layout.fragment_main, container, false)
-        }
-
-        companion object {
-            private val ARG_SECTION_NUMBER = "section_number"
-
-            fun newInstance(sectionNumber: Int): PlaceholderFragment {
-                val fragment = PlaceholderFragment()
-                val args = Bundle()
-                args.putInt(ARG_SECTION_NUMBER, sectionNumber)
-                fragment.arguments = args
-                return fragment
-            }
         }
     }
 }
