@@ -1,13 +1,14 @@
 package com.example.microclimates
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import android.bluetooth.BluetoothDevice
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 
-class SetupPageViewModel() : ViewModel() {
+
+class SetupPageViewModel : ViewModel() {
     private var bluetoothEnabled: MutableLiveData<Boolean> = MutableLiveData()
     private var foundDevices: MutableLiveData<Map<String, DeviceViewModel>> = MutableLiveData()
 

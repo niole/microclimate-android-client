@@ -2,24 +2,28 @@ package com.example.microclimates
 
 import android.Manifest
 import android.app.Activity
-import android.arch.lifecycle.*
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.support.v4.app.ActivityCompat
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
-import android.support.v4.content.PermissionChecker
+import androidx.fragment.app.Fragment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
+import androidx.lifecycle.ViewModelProviders
 
 class SetupPage : Fragment() {
+    companion object {
+        fun newInstance(): Fragment = SetupPage()
+    }
+
     val REQUEST_ENABLE_BT = 1
     private val SETUP_PAGE_TAG = "SetupPage"
     val bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
@@ -27,8 +31,9 @@ class SetupPage : Fragment() {
     lateinit var bluetoothAdapter: BluetoothAdapter
     lateinit var parentLayout: View
     lateinit var viewModel: SetupPageViewModel
-    lateinit var peripheralsListAdapter: PeripheralListViewAdapter
+    private var peripheralsListAdapter: PeripheralListViewAdapter? = null
     private var devices: List<DeviceViewModel> = mutableListOf()
+    private var isBluetoothEventsRegistered = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,13 +49,19 @@ class SetupPage : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // TODO need to separate stuff from the view...can't feed view model and layout to objects
+        // that need only be initialized once
         parentLayout = inflater.inflate(R.layout.fragment_setup_page, container, false)
         peripheralSetupClient = BluetoothPeripheralSetupClient(
             parentLayout.findViewById(R.id.peripheral_setup_page),
             viewModel
         )
         peripheralsListAdapter = setupPeripheralList(viewModel, peripheralSetupClient)
-        setupBluetoothButtons(parentLayout, bluetoothAdapter)
+        viewModel.getBluetoothEnabled().observeForever {
+            if (it) {
+                setupBluetoothButtons(parentLayout, bluetoothAdapter)
+            }
+        }
 
         bluetoothEvents.setOnFoundHandler { device ->
             // TODO should use something that's meant for this instead of my hand made
@@ -73,7 +84,10 @@ class SetupPage : Fragment() {
         super.onPause()
         doOrWarnIfActivityNotExists(
             { nonNullActivity ->
-                nonNullActivity.unregisterReceiver(bluetoothEvents)
+                if (isBluetoothEventsRegistered) {
+                    nonNullActivity.unregisterReceiver(bluetoothEvents)
+                    isBluetoothEventsRegistered  = false
+                }
             },
             "Activity did not exist when attempting to unregister a bluetooth event receiver in setup page"
         )
@@ -207,6 +221,7 @@ class SetupPage : Fragment() {
             filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED)
 
             nonNullActivity.registerReceiver(bluetoothEvents, filter)
+            isBluetoothEventsRegistered  = true
         }, "Activity doesn't exist, couldn't register bluetooth events")
     }
 
@@ -225,27 +240,24 @@ class SetupPage : Fragment() {
     }
 
     private fun setupPageViewModel(): SetupPageViewModel {
-        val pageViewModel = ViewModelProvider(
-            viewModelStore,
-            SetupPageViewModelFactory()
-        ).get(SetupPageViewModel::class.java)
-
-        pageViewModel.getBluetoothEnabled().observe(this, Observer<Boolean?> {
+        val pageViewModel = ViewModelProviders.of(this).get(SetupPageViewModel::class.java)
+        pageViewModel.getBluetoothEnabled().observeForever { it ->
             if (it == false) {
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
             } else {
                 onActivityResult(REQUEST_ENABLE_BT, -1, null)
-            }
-        })
 
-        pageViewModel.getDevices().observe(this, {
+            }
+        }
+
+        pageViewModel.getDevices().observeForever { it ->
             val devices = it
             if (devices != null) {
-                peripheralsListAdapter.clear()
-                peripheralsListAdapter.addAll(devices.map { it.value })
+                peripheralsListAdapter?.clear()
+                peripheralsListAdapter?.addAll(devices.map { it.value })
             }
-        })
+        }
 
         return pageViewModel
     }

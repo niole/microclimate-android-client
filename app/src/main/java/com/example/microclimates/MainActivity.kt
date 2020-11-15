@@ -1,60 +1,42 @@
 package com.example.microclimates
 
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
-
-import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
+import androidx.fragment.app.Fragment
 import android.os.Bundle
-import android.view.*
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
+import androidx.viewpager.widget.ViewPager
 
-import kotlinx.android.synthetic.main.activity_main.*
-
-class MainActivity : AppCompatActivity() {
+class MainActivity : FragmentActivity() {
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
+    private var pagerLayout: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        setSupportActionBar(toolbar)
+        pagerLayout = findViewById<ViewPager>(R.id.container)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
 
-        container.adapter = mSectionsPagerAdapter
-
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val id = item.itemId
-
-        if (id == R.id.action_settings) {
-            return true
-        }
-
-        return super.onOptionsItemSelected(item)
+        pagerLayout?.adapter = mSectionsPagerAdapter
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+        private val setupPage = "setupPage"
+        private val deploymentOverviewPage = "deploymentPage"
+        private val pages = listOf<String>(deploymentOverviewPage, setupPage)
 
         override fun getItem(position: Int): Fragment {
-            return when(position) {
-                0 -> SetupPage()
+            val pageName = pages[position]
+            return when(pageName) {
+                setupPage -> SetupPage.newInstance()
+                deploymentOverviewPage -> DeploymentOverview.newInstance()
                 else -> SetupPage()
             }
         }
 
         override fun getCount(): Int {
-            return 1
+            return pages.size
         }
     }
 }
