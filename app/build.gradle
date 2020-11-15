@@ -15,12 +15,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    packagingOptions {
+        exclude 'androidsupportmultidexversion.txt'
     }
 }
 
@@ -36,4 +40,11 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
+    implementation 'com.android.support:multidex:1.0.3'
+
+    // for android use of grpc
+    implementation 'io.grpc:grpc-okhttp:1.33.1'
+    implementation 'io.grpc:grpc-protobuf-lite:1.33.1'
+    implementation 'io.grpc:grpc-stub:1.33.1'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
 }
