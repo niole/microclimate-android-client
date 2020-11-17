@@ -11,10 +11,18 @@
             android:layout_height="wrap_content"
             android:text="Hello" />
     <TextView
-            android:id="@+id/user_email"
+            android:id="@+id/user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Deployment Name" />
+    <TextView
+            android:id="@+id/deployment_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

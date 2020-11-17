@@ -20,7 +20,6 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
-import org.w3c.dom.Text
 
 class DeploymentOverview : Fragment() {
 
@@ -61,7 +60,7 @@ class DeploymentOverview : Fragment() {
                 }
 
                 val peripheral = getItem(position)
-                baseView.findViewById<TextView>(R.id.peripheral_name).text = peripheral.hardwareId
+                baseView.findViewById<TextView>(R.id.peripheral_name).text = peripheral.name
                 baseView.findViewById<TextView>(R.id.peripheral_type).text = peripheral.type.toString()
                 baseView.findViewById<TextView>(R.id.last_received_event_time).text = "unknown"
 
@@ -80,9 +79,10 @@ class DeploymentOverview : Fragment() {
         viewModel = ViewModelProviders.of(this).get(DeploymentOverviewViewModel::class.java)
         viewModel.getDeployment().observeForever {
             view?.findViewById<TextView>(R.id.deployment_status)?.text = it?.status.toString()
+            view?.findViewById<TextView>(R.id.deployment_name)?.text = it?.name
         }
         viewModel.getOwner().observeForever {
-            view?.findViewById<TextView>(R.id.user_email)?.text = it?.email
+            view?.findViewById<TextView>(R.id.user_name)?.text = it?.name
         }
         viewModel.getPeripherals().observeForever {
             listAdapter?.clear()

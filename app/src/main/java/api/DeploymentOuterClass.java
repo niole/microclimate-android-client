@@ -37,18 +37,6 @@ public final class DeploymentOuterClass {
         getOwnerUserIdBytes();
 
     /**
-     * <code>string domain = 3;</code>
-     * @return The domain.
-     */
-    java.lang.String getDomain();
-    /**
-     * <code>string domain = 3;</code>
-     * @return The bytes for domain.
-     */
-    com.google.protobuf.ByteString
-        getDomainBytes();
-
-    /**
      * <code>.api.Deployment.Status status = 4;</code>
      * @return The enum numeric value on the wire for status.
      */
@@ -58,6 +46,18 @@ public final class DeploymentOuterClass {
      * @return The status.
      */
     api.DeploymentOuterClass.Deployment.Status getStatus();
+
+    /**
+     * <code>string name = 5;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 5;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
   }
   /**
    * Protobuf type {@code api.Deployment}
@@ -70,7 +70,7 @@ public final class DeploymentOuterClass {
     private Deployment() {
       id_ = "";
       ownerUserId_ = "";
-      domain_ = "";
+      name_ = "";
     }
     /**
      * Protobuf enum {@code api.Deployment.Status}
@@ -282,53 +282,6 @@ public final class DeploymentOuterClass {
       
     }
 
-    public static final int DOMAIN_FIELD_NUMBER = 3;
-    private java.lang.String domain_;
-    /**
-     * <code>string domain = 3;</code>
-     * @return The domain.
-     */
-    @java.lang.Override
-    public java.lang.String getDomain() {
-      return domain_;
-    }
-    /**
-     * <code>string domain = 3;</code>
-     * @return The bytes for domain.
-     */
-    @java.lang.Override
-    public com.google.protobuf.ByteString
-        getDomainBytes() {
-      return com.google.protobuf.ByteString.copyFromUtf8(domain_);
-    }
-    /**
-     * <code>string domain = 3;</code>
-     * @param value The domain to set.
-     */
-    private void setDomain(
-        java.lang.String value) {
-      value.getClass();
-  
-      domain_ = value;
-    }
-    /**
-     * <code>string domain = 3;</code>
-     */
-    private void clearDomain() {
-      
-      domain_ = getDefaultInstance().getDomain();
-    }
-    /**
-     * <code>string domain = 3;</code>
-     * @param value The bytes for domain to set.
-     */
-    private void setDomainBytes(
-        com.google.protobuf.ByteString value) {
-      checkByteStringIsUtf8(value);
-      domain_ = value.toStringUtf8();
-      
-    }
-
     public static final int STATUS_FIELD_NUMBER = 4;
     private int status_;
     /**
@@ -369,6 +322,53 @@ public final class DeploymentOuterClass {
     private void clearStatus() {
       
       status_ = 0;
+    }
+
+    public static final int NAME_FIELD_NUMBER = 5;
+    private java.lang.String name_;
+    /**
+     * <code>string name = 5;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      return name_;
+    }
+    /**
+     * <code>string name = 5;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(name_);
+    }
+    /**
+     * <code>string name = 5;</code>
+     * @param value The name to set.
+     */
+    private void setName(
+        java.lang.String value) {
+      value.getClass();
+  
+      name_ = value;
+    }
+    /**
+     * <code>string name = 5;</code>
+     */
+    private void clearName() {
+      
+      name_ = getDefaultInstance().getName();
+    }
+    /**
+     * <code>string name = 5;</code>
+     * @param value The bytes for name to set.
+     */
+    private void setNameBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      name_ = value.toStringUtf8();
+      
     }
 
     public static api.DeploymentOuterClass.Deployment parseFrom(
@@ -565,55 +565,6 @@ public final class DeploymentOuterClass {
       }
 
       /**
-       * <code>string domain = 3;</code>
-       * @return The domain.
-       */
-      @java.lang.Override
-      public java.lang.String getDomain() {
-        return instance.getDomain();
-      }
-      /**
-       * <code>string domain = 3;</code>
-       * @return The bytes for domain.
-       */
-      @java.lang.Override
-      public com.google.protobuf.ByteString
-          getDomainBytes() {
-        return instance.getDomainBytes();
-      }
-      /**
-       * <code>string domain = 3;</code>
-       * @param value The domain to set.
-       * @return This builder for chaining.
-       */
-      public Builder setDomain(
-          java.lang.String value) {
-        copyOnWrite();
-        instance.setDomain(value);
-        return this;
-      }
-      /**
-       * <code>string domain = 3;</code>
-       * @return This builder for chaining.
-       */
-      public Builder clearDomain() {
-        copyOnWrite();
-        instance.clearDomain();
-        return this;
-      }
-      /**
-       * <code>string domain = 3;</code>
-       * @param value The bytes for domain to set.
-       * @return This builder for chaining.
-       */
-      public Builder setDomainBytes(
-          com.google.protobuf.ByteString value) {
-        copyOnWrite();
-        instance.setDomainBytes(value);
-        return this;
-      }
-
-      /**
        * <code>.api.Deployment.Status status = 4;</code>
        * @return The enum numeric value on the wire for status.
        */
@@ -659,6 +610,55 @@ public final class DeploymentOuterClass {
         return this;
       }
 
+      /**
+       * <code>string name = 5;</code>
+       * @return The name.
+       */
+      @java.lang.Override
+      public java.lang.String getName() {
+        return instance.getName();
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @return The bytes for name.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        return instance.getNameBytes();
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setName(value);
+        return this;
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        copyOnWrite();
+        instance.clearName();
+        return this;
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setNameBytes(value);
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:api.Deployment)
     }
     @java.lang.Override
@@ -677,12 +677,12 @@ public final class DeploymentOuterClass {
             java.lang.Object[] objects = new java.lang.Object[] {
               "id_",
               "ownerUserId_",
-              "domain_",
               "status_",
+              "name_",
             };
             java.lang.String info =
-                "\u0000\u0004\u0000\u0000\u0001\u0004\u0004\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
-                "\u0003\u0208\u0004\f";
+                "\u0000\u0004\u0000\u0000\u0001\u0005\u0004\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
+                "\u0004\f\u0005\u0208";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }
         // fall through
@@ -752,6 +752,18 @@ public final class DeploymentOuterClass {
      */
     com.google.protobuf.ByteString
         getOwnerUserIdBytes();
+
+    /**
+     * <code>string name = 2;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 2;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
   }
   /**
    * Protobuf type {@code api.NewDeployment}
@@ -763,6 +775,7 @@ public final class DeploymentOuterClass {
       NewDeploymentOrBuilder {
     private NewDeployment() {
       ownerUserId_ = "";
+      name_ = "";
     }
     public static final int OWNERUSERID_FIELD_NUMBER = 1;
     private java.lang.String ownerUserId_;
@@ -808,6 +821,53 @@ public final class DeploymentOuterClass {
         com.google.protobuf.ByteString value) {
       checkByteStringIsUtf8(value);
       ownerUserId_ = value.toStringUtf8();
+      
+    }
+
+    public static final int NAME_FIELD_NUMBER = 2;
+    private java.lang.String name_;
+    /**
+     * <code>string name = 2;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      return name_;
+    }
+    /**
+     * <code>string name = 2;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(name_);
+    }
+    /**
+     * <code>string name = 2;</code>
+     * @param value The name to set.
+     */
+    private void setName(
+        java.lang.String value) {
+      value.getClass();
+  
+      name_ = value;
+    }
+    /**
+     * <code>string name = 2;</code>
+     */
+    private void clearName() {
+      
+      name_ = getDefaultInstance().getName();
+    }
+    /**
+     * <code>string name = 2;</code>
+     * @param value The bytes for name to set.
+     */
+    private void setNameBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      name_ = value.toStringUtf8();
       
     }
 
@@ -955,6 +1015,55 @@ public final class DeploymentOuterClass {
         return this;
       }
 
+      /**
+       * <code>string name = 2;</code>
+       * @return The name.
+       */
+      @java.lang.Override
+      public java.lang.String getName() {
+        return instance.getName();
+      }
+      /**
+       * <code>string name = 2;</code>
+       * @return The bytes for name.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        return instance.getNameBytes();
+      }
+      /**
+       * <code>string name = 2;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setName(value);
+        return this;
+      }
+      /**
+       * <code>string name = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        copyOnWrite();
+        instance.clearName();
+        return this;
+      }
+      /**
+       * <code>string name = 2;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setNameBytes(value);
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:api.NewDeployment)
     }
     @java.lang.Override
@@ -972,9 +1081,11 @@ public final class DeploymentOuterClass {
         case BUILD_MESSAGE_INFO: {
             java.lang.Object[] objects = new java.lang.Object[] {
               "ownerUserId_",
+              "name_",
             };
             java.lang.String info =
-                "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0208";
+                "\u0000\u0002\u0000\u0000\u0001\u0002\u0002\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
+                "";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }
         // fall through
