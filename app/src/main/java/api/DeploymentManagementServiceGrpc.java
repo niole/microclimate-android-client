@@ -27,6 +27,36 @@ public final class DeploymentManagementServiceGrpc {
   public static final String SERVICE_NAME = "api.DeploymentManagementService";
 
   // Static method descriptors that strictly reflect the proto.
+  private static volatile io.grpc.MethodDescriptor<api.DeploymentOuterClass.GetDeploymentsForUserRequest,
+      api.DeploymentOuterClass.Deployment> getGetDeploymentsForUserMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "GetDeploymentsForUser",
+      requestType = api.DeploymentOuterClass.GetDeploymentsForUserRequest.class,
+      responseType = api.DeploymentOuterClass.Deployment.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<api.DeploymentOuterClass.GetDeploymentsForUserRequest,
+      api.DeploymentOuterClass.Deployment> getGetDeploymentsForUserMethod() {
+    io.grpc.MethodDescriptor<api.DeploymentOuterClass.GetDeploymentsForUserRequest, api.DeploymentOuterClass.Deployment> getGetDeploymentsForUserMethod;
+    if ((getGetDeploymentsForUserMethod = DeploymentManagementServiceGrpc.getGetDeploymentsForUserMethod) == null) {
+      synchronized (DeploymentManagementServiceGrpc.class) {
+        if ((getGetDeploymentsForUserMethod = DeploymentManagementServiceGrpc.getGetDeploymentsForUserMethod) == null) {
+          DeploymentManagementServiceGrpc.getGetDeploymentsForUserMethod = getGetDeploymentsForUserMethod =
+              io.grpc.MethodDescriptor.<api.DeploymentOuterClass.GetDeploymentsForUserRequest, api.DeploymentOuterClass.Deployment>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "GetDeploymentsForUser"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.DeploymentOuterClass.GetDeploymentsForUserRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.DeploymentOuterClass.Deployment.getDefaultInstance()))
+              .build();
+        }
+      }
+    }
+    return getGetDeploymentsForUserMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<api.DeploymentOuterClass.NewDeployment,
       api.DeploymentOuterClass.Deployment> getCreateDeploymentMethod;
 
@@ -167,6 +197,13 @@ public final class DeploymentManagementServiceGrpc {
 
     /**
      */
+    public void getDeploymentsForUser(api.DeploymentOuterClass.GetDeploymentsForUserRequest request,
+        io.grpc.stub.StreamObserver<api.DeploymentOuterClass.Deployment> responseObserver) {
+      asyncUnimplementedUnaryCall(getGetDeploymentsForUserMethod(), responseObserver);
+    }
+
+    /**
+     */
     public void createDeployment(api.DeploymentOuterClass.NewDeployment request,
         io.grpc.stub.StreamObserver<api.DeploymentOuterClass.Deployment> responseObserver) {
       asyncUnimplementedUnaryCall(getCreateDeploymentMethod(), responseObserver);
@@ -188,6 +225,13 @@ public final class DeploymentManagementServiceGrpc {
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            getGetDeploymentsForUserMethod(),
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                api.DeploymentOuterClass.GetDeploymentsForUserRequest,
+                api.DeploymentOuterClass.Deployment>(
+                  this, METHODID_GET_DEPLOYMENTS_FOR_USER)))
           .addMethod(
             getCreateDeploymentMethod(),
             asyncUnaryCall(
@@ -229,6 +273,14 @@ public final class DeploymentManagementServiceGrpc {
 
     /**
      */
+    public void getDeploymentsForUser(api.DeploymentOuterClass.GetDeploymentsForUserRequest request,
+        io.grpc.stub.StreamObserver<api.DeploymentOuterClass.Deployment> responseObserver) {
+      asyncServerStreamingCall(
+          getChannel().newCall(getGetDeploymentsForUserMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public void createDeployment(api.DeploymentOuterClass.NewDeployment request,
         io.grpc.stub.StreamObserver<api.DeploymentOuterClass.Deployment> responseObserver) {
       asyncUnaryCall(
@@ -264,6 +316,14 @@ public final class DeploymentManagementServiceGrpc {
     protected DeploymentManagementServiceBlockingStub build(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new DeploymentManagementServiceBlockingStub(channel, callOptions);
+    }
+
+    /**
+     */
+    public java.util.Iterator<api.DeploymentOuterClass.Deployment> getDeploymentsForUser(
+        api.DeploymentOuterClass.GetDeploymentsForUserRequest request) {
+      return blockingServerStreamingCall(
+          getChannel(), getGetDeploymentsForUserMethod(), getCallOptions(), request);
     }
 
     /**
@@ -327,9 +387,10 @@ public final class DeploymentManagementServiceGrpc {
     }
   }
 
-  private static final int METHODID_CREATE_DEPLOYMENT = 0;
-  private static final int METHODID_GET_DEPLOYMENT = 1;
-  private static final int METHODID_REMOVE_DEPLOYMENT = 2;
+  private static final int METHODID_GET_DEPLOYMENTS_FOR_USER = 0;
+  private static final int METHODID_CREATE_DEPLOYMENT = 1;
+  private static final int METHODID_GET_DEPLOYMENT = 2;
+  private static final int METHODID_REMOVE_DEPLOYMENT = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -348,6 +409,10 @@ public final class DeploymentManagementServiceGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_GET_DEPLOYMENTS_FOR_USER:
+          serviceImpl.getDeploymentsForUser((api.DeploymentOuterClass.GetDeploymentsForUserRequest) request,
+              (io.grpc.stub.StreamObserver<api.DeploymentOuterClass.Deployment>) responseObserver);
+          break;
         case METHODID_CREATE_DEPLOYMENT:
           serviceImpl.createDeployment((api.DeploymentOuterClass.NewDeployment) request,
               (io.grpc.stub.StreamObserver<api.DeploymentOuterClass.Deployment>) responseObserver);
@@ -385,6 +450,7 @@ public final class DeploymentManagementServiceGrpc {
         result = serviceDescriptor;
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
+              .addMethod(getGetDeploymentsForUserMethod())
               .addMethod(getCreateDeploymentMethod())
               .addMethod(getGetDeploymentMethod())
               .addMethod(getRemoveDeploymentMethod())
