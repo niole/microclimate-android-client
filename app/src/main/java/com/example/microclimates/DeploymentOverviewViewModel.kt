@@ -12,6 +12,14 @@ class DeploymentOverviewViewModel : ViewModel() {
     private val deployment: MutableLiveData<DeploymentOuterClass.Deployment?> = MutableLiveData()
     private val peripherals: MutableLiveData<List<Peripheral>> = MutableLiveData(listOf())
 
+    fun setPeripherals(newPeripherals: List<Peripheral>): Unit {
+        peripherals.value = newPeripherals
+    }
+
+    fun getPeripherals(): LiveData<List<Peripheral>> {
+        return peripherals
+    }
+
     fun setOwner(foundOwner: User): Unit {
         owner.value = foundOwner
     }

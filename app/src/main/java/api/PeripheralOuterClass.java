@@ -58,6 +58,18 @@ public final class PeripheralOuterClass {
      * @return The type.
      */
     api.PeripheralOuterClass.NewPeripheral.PeripheralType getType();
+
+    /**
+     * <code>string name = 5;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 5;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
   }
   /**
    * Protobuf type {@code api.NewPeripheral}
@@ -71,6 +83,7 @@ public final class PeripheralOuterClass {
       ownerUserId_ = "";
       deploymentId_ = "";
       hardwareId_ = "";
+      name_ = "";
     }
     /**
      * Protobuf enum {@code api.NewPeripheral.PeripheralType}
@@ -342,6 +355,53 @@ public final class PeripheralOuterClass {
     private void clearType() {
       
       type_ = 0;
+    }
+
+    public static final int NAME_FIELD_NUMBER = 5;
+    private java.lang.String name_;
+    /**
+     * <code>string name = 5;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      return name_;
+    }
+    /**
+     * <code>string name = 5;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(name_);
+    }
+    /**
+     * <code>string name = 5;</code>
+     * @param value The name to set.
+     */
+    private void setName(
+        java.lang.String value) {
+      value.getClass();
+  
+      name_ = value;
+    }
+    /**
+     * <code>string name = 5;</code>
+     */
+    private void clearName() {
+      
+      name_ = getDefaultInstance().getName();
+    }
+    /**
+     * <code>string name = 5;</code>
+     * @param value The bytes for name to set.
+     */
+    private void setNameBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      name_ = value.toStringUtf8();
+      
     }
 
     public static api.PeripheralOuterClass.NewPeripheral parseFrom(
@@ -632,6 +692,55 @@ public final class PeripheralOuterClass {
         return this;
       }
 
+      /**
+       * <code>string name = 5;</code>
+       * @return The name.
+       */
+      @java.lang.Override
+      public java.lang.String getName() {
+        return instance.getName();
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @return The bytes for name.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        return instance.getNameBytes();
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setName(value);
+        return this;
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        copyOnWrite();
+        instance.clearName();
+        return this;
+      }
+      /**
+       * <code>string name = 5;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setNameBytes(value);
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:api.NewPeripheral)
     }
     @java.lang.Override
@@ -652,10 +761,11 @@ public final class PeripheralOuterClass {
               "deploymentId_",
               "hardwareId_",
               "type_",
+              "name_",
             };
             java.lang.String info =
-                "\u0000\u0004\u0000\u0000\u0001\u0004\u0004\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
-                "\u0003\u0208\u0004\f";
+                "\u0000\u0005\u0000\u0000\u0001\u0005\u0005\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
+                "\u0003\u0208\u0004\f\u0005\u0208";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }
         // fall through
@@ -772,6 +882,18 @@ public final class PeripheralOuterClass {
      * @return The type.
      */
     api.PeripheralOuterClass.Peripheral.PeripheralType getType();
+
+    /**
+     * <code>string name = 6;</code>
+     * @return The name.
+     */
+    java.lang.String getName();
+    /**
+     * <code>string name = 6;</code>
+     * @return The bytes for name.
+     */
+    com.google.protobuf.ByteString
+        getNameBytes();
   }
   /**
    * Protobuf type {@code api.Peripheral}
@@ -786,6 +908,7 @@ public final class PeripheralOuterClass {
       deploymentId_ = "";
       id_ = "";
       hardwareId_ = "";
+      name_ = "";
     }
     /**
      * Protobuf enum {@code api.Peripheral.PeripheralType}
@@ -1104,6 +1227,53 @@ public final class PeripheralOuterClass {
     private void clearType() {
       
       type_ = 0;
+    }
+
+    public static final int NAME_FIELD_NUMBER = 6;
+    private java.lang.String name_;
+    /**
+     * <code>string name = 6;</code>
+     * @return The name.
+     */
+    @java.lang.Override
+    public java.lang.String getName() {
+      return name_;
+    }
+    /**
+     * <code>string name = 6;</code>
+     * @return The bytes for name.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getNameBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(name_);
+    }
+    /**
+     * <code>string name = 6;</code>
+     * @param value The name to set.
+     */
+    private void setName(
+        java.lang.String value) {
+      value.getClass();
+  
+      name_ = value;
+    }
+    /**
+     * <code>string name = 6;</code>
+     */
+    private void clearName() {
+      
+      name_ = getDefaultInstance().getName();
+    }
+    /**
+     * <code>string name = 6;</code>
+     * @param value The bytes for name to set.
+     */
+    private void setNameBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      name_ = value.toStringUtf8();
+      
     }
 
     public static api.PeripheralOuterClass.Peripheral parseFrom(
@@ -1443,6 +1613,55 @@ public final class PeripheralOuterClass {
         return this;
       }
 
+      /**
+       * <code>string name = 6;</code>
+       * @return The name.
+       */
+      @java.lang.Override
+      public java.lang.String getName() {
+        return instance.getName();
+      }
+      /**
+       * <code>string name = 6;</code>
+       * @return The bytes for name.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getNameBytes() {
+        return instance.getNameBytes();
+      }
+      /**
+       * <code>string name = 6;</code>
+       * @param value The name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setName(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setName(value);
+        return this;
+      }
+      /**
+       * <code>string name = 6;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearName() {
+        copyOnWrite();
+        instance.clearName();
+        return this;
+      }
+      /**
+       * <code>string name = 6;</code>
+       * @param value The bytes for name to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNameBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setNameBytes(value);
+        return this;
+      }
+
       // @@protoc_insertion_point(builder_scope:api.Peripheral)
     }
     @java.lang.Override
@@ -1464,10 +1683,11 @@ public final class PeripheralOuterClass {
               "id_",
               "hardwareId_",
               "type_",
+              "name_",
             };
             java.lang.String info =
-                "\u0000\u0005\u0000\u0000\u0001\u0005\u0005\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
-                "\u0003\u0208\u0004\u0208\u0005\f";
+                "\u0000\u0006\u0000\u0000\u0001\u0006\u0006\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
+                "\u0003\u0208\u0004\u0208\u0005\f\u0006\u0208";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }
         // fall through
