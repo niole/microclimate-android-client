@@ -6,35 +6,72 @@
         android:layout_height="match_parent"
         tools:context=".DeploymentOverview">
 
-    <TextView
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:padding="20dp"
+            android:orientation="horizontal"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hello" />
-    <TextView
-            android:id="@+id/user_name"
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hello" />
+        <TextView
+                android:textSize="28dp"
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20sp"/>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:padding="20dp"
+            android:orientation="horizontal"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deployment Name" />
+        <TextView
+                android:textSize="28dp"
+                android:id="@+id/deployment_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20sp"/>
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:padding="20dp"
+            android:orientation="horizontal"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Deployment Status" />
+        <TextView
+                android:textSize="28dp"
+                android:id="@+id/deployment_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20sp"/>
+    </LinearLayout>
 
     <TextView
-            android:layout_width="match_parent"
+            android:text="Peripherals"
+            android:textSize="28dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Deployment Name" />
-    <TextView
-            android:id="@+id/deployment_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Deployment Status" />
-    <TextView
-            android:id="@+id/deployment_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
+            android:layout_marginLeft="20sp"/>
     <ListView
+            android:padding="20dp"
             android:id="@+id/peripherals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
     </ListView>
+
 </LinearLayout>
