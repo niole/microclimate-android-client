@@ -26,6 +26,13 @@ android {
     packagingOptions {
         exclude 'androidsupportmultidexversion.txt'
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+    }
 }
 
 dependencies {
@@ -38,6 +45,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:1.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.0.0")
     implementation 'com.android.support:multidex:1.0.3'
+    implementation "androidx.fragment:fragment-ktx:1.2.5"
 
     // for android use of grpc
     implementation 'io.grpc:grpc-okhttp:1.33.1'

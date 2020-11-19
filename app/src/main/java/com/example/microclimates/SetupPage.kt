@@ -56,7 +56,7 @@ class SetupPage : Fragment() {
             parentLayout.findViewById(R.id.peripheral_setup_page),
             viewModel
         )
-        peripheralsListAdapter = setupPeripheralList(viewModel, peripheralSetupClient)
+        peripheralsListAdapter = setupPeripheralList(viewModel)
         viewModel.getBluetoothEnabled().observeForever {
             if (it) {
                 setupBluetoothButtons(parentLayout, bluetoothAdapter)
@@ -64,8 +64,6 @@ class SetupPage : Fragment() {
         }
 
         bluetoothEvents.setOnFoundHandler { device ->
-            // TODO should use something that's meant for this instead of my hand made
-            // callbacks
             viewModel.addDevice(device)
             Log.i(SETUP_PAGE_TAG,"Bonding status with ${device.name}: ${device.bondState}")
         }
@@ -186,16 +184,15 @@ class SetupPage : Fragment() {
         return null
     }
 
-    private fun setupPeripheralList(
-        viewModel: SetupPageViewModel,
-        setupClient: BluetoothPeripheralSetupClient
-    ): PeripheralListViewAdapter {
+    private fun setupPeripheralList(viewModel: SetupPageViewModel): PeripheralListViewAdapter {
         val listAdaper = PeripheralListViewAdapter(
             viewModel,
             peripheralSetupClient,
             activity!!,
             R.layout.pair_management_buttons,
-            devices
+            devices,
+            userId = "fake",
+            deploymentId = "fake"
         )
         val listView = parentLayout.findViewById(R.id.peripherals_list) as ListView
         listView.adapter = listAdaper

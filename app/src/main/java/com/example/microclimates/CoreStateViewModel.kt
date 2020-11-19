@@ -4,21 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import api.DeploymentOuterClass
-import api.PeripheralOuterClass.Peripheral
+import api.PeripheralOuterClass
 import api.UserOuterClass.User
 
-class DeploymentOverviewViewModel : ViewModel() {
+class CoreStateViewModel : ViewModel() {
     private val owner: MutableLiveData<User?> = MutableLiveData()
     private val deployment: MutableLiveData<DeploymentOuterClass.Deployment?> = MutableLiveData()
-    private val peripherals: MutableLiveData<List<Peripheral>> = MutableLiveData(listOf())
-
-    fun setPeripherals(newPeripherals: List<Peripheral>): Unit {
-        peripherals.value = newPeripherals
-    }
-
-    fun getPeripherals(): LiveData<List<Peripheral>> {
-        return peripherals
-    }
+    private val peripherals: MutableLiveData<List<PeripheralOuterClass.Peripheral>> = MutableLiveData(listOf())
 
     fun setOwner(foundOwner: User): Unit {
         owner.value = foundOwner
@@ -35,4 +27,13 @@ class DeploymentOverviewViewModel : ViewModel() {
     fun getDeployment(): LiveData<DeploymentOuterClass.Deployment?> {
         return deployment
     }
+
+    fun setPeripherals(newPeripherals: List<PeripheralOuterClass.Peripheral>): Unit {
+        peripherals.value = newPeripherals
+    }
+
+    fun getPeripherals(): LiveData<List<PeripheralOuterClass.Peripheral>> {
+        return peripherals
+    }
+
 }

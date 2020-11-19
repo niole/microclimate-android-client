@@ -13,17 +13,18 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private var connectedSocket: BluetoothSocket? = null
 
-    fun setupDevice(device: BluetoothDevice) {
+    fun setupDevice(device: BluetoothDevice, onSuccess: () -> Unit) {
         val host = getHost()
-        val message = Json.encodeToString(PeripheralConfiguration(host))
-        sendMessage(message, device)
+        val hardwareId = UUID.randomUUID().toString()
+        val message = Json.encodeToString(PeripheralConfiguration(host, hardwareId))
+        sendMessage(message, device, onSuccess)
     }
 
     private fun getHost(): String {
         return "ec2-35-161-83-246.us-west-2.compute.amazonaws.com" // TODO get from a db
     }
 
-    private fun sendMessage(message: String, device: BluetoothDevice): Unit {
+    private fun sendMessage(message: String, device: BluetoothDevice, onSuccess: () -> Unit): Unit {
         view.post {
             setupPageViewModel.setPairing(device)
         }
@@ -45,6 +46,9 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
 
             Log.d(LOG_TAG,"Wrote to socket for ${device}")
 
+            view.post {
+                onSuccess()
+            }
         } catch (error: Exception) {
             Log.e(LOG_TAG,"Something happened when sending a message to ${device.name}: $error")
             view.post {
