@@ -19,8 +19,7 @@ class PeripheralListViewAdapter(
     activity: Activity,
     val resourceId: Int,
     val peripherals: List<DeviceViewModel>?,
-    val deploymentId: String,
-    val userId: String
+    val onSetupSuccess: (String) -> Unit
 ) : ArrayAdapter<DeviceViewModel?>(activity, resourceId, peripherals) {
 
     override fun getCount(): Int {
@@ -56,18 +55,7 @@ class PeripheralListViewAdapter(
             buttons.findViewById<Button>(R.id.pair_button).setOnClickListener {
                 device.createBond()
                 Thread(Runnable {
-                    peripheralSetupClient.setupDevice(device, {
-                        //val request = PeripheralOuterClass.NewPeripheral
-                        //    .newBuilder()
-                        //    .setDeploymentId(deploymentId)
-                        //    .setHardwareId(device.address)
-                        //    .setName(device.name)
-                        //    .setOwnerUserId(userId)
-                        //    .setType()
-                        //    .setUnit()
-                        //    .build()
-                        //Stubs.peripheralStub().createPeripheral(request)
-                    })
+                    peripheralSetupClient.setupDevice(device, onSetupSuccess)
                 }).start()
             }
             buttons.findViewById<Button>(R.id.remove_button).setOnClickListener {

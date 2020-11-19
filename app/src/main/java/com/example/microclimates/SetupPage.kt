@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProviders
 
 class SetupPage : Fragment() {
@@ -24,8 +25,8 @@ class SetupPage : Fragment() {
         fun newInstance(): Fragment = SetupPage()
     }
 
+    private val LOG_TAG = "SetupPage"
     val REQUEST_ENABLE_BT = 1
-    private val SETUP_PAGE_TAG = "SetupPage"
     val bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
     lateinit var peripheralSetupClient: BluetoothPeripheralSetupClient
     lateinit var bluetoothAdapter: BluetoothAdapter
@@ -34,6 +35,7 @@ class SetupPage : Fragment() {
     private var peripheralsListAdapter: PeripheralListViewAdapter? = null
     private var devices: List<DeviceViewModel> = mutableListOf()
     private var isBluetoothEventsRegistered = false
+    private val parentViewModel: CoreStateViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,11 +67,11 @@ class SetupPage : Fragment() {
 
         bluetoothEvents.setOnFoundHandler { device ->
             viewModel.addDevice(device)
-            Log.i(SETUP_PAGE_TAG,"Bonding status with ${device.name}: ${device.bondState}")
+            Log.i(LOG_TAG,"Bonding status with ${device.name}: ${device.bondState}")
         }
         bluetoothEvents.setOnBondedHandler { device ->
             viewModel.updateDevice(device)
-            Log.i(SETUP_PAGE_TAG, "Paired with ${device.name}.")
+            Log.i(LOG_TAG, "Paired with ${device.name}.")
         }
         bluetoothEvents.setOnDiscoveryStartedHandler { getDiscoverButton(parentLayout)?.text = "x" }
         bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(parentLayout)?.text = "+" }
@@ -111,13 +113,13 @@ class SetupPage : Fragment() {
                     ).show()
                 }
 
-            else -> Log.w(SETUP_PAGE_TAG,"Request with code $requestCode not recognized")
+            else -> Log.w(LOG_TAG,"Request with code $requestCode not recognized")
         }
     }
 
     private fun requestLocationPermissions(block: () -> Unit): Unit {
         return doOrWarnIfActivityNotExists({ nonNullActivity ->
-            val applicationContext: Context = context!!
+            val applicationContext: Context = requireContext()
 
             if (ContextCompat.checkSelfPermission(
                     nonNullActivity,
@@ -163,7 +165,7 @@ class SetupPage : Fragment() {
     }
 
     private fun setupBluetoothButtons(view: View, bluetoothAdapter: BluetoothAdapter): Unit {
-        Log.d(SETUP_PAGE_TAG, "Setting up bluetooth buttons")
+        Log.d(LOG_TAG, "Setting up bluetooth buttons")
         val discoveryButton = getDiscoverButton(view)
         discoveryButton?.text = if (bluetoothAdapter.isDiscovering) "x" else "+"
         discoveryButton?.setOnClickListener(View.OnClickListener {
@@ -179,7 +181,7 @@ class SetupPage : Fragment() {
         if (view != null) {
             return view?.findViewById<Button>(R.id.discovery_button)
         } else {
-            Log.d(SETUP_PAGE_TAG,"Couldn't find the discovery button. Returning nothing.")
+            Log.d(LOG_TAG,"Couldn't find the discovery button. Returning nothing.")
         }
         return null
     }
@@ -188,11 +190,26 @@ class SetupPage : Fragment() {
         val listAdaper = PeripheralListViewAdapter(
             viewModel,
             peripheralSetupClient,
-            activity!!,
+            requireActivity(),
             R.layout.pair_management_buttons,
             devices,
-            userId = "fake",
-            deploymentId = "fake"
+            { hardwareId ->
+                println(hardwareId)
+                val deploymentId = parentViewModel.getDeployment().value?.id
+                val ownerId = parentViewModel.getOwner().value?.id
+                val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
+                    putExtra("hardwareId", hardwareId)
+                    putExtra("deploymentId", deploymentId)
+                    putExtra("ownerId", ownerId)
+                }
+
+                if (deploymentId != null && ownerId != null) {
+                    activity?.startActivity(intent)
+                } else {
+                    Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
+                    Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
+                }
+            }
         )
         val listView = parentLayout.findViewById(R.id.peripherals_list) as ListView
         listView.adapter = listAdaper
@@ -231,7 +248,7 @@ class SetupPage : Fragment() {
         if (nonNullO != null) {
            block(nonNullO)
         } else if (warning != null) {
-            Log.w(SETUP_PAGE_TAG,warning)
+            Log.w(LOG_TAG, warning)
 
         }
     }
