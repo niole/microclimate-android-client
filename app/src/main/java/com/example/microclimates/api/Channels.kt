@@ -7,6 +7,10 @@ import io.grpc.ManagedChannelBuilder
 object Channels {
     private val host = "192.168.1.162"
 
+    fun eventsChannel(): ManagedChannel {
+        return ManagedChannelBuilder.forAddress(host, 6004).usePlaintext().build()
+    }
+
     fun peripheralChannel(): ManagedChannel {
         return ManagedChannelBuilder.forAddress(host, 6001).usePlaintext().build()
     }

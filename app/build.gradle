@@ -49,6 +49,9 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
     implementation "androidx.fragment:fragment-ktx:1.3.0-alpha04"
 
+    // charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
     // for android use of grpc
     implementation 'io.grpc:grpc-okhttp:1.33.1'
     implementation 'io.grpc:grpc-protobuf-lite:1.33.1'

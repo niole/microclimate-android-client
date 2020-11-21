@@ -84,8 +84,9 @@ class MainActivity : AppCompatActivity() {
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         private val setupPage = "setupPage"
         private val deploymentOverviewPage = "deploymentPage"
-        private val pages = listOf<String>(deploymentOverviewPage, setupPage)
-        private val pagesTitles = listOf<String>("Overview", "Add New Peripheral")
+        private val eventsPage = "eventsPage"
+        private val pages = listOf<String>(deploymentOverviewPage, setupPage, eventsPage)
+        private val pagesTitles = listOf<String>("Overview", "Add New Peripheral", "Measurements")
 
         override fun getPageTitle(position: Int): String {
             return pagesTitles[position]
@@ -96,6 +97,7 @@ class MainActivity : AppCompatActivity() {
             return when(pageName) {
                 setupPage -> SetupPage.newInstance()
                 deploymentOverviewPage -> DeploymentOverview.newInstance()
+                eventsPage -> EventsView.newInstance()
                 else -> SetupPage()
             }
         }

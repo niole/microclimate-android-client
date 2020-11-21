@@ -2,6 +2,7 @@ package com.example.microclimates.api
 
 import api.DeploymentManagementServiceGrpc
 import api.PeripheralManagementServiceGrpc
+import api.PeripheralMeasurementEventServiceGrpc
 import api.UserServiceGrpc
 import io.grpc.ManagedChannel
 
@@ -16,6 +17,10 @@ object Stubs {
 
     fun userStub(userChannel: ManagedChannel): UserServiceGrpc.UserServiceFutureStub {
         return UserServiceGrpc.newFutureStub(userChannel)
+    }
+
+    fun eventsStub(eventsChannel: ManagedChannel): PeripheralMeasurementEventServiceGrpc.PeripheralMeasurementEventServiceBlockingStub {
+        return PeripheralMeasurementEventServiceGrpc.newBlockingStub(eventsChannel)
     }
 
 }

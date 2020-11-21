@@ -84,14 +84,13 @@ class DeploymentOverview : Fragment() {
                 baseView.peripheral_type.text = peripheral.type.toString()
                 baseView.last_received_event_time.text = "unknown"
                 baseView.remove_peripheral_button.setOnClickListener {
-                    val dialogArgs = Bundle()
-                    dialogArgs.putCharSequence("peripheralId", peripheral.id)
-                    dialogArgs.putCharSequence("peripheralName", peripheral.name)
-
-                    val confirmModal = ConfirmRemovePeripheralDialog()
-                    confirmModal.arguments = dialogArgs
+                    val confirmModal = ConfirmRemovePeripheralDialog().apply {
+                        arguments = Bundle().apply {
+                            putString("peripheralId", peripheral.id)
+                            putString("peripheralName", peripheral.name)
+                        }
+                    }
                     confirmModal.show(parentFragmentManager, "ConfirmRemovePeripheralDialog")
-
                 }
                 return baseView
             }
