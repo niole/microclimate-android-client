@@ -16,6 +16,7 @@ class DeploymentOverview : Fragment() {
 
     private val LOG_TAG = "DeploymentOverview"
     private var listAdapter: ArrayAdapter<PeripheralOuterClass.Peripheral>? = null
+    private val coreViewModel: CoreStateViewModel by activityViewModels()
 
     companion object {
         fun newInstance(): Fragment = DeploymentOverview()
@@ -62,10 +63,16 @@ class DeploymentOverview : Fragment() {
         return parentLayout
     }
 
+    override fun onResume() {
+        super.onResume()
+        val existingDeployment = coreViewModel.getDeployment().value
+        if (existingDeployment != null) {
+            coreViewModel.refetchDeploymentPeripherals(existingDeployment.id)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
-        val coreViewModel: CoreStateViewModel by activityViewModels()
 
         coreViewModel.getOwner().observeForever { user ->
             if (user != null) {
@@ -76,9 +83,7 @@ class DeploymentOverview : Fragment() {
         coreViewModel.getDeployment().observeForever { deployment ->
             if (deployment != null) {
                 view?.findViewById<TextView>(R.id.deployment_name)?.text = deployment.name
-
-                val peripherals = getPeripherals(deployment.id)
-                coreViewModel.setPeripherals(peripherals)
+                coreViewModel.refetchDeploymentPeripherals(deployment.id)
             }
         }
 
@@ -87,13 +92,4 @@ class DeploymentOverview : Fragment() {
             listAdapter?.addAll(it)
         }
     }
-
-    private fun getPeripherals(deploymentId: String): List<PeripheralOuterClass.Peripheral> {
-        val request = PeripheralOuterClass.GetDeploymentPeripheralsRequest
-            .newBuilder()
-            .setDeploymentId(deploymentId)
-            .build()
-         return Stubs.peripheralStub().getDeploymentPeripherals(request).asSequence().toList()
-    }
-
 }

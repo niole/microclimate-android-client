@@ -6,6 +6,9 @@ import androidx.lifecycle.ViewModel
 import api.DeploymentOuterClass
 import api.PeripheralOuterClass
 import api.UserOuterClass.User
+import com.example.microclimates.api.Channels
+import com.example.microclimates.api.Stubs
+import java.util.concurrent.TimeUnit
 
 class CoreStateViewModel : ViewModel() {
     private val owner: MutableLiveData<User?> = MutableLiveData()
@@ -34,6 +37,17 @@ class CoreStateViewModel : ViewModel() {
 
     fun getPeripherals(): LiveData<List<PeripheralOuterClass.Peripheral>> {
         return peripherals
+    }
+
+    fun refetchDeploymentPeripherals(deploymentId: String): Unit {
+       val request = PeripheralOuterClass.GetDeploymentPeripheralsRequest
+           .newBuilder()
+           .setDeploymentId(deploymentId)
+           .build()
+        val perphChannel = Channels.peripheralChannel()
+        peripherals.value = Stubs.peripheralStub(perphChannel).getDeploymentPeripherals(request).asSequence().toList()
+        perphChannel.shutdownNow()
+        perphChannel.awaitTermination(1, TimeUnit.SECONDS)
     }
 
 }

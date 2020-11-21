@@ -11,11 +11,13 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
 import api.DeploymentOuterClass
 import api.UserOuterClass
+import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
+import java.util.concurrent.TimeUnit
 
 class MainActivity : FragmentActivity() {
     private val LOG_TAG = "MainActivity"
@@ -28,7 +30,6 @@ class MainActivity : FragmentActivity() {
 
         pagerLayout = findViewById<ViewPager>(R.id.container)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
-
         pagerLayout?.adapter = mSectionsPagerAdapter
 
         val model: CoreStateViewModel by viewModels()
@@ -36,7 +37,14 @@ class MainActivity : FragmentActivity() {
         val email = "niolenelson@gmail.com"
         val mainHandler = Handler(baseContext.mainLooper)
 
-        Futures.addCallback(getUser(email), object : FutureCallback<UserOuterClass.User?> {
+        val request = UserOuterClass.GetUserByEmailRequest
+            .newBuilder()
+            .setEmail(email)
+            .build()
+
+        val userChannel = Channels.userChannel()
+        val userFetch = Stubs.userStub(userChannel).getUserByEmail(request)
+        Futures.addCallback(userFetch, object : FutureCallback<UserOuterClass.User?> {
             override fun onSuccess(user: UserOuterClass.User?): Unit {
                 if (user != null) {
                     mainHandler.post {
@@ -49,13 +57,17 @@ class MainActivity : FragmentActivity() {
                         }
                     }
                 }
+
+                userChannel.shutdown()
+                userChannel.awaitTermination(1, TimeUnit.SECONDS)
             }
 
             override fun onFailure(t: Throwable) {
                 Log.e(LOG_TAG, "Failed to get user, message: ${t.message}, cause: ${t.cause}")
+                userChannel.shutdown()
+                userChannel.awaitTermination(1, TimeUnit.SECONDS)
             }
         }, MoreExecutors.directExecutor())
-
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -77,14 +89,6 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    private fun getUser(email: String): ListenableFuture<UserOuterClass.User?> {
-        val request = UserOuterClass.GetUserByEmailRequest
-            .newBuilder()
-            .setEmail(email)
-            .build()
-        return Stubs.userStub().getUserByEmail(request)
-    }
-
     private fun getDeployment(ownerId: String): DeploymentOuterClass.Deployment? {
         try {
             val request = DeploymentOuterClass
@@ -92,8 +96,15 @@ class MainActivity : FragmentActivity() {
                 .newBuilder()
                 .setUserId(ownerId)
                 .build()
-            val deployments = Stubs.blockingDeploymentStub().getDeploymentsForUser(request)
-            return deployments.asSequence().elementAtOrNull(0)
+
+            val deploymentChannel = Channels.deploymentChannel()
+            val deployments = Stubs.blockingDeploymentStub(deploymentChannel).getDeploymentsForUser(request)
+            val deployment = deployments.asSequence().elementAtOrNull(0)
+
+            deploymentChannel.shutdown()
+            deploymentChannel.awaitTermination(5, TimeUnit.SECONDS)
+
+            return deployment
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to get deployment, error: $e")
         }

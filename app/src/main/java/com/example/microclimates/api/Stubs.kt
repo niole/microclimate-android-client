@@ -3,18 +3,19 @@ package com.example.microclimates.api
 import api.DeploymentManagementServiceGrpc
 import api.PeripheralManagementServiceGrpc
 import api.UserServiceGrpc
+import io.grpc.ManagedChannel
 
 object Stubs {
-    fun peripheralStub(): PeripheralManagementServiceGrpc.PeripheralManagementServiceBlockingStub {
-        return PeripheralManagementServiceGrpc.newBlockingStub(Channels.peripheralChannel())
+    fun peripheralStub(peripheralChannel: ManagedChannel): PeripheralManagementServiceGrpc.PeripheralManagementServiceBlockingStub {
+        return PeripheralManagementServiceGrpc.newBlockingStub(peripheralChannel)
     }
 
-    fun blockingDeploymentStub(): DeploymentManagementServiceGrpc.DeploymentManagementServiceBlockingStub {
-        return DeploymentManagementServiceGrpc.newBlockingStub(Channels.deploymentChannel())
+    fun blockingDeploymentStub(deploymentChannel: ManagedChannel): DeploymentManagementServiceGrpc.DeploymentManagementServiceBlockingStub {
+        return DeploymentManagementServiceGrpc.newBlockingStub(deploymentChannel)
     }
 
-    fun userStub(): UserServiceGrpc.UserServiceFutureStub {
-        return UserServiceGrpc.newFutureStub(Channels.userChannel())
+    fun userStub(userChannel: ManagedChannel): UserServiceGrpc.UserServiceFutureStub {
+        return UserServiceGrpc.newFutureStub(userChannel)
     }
 
 }

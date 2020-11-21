@@ -39,6 +39,7 @@ class SetupPage : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        println("Created")
         viewModel = setupPageViewModel()
         requestLocationPermissions {
             bluetoothAdapter = setupBluetoothAdapter()
@@ -51,6 +52,7 @@ class SetupPage : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        println("Created view")
         // TODO need to separate stuff from the view...can't feed view model and layout to objects
         // that need only be initialized once
         parentLayout = inflater.inflate(R.layout.fragment_setup_page, container, false)
@@ -194,7 +196,6 @@ class SetupPage : Fragment() {
             R.layout.pair_management_buttons,
             devices,
             { hardwareId ->
-                println(hardwareId)
                 val deploymentId = parentViewModel.getDeployment().value?.id
                 val ownerId = parentViewModel.getOwner().value?.id
                 val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {

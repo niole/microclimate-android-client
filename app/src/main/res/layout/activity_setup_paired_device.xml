@@ -6,16 +6,32 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".SetupPairedDeviceActivity">
+
     <EditText
+            android:layout_marginBottom="20dp"
             android:id="@+id/device_name_input"
             android:hint="name your device"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="text"></EditText>
-    <EditText
-        android:id="@+id/device_type_input"
-        android:hint="input device type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="text"></EditText>
+
+    <TextView
+            android:id="@+id/peripheral_type_selector_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select a Peripheral Type" />
+    <Spinner
+            android:layout_marginBottom="40dp"
+            android:spinnerMode="dialog"
+            android:id="@+id/peripheral_type_selector"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/peripheral_type_selector_label"/>
+
+    <Button
+            android:id="@+id/submit_new_peripheral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit"></Button>
+
 </LinearLayout>
