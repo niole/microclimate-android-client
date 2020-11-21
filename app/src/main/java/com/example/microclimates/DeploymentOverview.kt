@@ -1,6 +1,7 @@
 package com.example.microclimates
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
@@ -24,6 +26,31 @@ class DeploymentOverview : Fragment() {
 
     companion object {
         fun newInstance(): Fragment = DeploymentOverview()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener("onPeripheralRemoveSubmit") { _, bundle ->
+            val peripheralId = bundle.getString("peripheralId")
+            Log.i(LOG_TAG, "Removing peripheral with id $peripheralId")
+            val perphChannel = Channels.peripheralChannel()
+            val peripheral = coreViewModel.getPeripheralById(peripheralId)
+            if (peripheral != null) {
+                try {
+                    val stub = Stubs.peripheralStub(perphChannel)
+                    stub.removePeripheral(peripheral)
+                    coreViewModel.removePeripheral(peripheral.id)
+                } catch (error: Throwable) {
+                    Log.e(LOG_TAG, "Failed to remove peripheral with id $peripheralId. message: ${error.message}, cause: ${error.cause}")
+                } finally {
+                    perphChannel.shutdown()
+                    perphChannel.awaitTermination(5, TimeUnit.SECONDS)
+                }
+
+            } else {
+                Log.w(LOG_TAG, "Couldn't remove peripheral with id $peripheralId, because didn't exist in view model.")
+            }
+        }
     }
 
     override fun onCreateView(
@@ -58,19 +85,13 @@ class DeploymentOverview : Fragment() {
                 baseView.peripheral_type.text = peripheral.type.toString()
                 baseView.last_received_event_time.text = "unknown"
                 baseView.remove_peripheral_button.setOnClickListener {
-                    // TODO confirmation modal
-                    Log.i(LOG_TAG, "Removing peripheral $peripheral")
-                    val perphChannel = Channels.peripheralChannel()
-                    try {
-                        val stub = Stubs.peripheralStub(perphChannel)
-                        stub.removePeripheral(peripheral)
-                        coreViewModel.removePeripheral(peripheral.id)
-                    } catch (error: Throwable) {
-                        Log.e(LOG_TAG, "Failed to remove peripheral $peripheral. message: ${error.message}, cause: ${error.cause}")
-                    } finally {
-                        perphChannel.shutdown()
-                        perphChannel.awaitTermination(5, TimeUnit.SECONDS)
-                    }
+                    val dialogArgs = Bundle()
+                    dialogArgs.putCharSequence("peripheralId", peripheral.id)
+                    dialogArgs.putCharSequence("peripheralName", peripheral.name)
+
+                    val confirmModal = ConfirmRemovePeripheralDialog()
+                    confirmModal.arguments = dialogArgs
+                    confirmModal.show(parentFragmentManager, "ConfirmRemovePeripheralDialog")
 
                 }
                 return baseView
@@ -111,4 +132,5 @@ class DeploymentOverview : Fragment() {
             listAdapter?.addAll(it)
         }
     }
+
 }

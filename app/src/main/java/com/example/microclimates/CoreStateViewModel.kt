@@ -35,6 +35,10 @@ class CoreStateViewModel : ViewModel() {
         return peripherals
     }
 
+    fun getPeripheralById(peripheralId: String): PeripheralOuterClass.Peripheral? {
+        return peripherals.value?.find { it.id == peripheralId }
+    }
+
     fun removePeripheral(peripheralId: String): Unit {
         peripherals.value = peripherals.value?.filter { it.id != peripheralId }
     }
