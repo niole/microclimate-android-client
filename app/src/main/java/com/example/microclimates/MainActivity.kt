@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -15,11 +15,10 @@ import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
-import com.google.common.util.concurrent.ListenableFuture
 import com.google.common.util.concurrent.MoreExecutors
 import java.util.concurrent.TimeUnit
 
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
     private val LOG_TAG = "MainActivity"
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private var pagerLayout: ViewPager? = null
@@ -32,8 +31,20 @@ class MainActivity : FragmentActivity() {
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
         pagerLayout?.adapter = mSectionsPagerAdapter
 
-        val model: CoreStateViewModel by viewModels()
+        pagerLayout?.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageSelected(position: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+                title = pagerLayout?.adapter?.getPageTitle(position)
+            }
 
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+
+        val model: CoreStateViewModel by viewModels()
         val email = "niolenelson@gmail.com"
         val mainHandler = Handler(baseContext.mainLooper)
 
@@ -74,6 +85,11 @@ class MainActivity : FragmentActivity() {
         private val setupPage = "setupPage"
         private val deploymentOverviewPage = "deploymentPage"
         private val pages = listOf<String>(deploymentOverviewPage, setupPage)
+        private val pagesTitles = listOf<String>("Overview", "Add New Peripheral")
+
+        override fun getPageTitle(position: Int): String {
+            return pagesTitles[position]
+        }
 
         override fun getItem(position: Int): Fragment {
             val pageName = pages[position]
