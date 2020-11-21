@@ -31,12 +31,12 @@ class CoreStateViewModel : ViewModel() {
         return deployment
     }
 
-    fun setPeripherals(newPeripherals: List<PeripheralOuterClass.Peripheral>): Unit {
-        peripherals.value = newPeripherals
-    }
-
     fun getPeripherals(): LiveData<List<PeripheralOuterClass.Peripheral>> {
         return peripherals
+    }
+
+    fun removePeripheral(peripheralId: String): Unit {
+        peripherals.value = peripherals.value?.filter { it.id != peripheralId }
     }
 
     fun refetchDeploymentPeripherals(deploymentId: String): Unit {

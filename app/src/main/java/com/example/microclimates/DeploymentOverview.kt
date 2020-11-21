@@ -1,6 +1,7 @@
 package com.example.microclimates
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import api.PeripheralOuterClass
+import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
+import kotlinx.android.synthetic.main.fragment_peripheral.view.*
+import java.util.concurrent.TimeUnit
 
 class DeploymentOverview : Fragment() {
 
@@ -50,10 +54,25 @@ class DeploymentOverview : Fragment() {
                 }
 
                 val peripheral = getItem(position)
-                baseView.findViewById<TextView>(R.id.peripheral_name).text = peripheral.name
-                baseView.findViewById<TextView>(R.id.peripheral_type).text = peripheral.type.toString()
-                baseView.findViewById<TextView>(R.id.last_received_event_time).text = "unknown"
+                baseView.peripheral_name.text = peripheral.name
+                baseView.peripheral_type.text = peripheral.type.toString()
+                baseView.last_received_event_time.text = "unknown"
+                baseView.remove_peripheral_button.setOnClickListener {
+                    // TODO confirmation modal
+                    Log.i(LOG_TAG, "Removing peripheral $peripheral")
+                    val perphChannel = Channels.peripheralChannel()
+                    try {
+                        val stub = Stubs.peripheralStub(perphChannel)
+                        stub.removePeripheral(peripheral)
+                        coreViewModel.removePeripheral(peripheral.id)
+                    } catch (error: Throwable) {
+                        Log.e(LOG_TAG, "Failed to remove peripheral $peripheral. message: ${error.message}, cause: ${error.cause}")
+                    } finally {
+                        perphChannel.shutdown()
+                        perphChannel.awaitTermination(5, TimeUnit.SECONDS)
+                    }
 
+                }
                 return baseView
             }
         }
