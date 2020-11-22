@@ -5,19 +5,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".EventsView">
-
-    <TextView
-            android:id="@+id/peripheral_events_selector_label"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select a Peripheral" />
-    <Spinner
-            android:layout_marginBottom="40dp"
-            android:id="@+id/peripheral_events_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/peripheral_events_selector_label"/>
+            android:layout_height="wrap_content">
 
+        <Spinner
+                android:layout_marginBottom="40dp"
+                android:id="@+id/peripheral_events_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        <TextView
+                android:id="@+id/peripheral_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </LinearLayout>
     <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart_ui"
             android:layout_width="match_parent"

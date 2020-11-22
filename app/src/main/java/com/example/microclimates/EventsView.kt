@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -23,7 +24,6 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.protobuf.Timestamp
-import kotlinx.android.synthetic.main.fragment_events_view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -44,7 +44,6 @@ class EventsView : Fragment() {
         val peripherals = coreStateViewModel.getPeripherals().value
 
         if (deployment != null && peripherals != null) {
-
             val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)
             if (spinner != null) {
                 // TODO names are not unique
@@ -62,8 +61,12 @@ class EventsView : Fragment() {
                     ) {
 
                         val selectedName = peripheralNames[position]
-                        val selectedId = peripherals.find { it.name == selectedName }?.id
-                        model.setSelectedPeripheral(selectedId)
+                        val peripheral = peripherals.find { it.name == selectedName }
+                        val pType = peripheral?.type
+                        val pUnit = peripheral?.unit
+                        model.setSelectedPeripheral(peripheral)
+                        inflatedView.findViewById<TextView>(R.id.peripheral_details).text = "$pType ($pUnit)"
+
                     }
                 })
             }
@@ -80,8 +83,7 @@ class EventsView : Fragment() {
                 }
             }
 
-            model.getSelectedPeripheral().observeForever {selectedId ->
-                val peripheral = coreStateViewModel.getPeripherals().value?.find { it.id == selectedId }
+            model.getSelectedPeripheral().observeForever {peripheral ->
                 if (peripheral != null) {
                     model.getLivePeripheralEvents(peripheral.id)
                     val events = model.getPeripheralEvents(peripheral.id)

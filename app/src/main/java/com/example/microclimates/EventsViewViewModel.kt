@@ -5,9 +5,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import api.Events
+import api.PeripheralOuterClass
 
 class EventsViewViewModel : ViewModel() {
-    private val selectedId: MutableLiveData<String?> = MutableLiveData()
+    private val selectedPeripheral: MutableLiveData<PeripheralOuterClass.Peripheral?> = MutableLiveData()
     private val peripheralEvents: MutableLiveData<Map<String, List<Events.MeasurementEvent>>> = MutableLiveData(mutableMapOf())
 
     fun getLivePeripheralEvents(peripheralId: String): LiveData<List<Events.MeasurementEvent>?> {
@@ -18,12 +19,12 @@ class EventsViewViewModel : ViewModel() {
         return peripheralEvents.value?.get(peripheralId)
     }
 
-    fun setSelectedPeripheral(updateSelectedId: String?): Unit {
-        selectedId.value = updateSelectedId
+    fun setSelectedPeripheral(peripheral: PeripheralOuterClass.Peripheral?): Unit {
+        selectedPeripheral.value = peripheral
     }
 
-    fun getSelectedPeripheral(): LiveData<String?> {
-        return selectedId
+    fun getSelectedPeripheral(): LiveData<PeripheralOuterClass.Peripheral?> {
+        return selectedPeripheral
     }
 
     fun setEvents(peripheralId: String, newEvents: List<Events.MeasurementEvent>): Unit {
