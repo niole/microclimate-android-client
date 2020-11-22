@@ -1,5 +1,6 @@
 package com.example.microclimates
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import api.Events
+import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.github.mikephil.charting.charts.LineChart
@@ -24,6 +26,7 @@ import java.util.concurrent.TimeUnit
 
 class EventsView : Fragment() {
     private val LOG_TAG  = "EventsView"
+    private val lineColors = listOf(Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK)
     private val coreStateViewModel: CoreStateViewModel by activityViewModels()
     private val model: EventsViewViewModel by viewModels()
 
@@ -34,9 +37,9 @@ class EventsView : Fragment() {
         val inflatedView = inflater.inflate(R.layout.fragment_events_view, container, false)
 
         val deployment = coreStateViewModel.getDeployment().value
-        val peripheralIds = coreStateViewModel.getPeripherals().value?.map { it.id }
-        if (deployment != null && peripheralIds != null) {
-            refetchAllEvents(deployment.id, peripheralIds)
+        val peripherals = coreStateViewModel.getPeripherals().value
+        if (deployment != null && peripherals != null) {
+            refetchAllEvents(deployment.id, peripherals)
         } else {
             Log.e(LOG_TAG, "Couldn't build events chart. No deployment exists in core state.")
         }
@@ -44,10 +47,11 @@ class EventsView : Fragment() {
         return inflatedView
     }
 
-    private fun refetchAllEvents(deploymentId: String, forPeripheralIds: List<String>): Unit {
+    private fun refetchAllEvents(deploymentId: String, peripherals: List<PeripheralOuterClass.Peripheral>): Unit {
         Thread(Runnable {
             val eventsChannel = Channels.eventsChannel()
-            forPeripheralIds.forEach { peripheralId ->
+            peripherals.forEach { peripheral ->
+                val peripheralId = peripheral.id
                 try {
                     val startTime = Timestamp
                         .newBuilder()
@@ -71,11 +75,9 @@ class EventsView : Fragment() {
 
                     if (allEvents != null) {
                         val eventsList = allEvents.asSequence().toList()
-                        println(eventsList)
                         view?.post {
-                            addLine(peripheralId, eventsList)
-                            //model.setEvents(peripheralId, eventsList)
-                            if (peripheralId == forPeripheralIds.last()) {
+                            addLine(peripheral, eventsList)
+                            if (peripheralId == peripherals.last().id) {
                                 eventsChannel.shutdown()
                                 eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
                             }
@@ -86,7 +88,7 @@ class EventsView : Fragment() {
                         LOG_TAG,
                         "Failed to fetch all events. message: ${t.message}, cause: ${t.cause}"
                     )
-                    if (peripheralId == forPeripheralIds.last()) {
+                    if (peripheralId == peripherals.last().id) {
                         eventsChannel.shutdown()
                         eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
                     }
@@ -95,17 +97,16 @@ class EventsView : Fragment() {
         }).start()
     }
 
-    private fun addLine(id: String, events: List<Events.MeasurementEvent>): Unit {
+    private fun addLine(peripheral: PeripheralOuterClass.Peripheral, events: List<Events.MeasurementEvent>): Unit {
         val chart = view?.findViewById<LineChart>(R.id.line_chart_ui)
         if (chart != null) {
             val chartableEntries = events.map {
-                println(it.timeStamp.seconds)
                 Entry(it.timeStamp.seconds.toFloat(), it.value.toFloat())
             }
 
-            val dataset = LineDataSet(chartableEntries, id)
-            dataset.color = 0
-            dataset.valueTextColor = 1
+            val dataset = LineDataSet(chartableEntries, peripheral.name)
+            dataset.color = lineColors[peripheral.id.hashCode() % lineColors.size]
+            dataset.valueTextColor = Color.BLACK
             val lineData = LineData(dataset)
             chart.data = lineData
 
@@ -115,6 +116,7 @@ class EventsView : Fragment() {
             xAxis.setDrawGridLines(false)
 
             xAxis.valueFormatter = XAxisFormatter()
+            chart.invalidate()
         }
     }
 
