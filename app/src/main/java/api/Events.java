@@ -1261,29 +1261,16 @@ public final class Events {
       com.google.protobuf.MessageLiteOrBuilder {
 
     /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @return A list containing the peripheralIds.
+     * <code>string peripheralId = 1;</code>
+     * @return The peripheralId.
      */
-    java.util.List<java.lang.String>
-        getPeripheralIdsList();
+    java.lang.String getPeripheralId();
     /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @return The count of peripheralIds.
-     */
-    int getPeripheralIdsCount();
-    /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The peripheralIds at the given index.
-     */
-    java.lang.String getPeripheralIds(int index);
-    /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The peripheralIds at the given index.
+     * <code>string peripheralId = 1;</code>
+     * @return The bytes for peripheralId.
      */
     com.google.protobuf.ByteString
-        getPeripheralIdsBytes(int index);
+        getPeripheralIdBytes();
 
     /**
      * <code>string deploymentId = 2;</code>
@@ -1328,100 +1315,54 @@ public final class Events {
       // @@protoc_insertion_point(message_implements:api.MeasurementEventFilterRequest)
       MeasurementEventFilterRequestOrBuilder {
     private MeasurementEventFilterRequest() {
-      peripheralIds_ = com.google.protobuf.GeneratedMessageLite.emptyProtobufList();
+      peripheralId_ = "";
       deploymentId_ = "";
     }
-    public static final int PERIPHERALIDS_FIELD_NUMBER = 1;
-    private com.google.protobuf.Internal.ProtobufList<java.lang.String> peripheralIds_;
+    public static final int PERIPHERALID_FIELD_NUMBER = 1;
+    private java.lang.String peripheralId_;
     /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @return A list containing the peripheralIds.
+     * <code>string peripheralId = 1;</code>
+     * @return The peripheralId.
      */
     @java.lang.Override
-    public java.util.List<java.lang.String> getPeripheralIdsList() {
-      return peripheralIds_;
+    public java.lang.String getPeripheralId() {
+      return peripheralId_;
     }
     /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @return The count of peripheralIds.
-     */
-    @java.lang.Override
-    public int getPeripheralIdsCount() {
-      return peripheralIds_.size();
-    }
-    /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param index The index of the element to return.
-     * @return The peripheralIds at the given index.
-     */
-    @java.lang.Override
-    public java.lang.String getPeripheralIds(int index) {
-      return peripheralIds_.get(index);
-    }
-    /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param index The index of the value to return.
-     * @return The bytes of the peripheralIds at the given index.
+     * <code>string peripheralId = 1;</code>
+     * @return The bytes for peripheralId.
      */
     @java.lang.Override
     public com.google.protobuf.ByteString
-        getPeripheralIdsBytes(int index) {
-      return com.google.protobuf.ByteString.copyFromUtf8(
-          peripheralIds_.get(index));
-    }
-    private void ensurePeripheralIdsIsMutable() {
-      com.google.protobuf.Internal.ProtobufList<java.lang.String> tmp =
-          peripheralIds_;  if (!tmp.isModifiable()) {
-        peripheralIds_ =
-            com.google.protobuf.GeneratedMessageLite.mutableCopy(tmp);
-       }
+        getPeripheralIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(peripheralId_);
     }
     /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param index The index to set the value at.
-     * @param value The peripheralIds to set.
+     * <code>string peripheralId = 1;</code>
+     * @param value The peripheralId to set.
      */
-    private void setPeripheralIds(
-        int index, java.lang.String value) {
-      value.getClass();
-  ensurePeripheralIdsIsMutable();
-      peripheralIds_.set(index, value);
-    }
-    /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param value The peripheralIds to add.
-     */
-    private void addPeripheralIds(
+    private void setPeripheralId(
         java.lang.String value) {
       value.getClass();
-  ensurePeripheralIdsIsMutable();
-      peripheralIds_.add(value);
+  
+      peripheralId_ = value;
     }
     /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param values The peripheralIds to add.
+     * <code>string peripheralId = 1;</code>
      */
-    private void addAllPeripheralIds(
-        java.lang.Iterable<java.lang.String> values) {
-      ensurePeripheralIdsIsMutable();
-      com.google.protobuf.AbstractMessageLite.addAll(
-          values, peripheralIds_);
+    private void clearPeripheralId() {
+      
+      peripheralId_ = getDefaultInstance().getPeripheralId();
     }
     /**
-     * <code>repeated string peripheralIds = 1;</code>
+     * <code>string peripheralId = 1;</code>
+     * @param value The bytes for peripheralId to set.
      */
-    private void clearPeripheralIds() {
-      peripheralIds_ = com.google.protobuf.GeneratedMessageLite.emptyProtobufList();
-    }
-    /**
-     * <code>repeated string peripheralIds = 1;</code>
-     * @param value The bytes of the peripheralIds to add.
-     */
-    private void addPeripheralIdsBytes(
+    private void setPeripheralIdBytes(
         com.google.protobuf.ByteString value) {
       checkByteStringIsUtf8(value);
-      ensurePeripheralIdsIsMutable();
-      peripheralIds_.add(value.toStringUtf8());
+      peripheralId_ = value.toStringUtf8();
+      
     }
 
     public static final int DEPLOYMENTID_FIELD_NUMBER = 2;
@@ -1659,94 +1600,51 @@ public final class Events {
 
 
       /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @return A list containing the peripheralIds.
+       * <code>string peripheralId = 1;</code>
+       * @return The peripheralId.
        */
       @java.lang.Override
-      public java.util.List<java.lang.String>
-          getPeripheralIdsList() {
-        return java.util.Collections.unmodifiableList(
-            instance.getPeripheralIdsList());
+      public java.lang.String getPeripheralId() {
+        return instance.getPeripheralId();
       }
       /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @return The count of peripheralIds.
-       */
-      @java.lang.Override
-      public int getPeripheralIdsCount() {
-        return instance.getPeripheralIdsCount();
-      }
-      /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @param index The index of the element to return.
-       * @return The peripheralIds at the given index.
-       */
-      @java.lang.Override
-      public java.lang.String getPeripheralIds(int index) {
-        return instance.getPeripheralIds(index);
-      }
-      /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @param index The index of the value to return.
-       * @return The bytes of the peripheralIds at the given index.
+       * <code>string peripheralId = 1;</code>
+       * @return The bytes for peripheralId.
        */
       @java.lang.Override
       public com.google.protobuf.ByteString
-          getPeripheralIdsBytes(int index) {
-        return instance.getPeripheralIdsBytes(index);
+          getPeripheralIdBytes() {
+        return instance.getPeripheralIdBytes();
       }
       /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @param index The index to set the value at.
-       * @param value The peripheralIds to set.
+       * <code>string peripheralId = 1;</code>
+       * @param value The peripheralId to set.
        * @return This builder for chaining.
        */
-      public Builder setPeripheralIds(
-          int index, java.lang.String value) {
-        copyOnWrite();
-        instance.setPeripheralIds(index, value);
-        return this;
-      }
-      /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @param value The peripheralIds to add.
-       * @return This builder for chaining.
-       */
-      public Builder addPeripheralIds(
+      public Builder setPeripheralId(
           java.lang.String value) {
         copyOnWrite();
-        instance.addPeripheralIds(value);
+        instance.setPeripheralId(value);
         return this;
       }
       /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @param values The peripheralIds to add.
+       * <code>string peripheralId = 1;</code>
        * @return This builder for chaining.
        */
-      public Builder addAllPeripheralIds(
-          java.lang.Iterable<java.lang.String> values) {
+      public Builder clearPeripheralId() {
         copyOnWrite();
-        instance.addAllPeripheralIds(values);
+        instance.clearPeripheralId();
         return this;
       }
       /**
-       * <code>repeated string peripheralIds = 1;</code>
+       * <code>string peripheralId = 1;</code>
+       * @param value The bytes for peripheralId to set.
        * @return This builder for chaining.
        */
-      public Builder clearPeripheralIds() {
-        copyOnWrite();
-        instance.clearPeripheralIds();
-        return this;
-      }
-      /**
-       * <code>repeated string peripheralIds = 1;</code>
-       * @param value The bytes of the peripheralIds to add.
-       * @return This builder for chaining.
-       */
-      public Builder addPeripheralIdsBytes(
+      public Builder setPeripheralIdBytes(
           com.google.protobuf.ByteString value) {
         copyOnWrite();
-        instance.addPeripheralIdsBytes(value);
+        instance.setPeripheralIdBytes(value);
         return this;
       }
 
@@ -1909,13 +1807,13 @@ public final class Events {
         }
         case BUILD_MESSAGE_INFO: {
             java.lang.Object[] objects = new java.lang.Object[] {
-              "peripheralIds_",
+              "peripheralId_",
               "deploymentId_",
               "startTime_",
               "endTime_",
             };
             java.lang.String info =
-                "\u0000\u0004\u0000\u0000\u0001\u0004\u0004\u0000\u0001\u0000\u0001\u021a\u0002\u0208" +
+                "\u0000\u0004\u0000\u0000\u0001\u0004\u0004\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
                 "\u0003\t\u0004\t";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }

@@ -16,6 +16,8 @@ import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.google.protobuf.Timestamp
+import java.time.Instant
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class EventsView : Fragment() {
@@ -33,21 +35,6 @@ class EventsView : Fragment() {
         val peripheralIds = coreStateViewModel.getPeripherals().value?.map { it.id }
         if (deployment != null && peripheralIds != null) {
             refetchAllEvents(deployment.id, peripheralIds)
-
-            model.getAllEvents().observeForever { events ->
-                val chart = inflatedView.findViewById<LineChart>(R.id.line_chart_ui)
-
-                val chartableEntries = events.map {
-                    Entry(it.timeStamp.seconds.toFloat(), it.value.toFloat())
-                }
-
-                val dataset = LineDataSet(chartableEntries, "Label sdf")
-                dataset.color = 0
-                dataset.valueTextColor = 1
-                val lineData = LineData(dataset)
-                chart.data = lineData
-                chart.invalidate()
-            }
         } else {
             Log.e(LOG_TAG, "Couldn't build events chart. No deployment exists in core state.")
         }
@@ -58,36 +45,71 @@ class EventsView : Fragment() {
     private fun refetchAllEvents(deploymentId: String, forPeripheralIds: List<String>): Unit {
         Thread(Runnable {
             val eventsChannel = Channels.eventsChannel()
-            try {
-                val startTime = Timestamp
-                    .newBuilder()
-                    .setSeconds(0L)
-                    .build()
-                val endTime = Timestamp.newBuilder().build()
-                val filterRequest = Events.MeasurementEventFilterRequest
-                    .newBuilder()
-                    .addAllPeripheralIds(forPeripheralIds)
-                    .setDeploymentId(deploymentId)
-                    .setStartTime(startTime)
-                    .setEndTime(endTime)
-                    .build()
+            forPeripheralIds.forEach {peripheralId ->
+                try {
+                    val startTime = Timestamp
+                        .newBuilder()
+                        .setSeconds(0L)
+                        .build()
 
-                val allEvents = Stubs.eventsStub(eventsChannel).filterEvents(filterRequest)
+                    val endTime = Timestamp
+                        .newBuilder()
+                        .setSeconds(System.currentTimeMillis() / 1000)
+                        .build()
 
-                if (allEvents != null) {
-                    view?.post {
-                        model.setEvents(allEvents.asSequence().toList())
+                    val filterRequest = Events.MeasurementEventFilterRequest
+                        .newBuilder()
+                        .setPeripheralId(peripheralId)
+                        .setDeploymentId(deploymentId)
+                        .setStartTime(startTime)
+                        .setEndTime(endTime)
+                        .build()
+
+                    val allEvents = Stubs.eventsStub(eventsChannel).filterEvents(filterRequest)
+
+                    if (allEvents != null) {
+                        val eventsList = allEvents.asSequence().toList()
+                        println(eventsList)
+                        view?.post {
+                            addLine(peripheralId, eventsList)
+                            //model.setEvents(peripheralId, eventsList)
+                            if (peripheralId == forPeripheralIds.last()) {
+                                eventsChannel.shutdown()
+                                eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
+                            }
+                        }
+                    }
+                } catch (t: Throwable) {
+                    Log.e(
+                        LOG_TAG,
+                        "Failed to fetch all events. message: ${t.message}, cause: ${t.cause}"
+                    )
+                    if (peripheralId == forPeripheralIds.last()) {
                         eventsChannel.shutdown()
                         eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
                     }
                 }
-            } catch (t: Throwable) {
-                Log.e(LOG_TAG, "Failed to fetch all events. message: ${t.message}, cause: ${t.cause}")
-                eventsChannel.shutdown()
-                eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
             }
         }).start()
     }
+
+    private fun addLine(id: String, events: List<Events.MeasurementEvent>): Unit {
+        val chart = view?.findViewById<LineChart>(R.id.line_chart_ui)
+        if (chart != null) {
+            val chartableEntries = events.map {
+                println(it.timeStamp.seconds)
+                Entry(it.timeStamp.seconds.toFloat(), it.value.toFloat())
+            }
+
+            val dataset = LineDataSet(chartableEntries, id)
+            dataset.color = 0
+            dataset.valueTextColor = 1
+            val lineData = LineData(dataset)
+            chart.data = lineData
+//            chart.invalidate()
+        }
+    }
+
 
     companion object {
         @JvmStatic
