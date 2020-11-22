@@ -6,6 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -20,6 +23,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.protobuf.Timestamp
+import kotlinx.android.synthetic.main.fragment_events_view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -38,8 +42,59 @@ class EventsView : Fragment() {
 
         val deployment = coreStateViewModel.getDeployment().value
         val peripherals = coreStateViewModel.getPeripherals().value
+
         if (deployment != null && peripherals != null) {
-            refetchAllEvents(deployment.id, peripherals)
+
+            val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)
+            if (spinner != null) {
+                // TODO names are not unique
+                val peripheralNames = peripherals.map { it.name }
+                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, peripheralNames)
+                spinner.adapter = adapter
+
+                spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
+                    override fun onNothingSelected(parent: AdapterView<*>?) {}
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+
+                        val selectedName = peripheralNames[position]
+                        val selectedId = peripherals.find { it.name == selectedName }?.id
+                        model.setSelectedPeripheral(selectedId)
+                    }
+                })
+            }
+
+            peripherals.forEach { peripheral ->
+                // TODO what will happen if peripherals take a while to fetch in activity, is this ok
+                // adds the line for recently fetched event
+                model.getLivePeripheralEvents(peripheral.id).observeForever {events ->
+                    if (events != null) {
+                        addLine(peripheral, events)
+                    } else {
+                        Log.w(LOG_TAG, "Couldn't add chart line for ${peripheral.id}. No events exist for it.")
+                    }
+                }
+            }
+
+            model.getSelectedPeripheral().observeForever {selectedId ->
+                val peripheral = coreStateViewModel.getPeripherals().value?.find { it.id == selectedId }
+                if (peripheral != null) {
+                    model.getLivePeripheralEvents(peripheral.id)
+                    val events = model.getPeripheralEvents(peripheral.id)
+                    if (events != null) {
+                        addLine(peripheral, events)
+                    } else {
+                        Log.i(LOG_TAG, "Haven't successfully fetched the events for peripheral with id ${peripheral.id}. Fetching now.")
+                        fetchPeripheralEvents(deployment.id, peripheral)
+                    }
+                } else {
+                    println("unselect")
+                }
+            }
         } else {
             Log.e(LOG_TAG, "Couldn't build events chart. No deployment exists in core state.")
         }
@@ -47,52 +102,47 @@ class EventsView : Fragment() {
         return inflatedView
     }
 
-    private fun refetchAllEvents(deploymentId: String, peripherals: List<PeripheralOuterClass.Peripheral>): Unit {
+    private fun fetchPeripheralEvents(deploymentId: String, peripheral: PeripheralOuterClass.Peripheral): Unit {
         Thread(Runnable {
             val eventsChannel = Channels.eventsChannel()
-            peripherals.forEach { peripheral ->
-                val peripheralId = peripheral.id
-                try {
-                    val startTime = Timestamp
-                        .newBuilder()
-                        .setSeconds(0L)
-                        .build()
+            val peripheralId = peripheral.id
+            try {
+                val startTime = Timestamp
+                    .newBuilder()
+                    .setSeconds(0L)
+                    .build()
 
-                    val endTime = Timestamp
-                        .newBuilder()
-                        .setSeconds(System.currentTimeMillis() / 1000)
-                        .build()
+                val endTime = Timestamp
+                    .newBuilder()
+                    .setSeconds(System.currentTimeMillis() / 1000)
+                    .build()
 
-                    val filterRequest = Events.MeasurementEventFilterRequest
-                        .newBuilder()
-                        .setPeripheralId(peripheralId)
-                        .setDeploymentId(deploymentId)
-                        .setStartTime(startTime)
-                        .setEndTime(endTime)
-                        .build()
+                val filterRequest = Events.MeasurementEventFilterRequest
+                    .newBuilder()
+                    .setPeripheralId(peripheralId)
+                    .setDeploymentId(deploymentId)
+                    .setStartTime(startTime)
+                    .setEndTime(endTime)
+                    .build()
 
-                    val allEvents = Stubs.eventsStub(eventsChannel).filterEvents(filterRequest)
+                val allEvents = Stubs.eventsStub(eventsChannel).filterEvents(filterRequest)
 
-                    if (allEvents != null) {
-                        val eventsList = allEvents.asSequence().toList()
-                        view?.post {
-                            addLine(peripheral, eventsList)
-                            if (peripheralId == peripherals.last().id) {
-                                eventsChannel.shutdown()
-                                eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
-                            }
-                        }
-                    }
-                } catch (t: Throwable) {
-                    Log.e(
-                        LOG_TAG,
-                        "Failed to fetch all events. message: ${t.message}, cause: ${t.cause}"
-                    )
-                    if (peripheralId == peripherals.last().id) {
+                if (allEvents != null) {
+                    val eventsList = allEvents.asSequence().toList()
+                    view?.post {
+                        model.setEvents(peripheralId, eventsList)
+
                         eventsChannel.shutdown()
                         eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
                     }
                 }
+            } catch (t: Throwable) {
+                Log.e(
+                    LOG_TAG,
+                    "Failed to fetch events for peripheral $peripheral. message: ${t.message}, cause: ${t.cause}"
+                )
+                eventsChannel.shutdown()
+                eventsChannel.awaitTermination(10, TimeUnit.SECONDS)
             }
         }).start()
     }
