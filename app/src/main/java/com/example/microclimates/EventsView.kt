@@ -2,21 +2,23 @@ package com.example.microclimates
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import api.Events
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis.XAxisPosition
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.protobuf.Timestamp
-import java.time.Instant
+import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -45,7 +47,7 @@ class EventsView : Fragment() {
     private fun refetchAllEvents(deploymentId: String, forPeripheralIds: List<String>): Unit {
         Thread(Runnable {
             val eventsChannel = Channels.eventsChannel()
-            forPeripheralIds.forEach {peripheralId ->
+            forPeripheralIds.forEach { peripheralId ->
                 try {
                     val startTime = Timestamp
                         .newBuilder()
@@ -106,7 +108,13 @@ class EventsView : Fragment() {
             dataset.valueTextColor = 1
             val lineData = LineData(dataset)
             chart.data = lineData
-//            chart.invalidate()
+
+            val xAxis = chart.xAxis
+            xAxis.position = XAxisPosition.BOTTOM
+            xAxis.setDrawAxisLine(true)
+            xAxis.setDrawGridLines(false)
+
+            xAxis.valueFormatter = XAxisFormatter()
         }
     }
 
@@ -116,5 +124,13 @@ class EventsView : Fragment() {
         fun newInstance(): Fragment {
             return EventsView()
         }
+    }
+}
+
+class XAxisFormatter : ValueFormatter() {
+    override fun getFormattedValue(value: Float): String {
+        val pattern = "yyyy-MM-dd HH:mm:ss"
+        val simpleDateFormat = SimpleDateFormat(pattern)
+        return simpleDateFormat.format(Date(value.toLong() * 1000))
     }
 }
