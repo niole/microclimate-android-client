@@ -6,12 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.Spinner
-import android.widget.TextView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
 import api.Events
 import api.PeripheralOuterClass
@@ -42,6 +40,19 @@ class EventsView : Fragment() {
 
         val deployment = coreStateViewModel.getDeployment().value
         val peripherals = coreStateViewModel.getPeripherals().value
+
+        val endDate = Date(System.currentTimeMillis())
+        val startCalendar = Calendar.getInstance()
+        startCalendar.set(Calendar.YEAR, startCalendar.get(Calendar.YEAR) - 1)
+        val startDate = Date(startCalendar.timeInMillis)
+
+        (childFragmentManager.findFragmentById(R.id.start_picker) as DatePickerButton).setOnChangeListener {
+            model.setStartDate(it)
+        }
+
+        (childFragmentManager.findFragmentById(R.id.end_picker) as DatePickerButton).setOnChangeListener {
+            model.setEndDate(it)
+        }
 
         if (deployment != null && peripherals != null) {
             val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)

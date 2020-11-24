@@ -6,10 +6,29 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import api.Events
 import api.PeripheralOuterClass
+import java.util.*
 
 class EventsViewViewModel : ViewModel() {
     private val selectedPeripheral: MutableLiveData<PeripheralOuterClass.Peripheral?> = MutableLiveData()
     private val peripheralEvents: MutableLiveData<Map<String, List<Events.MeasurementEvent>>> = MutableLiveData(mutableMapOf())
+    private val startDate: MutableLiveData<Date?> = MutableLiveData()
+    private val endDate: MutableLiveData<Date?> = MutableLiveData()
+
+    fun getStartDate(): LiveData<Date?> {
+        return startDate
+    }
+
+    fun getEndDate(): LiveData<Date?> {
+        return endDate
+    }
+
+    fun setStartDate(date: Date): Unit {
+        startDate.value = date
+    }
+
+    fun setEndDate(date: Date): Unit {
+        endDate.value = date
+    }
 
     fun getLivePeripheralEvents(peripheralId: String): LiveData<List<Events.MeasurementEvent>?> {
         return Transformations.map(peripheralEvents) { it.get(peripheralId) }

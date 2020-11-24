@@ -20,7 +20,24 @@
                 android:id="@+id/peripheral_details"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+    </LinearLayout>
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/date_pickers"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+        <fragment
+                android:id="@+id/start_picker"
+                android:name="com.example.microclimates.DatePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        <fragment
+                android:id="@+id/end_picker"
+                android:name="com.example.microclimates.DatePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
     </LinearLayout>
     <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart_ui"
