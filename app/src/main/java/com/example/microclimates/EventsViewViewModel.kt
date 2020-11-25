@@ -1,9 +1,6 @@
 package com.example.microclimates
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import api.Events
 import api.PeripheralOuterClass
 import java.util.*
@@ -11,8 +8,18 @@ import java.util.*
 class EventsViewViewModel : ViewModel() {
     private val selectedPeripheral: MutableLiveData<PeripheralOuterClass.Peripheral?> = MutableLiveData()
     private val peripheralEvents: MutableLiveData<Map<String, List<Events.MeasurementEvent>>> = MutableLiveData(mutableMapOf())
-    private val startDate: MutableLiveData<Date?> = MutableLiveData()
-    private val endDate: MutableLiveData<Date?> = MutableLiveData()
+    private val startDate: MutableLiveData<Date> = MutableLiveData()
+    private val endDate: MutableLiveData<Date> = MutableLiveData()
+    private val dateRange = MediatorLiveData<Pair<Date?, Date?>>()
+
+    init {
+        dateRange.addSource(startDate, { s -> dateRange.value = Pair(s, dateRange.value?.second) })
+        dateRange.addSource(endDate, { e -> dateRange.value = Pair(dateRange.value?.first, e) })
+    }
+
+    fun getDateRange(): LiveData<Pair<Date?, Date?>> {
+        return dateRange
+    }
 
     fun getStartDate(): LiveData<Date?> {
         return startDate
@@ -32,10 +39,6 @@ class EventsViewViewModel : ViewModel() {
 
     fun getLivePeripheralEvents(peripheralId: String): LiveData<List<Events.MeasurementEvent>?> {
         return Transformations.map(peripheralEvents) { it.get(peripheralId) }
-    }
-
-    fun getPeripheralEvents(peripheralId: String): List<Events.MeasurementEvent>? {
-        return peripheralEvents.value?.get(peripheralId)
     }
 
     fun setSelectedPeripheral(peripheral: PeripheralOuterClass.Peripheral?): Unit {

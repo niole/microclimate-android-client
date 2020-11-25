@@ -31,6 +31,60 @@ class EventsView : Fragment() {
     private val lineColors = listOf(Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK)
     private val coreStateViewModel: CoreStateViewModel by activityViewModels()
     private val model: EventsViewViewModel by viewModels()
+    private val defaultFilterDate = Date(Calendar.getInstance().timeInMillis)
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        if (model.getEndDate().value == null) {
+            model.setEndDate(defaultFilterDate)
+        }
+
+        if (model.getStartDate().value == null) {
+            model.setStartDate(defaultFilterDate)
+        }
+
+        model.getSelectedPeripheral().observe({ lifecycle }) {
+            Log.i(LOG_TAG, "Peripheral selection changed")
+            val deployment = coreStateViewModel.getDeployment().value
+            val peripheral = it
+            val dateRange = model.getDateRange().value
+            if (deployment != null && peripheral != null) {
+                fetchPeripheralEvents(
+                    deploymentId = deployment.id,
+                    peripheral = peripheral,
+                    startDate = dateRange?.first,
+                    endDate = dateRange?.second
+                )
+            }
+        }
+
+        model.getDateRange().observe({ lifecycle}) {
+            Log.i(LOG_TAG, "Date range selection changed")
+            val deployment = coreStateViewModel.getDeployment().value
+            val peripheral = model.getSelectedPeripheral().value
+            if (deployment != null && peripheral != null) {
+                fetchPeripheralEvents(
+                    deploymentId = deployment.id,
+                    peripheral = peripheral,
+                    startDate = it.first,
+                    endDate = it.second
+                )
+            }
+        }
+
+        val peripherals = coreStateViewModel.getPeripherals().value
+        peripherals?.forEach { peripheral ->
+            model.getLivePeripheralEvents(peripheral.id).observe({ lifecycle }) {events ->
+                if (events != null) {
+                    addLine(peripheral, events)
+                } else {
+                    Log.w(LOG_TAG, "Couldn't add chart line for ${peripheral.id}. No events exist for it.")
+                }
+            }
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,11 +94,6 @@ class EventsView : Fragment() {
 
         val deployment = coreStateViewModel.getDeployment().value
         val peripherals = coreStateViewModel.getPeripherals().value
-
-        val defaultFilterDate = Date(Calendar.getInstance().timeInMillis)
-
-        model.setEndDate(defaultFilterDate)
-        model.setStartDate(defaultFilterDate)
 
         childFragmentManager.findFragmentById(R.id.start_picker)?.arguments = Bundle().apply {
             putString("defaultValue", DateRangePicker.parser.format(defaultFilterDate))
@@ -100,32 +149,6 @@ class EventsView : Fragment() {
                 })
             }
 
-            peripherals.forEach { peripheral ->
-                // TODO what will happen if peripherals take a while to fetch in activity, is this ok
-                // adds the line for recently fetched event
-                model.getLivePeripheralEvents(peripheral.id).observeForever {events ->
-                    if (events != null) {
-                        addLine(peripheral, events)
-                    } else {
-                        Log.w(LOG_TAG, "Couldn't add chart line for ${peripheral.id}. No events exist for it.")
-                    }
-                }
-            }
-
-            model.getSelectedPeripheral().observeForever {peripheral ->
-                if (peripheral != null) {
-                    model.getLivePeripheralEvents(peripheral.id)
-                    val events = model.getPeripheralEvents(peripheral.id)
-                    if (events != null) {
-                        addLine(peripheral, events)
-                    } else {
-                        Log.i(LOG_TAG, "Haven't successfully fetched the events for peripheral with id ${peripheral.id}. Fetching now.")
-                        fetchPeripheralEvents(deployment.id, peripheral)
-                    }
-                } else {
-                    println("unselect")
-                }
-            }
         } else {
             Log.e(LOG_TAG, "Couldn't build events chart. No deployment exists in core state.")
         }
@@ -133,19 +156,25 @@ class EventsView : Fragment() {
         return inflatedView
     }
 
-    private fun fetchPeripheralEvents(deploymentId: String, peripheral: PeripheralOuterClass.Peripheral): Unit {
+    private fun fetchPeripheralEvents(
+        deploymentId: String,
+        peripheral: PeripheralOuterClass.Peripheral,
+        startDate: Date?,
+        endDate: Date?
+    ): Unit {
+        Log.i(LOG_TAG, "Fetching events for deployment $deploymentId, peripheral ${peripheral.id}, start date $startDate, end date $endDate")
         Thread(Runnable {
             val eventsChannel = Channels.eventsChannel()
             val peripheralId = peripheral.id
             try {
                 val startTime = Timestamp
                     .newBuilder()
-                    .setSeconds(0L)
+                    .setSeconds((startDate?.time ?: defaultFilterDate.time) / 1000)
                     .build()
 
                 val endTime = Timestamp
                     .newBuilder()
-                    .setSeconds(System.currentTimeMillis() / 1000)
+                    .setSeconds((endDate?.time ?: defaultFilterDate.time) / 1000)
                     .build()
 
                 val filterRequest = Events.MeasurementEventFilterRequest

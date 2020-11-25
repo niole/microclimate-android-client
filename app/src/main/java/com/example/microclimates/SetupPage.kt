@@ -57,7 +57,7 @@ class SetupPage : Fragment() {
             viewModel
         )
         peripheralsListAdapter = setupPeripheralList(viewModel)
-        viewModel.getBluetoothEnabled().observeForever {
+        viewModel.getBluetoothEnabled().observe({ lifecycle }) {
             if (it) {
                 setupBluetoothButtons(parentLayout, bluetoothAdapter)
             }
@@ -252,7 +252,7 @@ class SetupPage : Fragment() {
 
     private fun setupPageViewModel(): SetupPageViewModel {
         val pageViewModel = ViewModelProviders.of(this).get(SetupPageViewModel::class.java)
-        pageViewModel.getBluetoothEnabled().observeForever { it ->
+        pageViewModel.getBluetoothEnabled().observe({ lifecycle }) { it ->
             if (it == false) {
                 val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
                 startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT)
@@ -262,7 +262,7 @@ class SetupPage : Fragment() {
             }
         }
 
-        pageViewModel.getDevices().observeForever { it ->
+        pageViewModel.getDevices().observe({ lifecycle }) { it ->
             val devices = it
             if (devices != null) {
                 peripheralsListAdapter?.clear()

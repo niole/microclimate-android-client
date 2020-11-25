@@ -112,20 +112,20 @@ class DeploymentOverview : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        coreViewModel.getOwner().observeForever { user ->
+        coreViewModel.getOwner().observe({ lifecycle }) { user ->
             if (user != null) {
                 view?.findViewById<TextView>(R.id.user_name)?.text = user.name
             }
         }
 
-        coreViewModel.getDeployment().observeForever { deployment ->
+        coreViewModel.getDeployment().observe({ lifecycle }) { deployment ->
             if (deployment != null) {
                 view?.findViewById<TextView>(R.id.deployment_name)?.text = deployment.name
                 coreViewModel.refetchDeploymentPeripherals(deployment.id)
             }
         }
 
-        coreViewModel.getPeripherals().observeForever {
+        coreViewModel.getPeripherals().observe({ lifecycle }) {
             listAdapter?.clear()
             listAdapter?.addAll(it)
         }

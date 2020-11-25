@@ -82,7 +82,7 @@ class DatePickerButton : Fragment() {
     ): View? {
         val layout = inflater.inflate(R.layout.date_picker_button_fragment, container)
 
-        model.getSelectedDate().observeForever { selectedDate ->
+        model.getSelectedDate().observe({ lifecycle }) { selectedDate ->
             val button = layout.findViewById<Button>(R.id.date_value_button)
             val formatter = SimpleDateFormat("MM/dd/yy")
             button.text = formatter.format(selectedDate)
