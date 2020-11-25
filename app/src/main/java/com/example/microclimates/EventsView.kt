@@ -41,11 +41,6 @@ class EventsView : Fragment() {
         val deployment = coreStateViewModel.getDeployment().value
         val peripherals = coreStateViewModel.getPeripherals().value
 
-        val endDate = Date(System.currentTimeMillis())
-        val startCalendar = Calendar.getInstance()
-        startCalendar.set(Calendar.YEAR, startCalendar.get(Calendar.YEAR) - 1)
-        val startDate = Date(startCalendar.timeInMillis)
-
         (childFragmentManager.findFragmentById(R.id.start_picker) as DatePickerButton).setOnChangeListener {
             model.setStartDate(it)
         }

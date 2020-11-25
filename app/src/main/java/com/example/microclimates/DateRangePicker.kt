@@ -48,7 +48,12 @@ class DateRangePicker : DialogFragment() {
             builder
                 .setPositiveButton("Submit",
                     DialogInterface.OnClickListener { dialog, id ->
-                        val selectedDate = parser.format(Date(picker.year, picker.month, picker.dayOfMonth))
+                        val outCalendar = Calendar.getInstance()
+                        outCalendar.set(Calendar.YEAR, picker.year)
+                        outCalendar.set(Calendar.MONTH, picker.month)
+                        outCalendar.set(Calendar.DAY_OF_MONTH, picker.dayOfMonth)
+
+                        val selectedDate = parser.format(Date(outCalendar.timeInMillis))
                         setFragmentResult("onDateSubmit", bundleOf("selectedDate" to selectedDate))
                     })
                 .setNegativeButton("Cancel",

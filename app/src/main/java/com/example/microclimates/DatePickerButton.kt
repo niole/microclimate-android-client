@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import java.text.SimpleDateFormat
 import java.util.*
 
 class DatePickerButtonViewModel : ViewModel() {
@@ -56,7 +57,6 @@ class DatePickerButton : Fragment() {
 
         val lifecycleOwner = LifecycleOwner { this.lifecycle }
         childFragmentManager.setFragmentResultListener("onDateSubmit", lifecycleOwner) { _, bundle ->
-            println("received date")
             val selectedDate = bundle.getString("selectedDate")
             if (selectedDate != null) {
                 model.setSelectedDate(DateRangePicker.parser.parse(selectedDate))
@@ -72,12 +72,10 @@ class DatePickerButton : Fragment() {
         val layout = inflater.inflate(R.layout.date_picker_button_fragment, container)
 
         model.getSelectedDate().observeForever { selectedDate ->
-            println("date updated internally $selectedDate")
-            view?.post {
-                onChangeListener(selectedDate)
-            }
+            onChangeListener(selectedDate)
             val button = layout.findViewById<Button>(R.id.date_value_button)
-            button.text = selectedDate.toString()
+            val formatter = SimpleDateFormat("MM/dd/yy")
+            button.text = formatter.format(selectedDate)
         }
 
         val button = layout.findViewById<Button>(R.id.date_value_button)
