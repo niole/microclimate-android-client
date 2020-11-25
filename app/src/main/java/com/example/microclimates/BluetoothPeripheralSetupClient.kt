@@ -17,7 +17,6 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
         val host = getHost()
         val hardwareId = UUID.randomUUID().toString()
         val message = Json.encodeToString(PeripheralConfiguration(host, hardwareId))
-        onSuccess(hardwareId) // TODO delete
         sendMessage(message, device, {
             onSuccess(hardwareId)
         })
