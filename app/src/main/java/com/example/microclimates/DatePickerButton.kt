@@ -1,10 +1,12 @@
 package com.example.microclimates
 
+import android.util.Log
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
@@ -40,26 +42,35 @@ class DatePickerButton : Fragment() {
         }
     }
 
+    private val LOG_TAG = "DatePickerButton"
     private var onChangeListener: (date: Date) -> Unit = {}
-
     private val model: DatePickerButtonViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val providedDefault = arguments?.getString(DEFAULT_VALUE_ARG_KEY)
-        if (providedDefault != null) {
-            model.setSelectedDate(DateRangePicker.parser.parse(providedDefault))
-        } else {
-            val defaultCalendarDate = Date(Calendar.getInstance().timeInMillis)
-            model.setSelectedDate(defaultCalendarDate)
+        if (model.getSelectedDate().value == null) {
+            val providedDefault = arguments?.getString(DEFAULT_VALUE_ARG_KEY)
+            if (providedDefault != null) {
+                model.setSelectedDate(DateRangePicker.parser.parse(providedDefault))
+            } else {
+                val defaultCalendarDate = Date(Calendar.getInstance().timeInMillis)
+                model.setSelectedDate(defaultCalendarDate)
+            }
         }
 
         val lifecycleOwner = LifecycleOwner { this.lifecycle }
         childFragmentManager.setFragmentResultListener("onDateSubmit", lifecycleOwner) { _, bundle ->
             val selectedDate = bundle.getString("selectedDate")
             if (selectedDate != null) {
-                model.setSelectedDate(DateRangePicker.parser.parse(selectedDate))
+                val formattedDate = DateRangePicker.parser.parse(selectedDate)
+                try {
+                    onChangeListener(formattedDate)
+                    model.setSelectedDate(formattedDate)
+                } catch (t: Throwable) {
+                    Log.e(LOG_TAG, "Failed to update date. ${t.message}")
+                    Toast.makeText(context, t.message, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -72,7 +83,6 @@ class DatePickerButton : Fragment() {
         val layout = inflater.inflate(R.layout.date_picker_button_fragment, container)
 
         model.getSelectedDate().observeForever { selectedDate ->
-            onChangeListener(selectedDate)
             val button = layout.findViewById<Button>(R.id.date_value_button)
             val formatter = SimpleDateFormat("MM/dd/yy")
             button.text = formatter.format(selectedDate)

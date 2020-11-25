@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.findFragment
 import androidx.fragment.app.viewModels
 import api.Events
 import api.PeripheralOuterClass
@@ -22,6 +21,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.protobuf.Timestamp
+import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -41,12 +41,35 @@ class EventsView : Fragment() {
         val deployment = coreStateViewModel.getDeployment().value
         val peripherals = coreStateViewModel.getPeripherals().value
 
+        val defaultFilterDate = Date(Calendar.getInstance().timeInMillis)
+
+        model.setEndDate(defaultFilterDate)
+        model.setStartDate(defaultFilterDate)
+
+        childFragmentManager.findFragmentById(R.id.start_picker)?.arguments = Bundle().apply {
+            putString("defaultValue", DateRangePicker.parser.format(defaultFilterDate))
+        }
+
+        childFragmentManager.findFragmentById(R.id.end_picker)?.arguments = Bundle().apply {
+            putString("defaultValue", DateRangePicker.parser.format(defaultFilterDate))
+        }
+
         (childFragmentManager.findFragmentById(R.id.start_picker) as DatePickerButton).setOnChangeListener {
-            model.setStartDate(it)
+            val endDate = model.getEndDate().value
+            if (endDate != null && it > endDate) {
+                throw IllegalArgumentException("Start date must come before end date")
+            } else {
+                model.setStartDate(it)
+            }
         }
 
         (childFragmentManager.findFragmentById(R.id.end_picker) as DatePickerButton).setOnChangeListener {
-            model.setEndDate(it)
+            val startDate = model.getStartDate().value
+            if (startDate != null && it < startDate) {
+                throw IllegalArgumentException("End date must come after start date")
+            } else {
+                model.setEndDate(it)
+            }
         }
 
         if (deployment != null && peripherals != null) {
