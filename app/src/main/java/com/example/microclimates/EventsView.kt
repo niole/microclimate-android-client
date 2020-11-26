@@ -215,7 +215,7 @@ class EventsView : Fragment() {
             }
 
             val dataset = LineDataSet(chartableEntries, peripheral.name)
-            dataset.color = lineColors[peripheral.id.hashCode() % lineColors.size]
+            dataset.color = lineColors[Math.abs(peripheral.id.hashCode()) % lineColors.size]
             dataset.valueTextColor = Color.BLACK
             val lineData = LineData(dataset)
             chart.data = lineData

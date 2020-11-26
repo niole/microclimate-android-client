@@ -9,9 +9,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.TextView
-import api.PeripheralOuterClass
-import com.example.microclimates.api.Stubs
-import java.util.*
 
 class PeripheralListViewAdapter(
     val pageViewModel: SetupPageViewModel,
