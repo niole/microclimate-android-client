@@ -1869,6 +1869,590 @@ public final class Events {
     }
   }
 
+  public interface DeletePeripheralEventsRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:api.DeletePeripheralEventsRequest)
+      com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The peripheralId.
+     */
+    java.lang.String getPeripheralId();
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The bytes for peripheralId.
+     */
+    com.google.protobuf.ByteString
+        getPeripheralIdBytes();
+  }
+  /**
+   * Protobuf type {@code api.DeletePeripheralEventsRequest}
+   */
+  public  static final class DeletePeripheralEventsRequest extends
+      com.google.protobuf.GeneratedMessageLite<
+          DeletePeripheralEventsRequest, DeletePeripheralEventsRequest.Builder> implements
+      // @@protoc_insertion_point(message_implements:api.DeletePeripheralEventsRequest)
+      DeletePeripheralEventsRequestOrBuilder {
+    private DeletePeripheralEventsRequest() {
+      peripheralId_ = "";
+    }
+    public static final int PERIPHERALID_FIELD_NUMBER = 1;
+    private java.lang.String peripheralId_;
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The peripheralId.
+     */
+    @java.lang.Override
+    public java.lang.String getPeripheralId() {
+      return peripheralId_;
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The bytes for peripheralId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPeripheralIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(peripheralId_);
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @param value The peripheralId to set.
+     */
+    private void setPeripheralId(
+        java.lang.String value) {
+      value.getClass();
+  
+      peripheralId_ = value;
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     */
+    private void clearPeripheralId() {
+      
+      peripheralId_ = getDefaultInstance().getPeripheralId();
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @param value The bytes for peripheralId to set.
+     */
+    private void setPeripheralIdBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      peripheralId_ = value.toStringUtf8();
+      
+    }
+
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.Events.DeletePeripheralEventsRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return (Builder) DEFAULT_INSTANCE.createBuilder();
+    }
+    public static Builder newBuilder(api.Events.DeletePeripheralEventsRequest prototype) {
+      return (Builder) DEFAULT_INSTANCE.createBuilder(prototype);
+    }
+
+    /**
+     * Protobuf type {@code api.DeletePeripheralEventsRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          api.Events.DeletePeripheralEventsRequest, Builder> implements
+        // @@protoc_insertion_point(builder_implements:api.DeletePeripheralEventsRequest)
+        api.Events.DeletePeripheralEventsRequestOrBuilder {
+      // Construct using api.Events.DeletePeripheralEventsRequest.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @return The peripheralId.
+       */
+      @java.lang.Override
+      public java.lang.String getPeripheralId() {
+        return instance.getPeripheralId();
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @return The bytes for peripheralId.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getPeripheralIdBytes() {
+        return instance.getPeripheralIdBytes();
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @param value The peripheralId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeripheralId(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setPeripheralId(value);
+        return this;
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeripheralId() {
+        copyOnWrite();
+        instance.clearPeripheralId();
+        return this;
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @param value The bytes for peripheralId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeripheralIdBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setPeripheralIdBytes(value);
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:api.DeletePeripheralEventsRequest)
+    }
+    @java.lang.Override
+    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
+    protected final java.lang.Object dynamicMethod(
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+        java.lang.Object arg0, java.lang.Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new api.Events.DeletePeripheralEventsRequest();
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case BUILD_MESSAGE_INFO: {
+            java.lang.Object[] objects = new java.lang.Object[] {
+              "peripheralId_",
+            };
+            java.lang.String info =
+                "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0208";
+            return newMessageInfo(DEFAULT_INSTANCE, info, objects);
+        }
+        // fall through
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          com.google.protobuf.Parser<api.Events.DeletePeripheralEventsRequest> parser = PARSER;
+          if (parser == null) {
+            synchronized (api.Events.DeletePeripheralEventsRequest.class) {
+              parser = PARSER;
+              if (parser == null) {
+                parser =
+                    new DefaultInstanceBasedParser<api.Events.DeletePeripheralEventsRequest>(
+                        DEFAULT_INSTANCE);
+                PARSER = parser;
+              }
+            }
+          }
+          return parser;
+      }
+      case GET_MEMOIZED_IS_INITIALIZED: {
+        return (byte) 1;
+      }
+      case SET_MEMOIZED_IS_INITIALIZED: {
+        return null;
+      }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:api.DeletePeripheralEventsRequest)
+    private static final api.Events.DeletePeripheralEventsRequest DEFAULT_INSTANCE;
+    static {
+      DeletePeripheralEventsRequest defaultInstance = new DeletePeripheralEventsRequest();
+      // New instances are implicitly immutable so no need to make
+      // immutable.
+      DEFAULT_INSTANCE = defaultInstance;
+      com.google.protobuf.GeneratedMessageLite.registerDefaultInstance(
+        DeletePeripheralEventsRequest.class, defaultInstance);
+    }
+
+    public static api.Events.DeletePeripheralEventsRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<DeletePeripheralEventsRequest> PARSER;
+
+    public static com.google.protobuf.Parser<DeletePeripheralEventsRequest> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
+  public interface MostRecentEventsForDeploymentRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:api.MostRecentEventsForDeploymentRequest)
+      com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>string deploymentId = 1;</code>
+     * @return The deploymentId.
+     */
+    java.lang.String getDeploymentId();
+    /**
+     * <code>string deploymentId = 1;</code>
+     * @return The bytes for deploymentId.
+     */
+    com.google.protobuf.ByteString
+        getDeploymentIdBytes();
+  }
+  /**
+   * Protobuf type {@code api.MostRecentEventsForDeploymentRequest}
+   */
+  public  static final class MostRecentEventsForDeploymentRequest extends
+      com.google.protobuf.GeneratedMessageLite<
+          MostRecentEventsForDeploymentRequest, MostRecentEventsForDeploymentRequest.Builder> implements
+      // @@protoc_insertion_point(message_implements:api.MostRecentEventsForDeploymentRequest)
+      MostRecentEventsForDeploymentRequestOrBuilder {
+    private MostRecentEventsForDeploymentRequest() {
+      deploymentId_ = "";
+    }
+    public static final int DEPLOYMENTID_FIELD_NUMBER = 1;
+    private java.lang.String deploymentId_;
+    /**
+     * <code>string deploymentId = 1;</code>
+     * @return The deploymentId.
+     */
+    @java.lang.Override
+    public java.lang.String getDeploymentId() {
+      return deploymentId_;
+    }
+    /**
+     * <code>string deploymentId = 1;</code>
+     * @return The bytes for deploymentId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getDeploymentIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(deploymentId_);
+    }
+    /**
+     * <code>string deploymentId = 1;</code>
+     * @param value The deploymentId to set.
+     */
+    private void setDeploymentId(
+        java.lang.String value) {
+      value.getClass();
+  
+      deploymentId_ = value;
+    }
+    /**
+     * <code>string deploymentId = 1;</code>
+     */
+    private void clearDeploymentId() {
+      
+      deploymentId_ = getDefaultInstance().getDeploymentId();
+    }
+    /**
+     * <code>string deploymentId = 1;</code>
+     * @param value The bytes for deploymentId to set.
+     */
+    private void setDeploymentIdBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      deploymentId_ = value.toStringUtf8();
+      
+    }
+
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.Events.MostRecentEventsForDeploymentRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return (Builder) DEFAULT_INSTANCE.createBuilder();
+    }
+    public static Builder newBuilder(api.Events.MostRecentEventsForDeploymentRequest prototype) {
+      return (Builder) DEFAULT_INSTANCE.createBuilder(prototype);
+    }
+
+    /**
+     * Protobuf type {@code api.MostRecentEventsForDeploymentRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          api.Events.MostRecentEventsForDeploymentRequest, Builder> implements
+        // @@protoc_insertion_point(builder_implements:api.MostRecentEventsForDeploymentRequest)
+        api.Events.MostRecentEventsForDeploymentRequestOrBuilder {
+      // Construct using api.Events.MostRecentEventsForDeploymentRequest.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+
+      /**
+       * <code>string deploymentId = 1;</code>
+       * @return The deploymentId.
+       */
+      @java.lang.Override
+      public java.lang.String getDeploymentId() {
+        return instance.getDeploymentId();
+      }
+      /**
+       * <code>string deploymentId = 1;</code>
+       * @return The bytes for deploymentId.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getDeploymentIdBytes() {
+        return instance.getDeploymentIdBytes();
+      }
+      /**
+       * <code>string deploymentId = 1;</code>
+       * @param value The deploymentId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeploymentId(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setDeploymentId(value);
+        return this;
+      }
+      /**
+       * <code>string deploymentId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearDeploymentId() {
+        copyOnWrite();
+        instance.clearDeploymentId();
+        return this;
+      }
+      /**
+       * <code>string deploymentId = 1;</code>
+       * @param value The bytes for deploymentId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDeploymentIdBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setDeploymentIdBytes(value);
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:api.MostRecentEventsForDeploymentRequest)
+    }
+    @java.lang.Override
+    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
+    protected final java.lang.Object dynamicMethod(
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+        java.lang.Object arg0, java.lang.Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new api.Events.MostRecentEventsForDeploymentRequest();
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case BUILD_MESSAGE_INFO: {
+            java.lang.Object[] objects = new java.lang.Object[] {
+              "deploymentId_",
+            };
+            java.lang.String info =
+                "\u0000\u0001\u0000\u0000\u0001\u0001\u0001\u0000\u0000\u0000\u0001\u0208";
+            return newMessageInfo(DEFAULT_INSTANCE, info, objects);
+        }
+        // fall through
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          com.google.protobuf.Parser<api.Events.MostRecentEventsForDeploymentRequest> parser = PARSER;
+          if (parser == null) {
+            synchronized (api.Events.MostRecentEventsForDeploymentRequest.class) {
+              parser = PARSER;
+              if (parser == null) {
+                parser =
+                    new DefaultInstanceBasedParser<api.Events.MostRecentEventsForDeploymentRequest>(
+                        DEFAULT_INSTANCE);
+                PARSER = parser;
+              }
+            }
+          }
+          return parser;
+      }
+      case GET_MEMOIZED_IS_INITIALIZED: {
+        return (byte) 1;
+      }
+      case SET_MEMOIZED_IS_INITIALIZED: {
+        return null;
+      }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:api.MostRecentEventsForDeploymentRequest)
+    private static final api.Events.MostRecentEventsForDeploymentRequest DEFAULT_INSTANCE;
+    static {
+      MostRecentEventsForDeploymentRequest defaultInstance = new MostRecentEventsForDeploymentRequest();
+      // New instances are implicitly immutable so no need to make
+      // immutable.
+      DEFAULT_INSTANCE = defaultInstance;
+      com.google.protobuf.GeneratedMessageLite.registerDefaultInstance(
+        MostRecentEventsForDeploymentRequest.class, defaultInstance);
+    }
+
+    public static api.Events.MostRecentEventsForDeploymentRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<MostRecentEventsForDeploymentRequest> PARSER;
+
+    public static com.google.protobuf.Parser<MostRecentEventsForDeploymentRequest> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
 
   static {
   }

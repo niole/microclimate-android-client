@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import api.DeploymentOuterClass
+import api.Events
 import api.PeripheralOuterClass
 import api.UserOuterClass.User
 import com.example.microclimates.api.Channels

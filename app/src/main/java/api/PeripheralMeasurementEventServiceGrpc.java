@@ -87,6 +87,66 @@ public final class PeripheralMeasurementEventServiceGrpc {
     return getFilterEventsMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<api.Events.DeletePeripheralEventsRequest,
+      api.EmptyOuterClass.Empty> getDeletePeripheralEventsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "DeletePeripheralEvents",
+      requestType = api.Events.DeletePeripheralEventsRequest.class,
+      responseType = api.EmptyOuterClass.Empty.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<api.Events.DeletePeripheralEventsRequest,
+      api.EmptyOuterClass.Empty> getDeletePeripheralEventsMethod() {
+    io.grpc.MethodDescriptor<api.Events.DeletePeripheralEventsRequest, api.EmptyOuterClass.Empty> getDeletePeripheralEventsMethod;
+    if ((getDeletePeripheralEventsMethod = PeripheralMeasurementEventServiceGrpc.getDeletePeripheralEventsMethod) == null) {
+      synchronized (PeripheralMeasurementEventServiceGrpc.class) {
+        if ((getDeletePeripheralEventsMethod = PeripheralMeasurementEventServiceGrpc.getDeletePeripheralEventsMethod) == null) {
+          PeripheralMeasurementEventServiceGrpc.getDeletePeripheralEventsMethod = getDeletePeripheralEventsMethod =
+              io.grpc.MethodDescriptor.<api.Events.DeletePeripheralEventsRequest, api.EmptyOuterClass.Empty>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "DeletePeripheralEvents"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.Events.DeletePeripheralEventsRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.EmptyOuterClass.Empty.getDefaultInstance()))
+              .build();
+        }
+      }
+    }
+    return getDeletePeripheralEventsMethod;
+  }
+
+  private static volatile io.grpc.MethodDescriptor<api.Events.MostRecentEventsForDeploymentRequest,
+      api.Events.MeasurementEvent> getMostRecentDeploymentEventsMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "MostRecentDeploymentEvents",
+      requestType = api.Events.MostRecentEventsForDeploymentRequest.class,
+      responseType = api.Events.MeasurementEvent.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+  public static io.grpc.MethodDescriptor<api.Events.MostRecentEventsForDeploymentRequest,
+      api.Events.MeasurementEvent> getMostRecentDeploymentEventsMethod() {
+    io.grpc.MethodDescriptor<api.Events.MostRecentEventsForDeploymentRequest, api.Events.MeasurementEvent> getMostRecentDeploymentEventsMethod;
+    if ((getMostRecentDeploymentEventsMethod = PeripheralMeasurementEventServiceGrpc.getMostRecentDeploymentEventsMethod) == null) {
+      synchronized (PeripheralMeasurementEventServiceGrpc.class) {
+        if ((getMostRecentDeploymentEventsMethod = PeripheralMeasurementEventServiceGrpc.getMostRecentDeploymentEventsMethod) == null) {
+          PeripheralMeasurementEventServiceGrpc.getMostRecentDeploymentEventsMethod = getMostRecentDeploymentEventsMethod =
+              io.grpc.MethodDescriptor.<api.Events.MostRecentEventsForDeploymentRequest, api.Events.MeasurementEvent>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.SERVER_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "MostRecentDeploymentEvents"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.Events.MostRecentEventsForDeploymentRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.Events.MeasurementEvent.getDefaultInstance()))
+              .build();
+        }
+      }
+    }
+    return getMostRecentDeploymentEventsMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -149,6 +209,20 @@ public final class PeripheralMeasurementEventServiceGrpc {
       asyncUnimplementedUnaryCall(getFilterEventsMethod(), responseObserver);
     }
 
+    /**
+     */
+    public void deletePeripheralEvents(api.Events.DeletePeripheralEventsRequest request,
+        io.grpc.stub.StreamObserver<api.EmptyOuterClass.Empty> responseObserver) {
+      asyncUnimplementedUnaryCall(getDeletePeripheralEventsMethod(), responseObserver);
+    }
+
+    /**
+     */
+    public void mostRecentDeploymentEvents(api.Events.MostRecentEventsForDeploymentRequest request,
+        io.grpc.stub.StreamObserver<api.Events.MeasurementEvent> responseObserver) {
+      asyncUnimplementedUnaryCall(getMostRecentDeploymentEventsMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -165,6 +239,20 @@ public final class PeripheralMeasurementEventServiceGrpc {
                 api.Events.MeasurementEventFilterRequest,
                 api.Events.MeasurementEvent>(
                   this, METHODID_FILTER_EVENTS)))
+          .addMethod(
+            getDeletePeripheralEventsMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                api.Events.DeletePeripheralEventsRequest,
+                api.EmptyOuterClass.Empty>(
+                  this, METHODID_DELETE_PERIPHERAL_EVENTS)))
+          .addMethod(
+            getMostRecentDeploymentEventsMethod(),
+            asyncServerStreamingCall(
+              new MethodHandlers<
+                api.Events.MostRecentEventsForDeploymentRequest,
+                api.Events.MeasurementEvent>(
+                  this, METHODID_MOST_RECENT_DEPLOYMENT_EVENTS)))
           .build();
     }
   }
@@ -198,6 +286,22 @@ public final class PeripheralMeasurementEventServiceGrpc {
       asyncServerStreamingCall(
           getChannel().newCall(getFilterEventsMethod(), getCallOptions()), request, responseObserver);
     }
+
+    /**
+     */
+    public void deletePeripheralEvents(api.Events.DeletePeripheralEventsRequest request,
+        io.grpc.stub.StreamObserver<api.EmptyOuterClass.Empty> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getDeletePeripheralEventsMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public void mostRecentDeploymentEvents(api.Events.MostRecentEventsForDeploymentRequest request,
+        io.grpc.stub.StreamObserver<api.Events.MeasurementEvent> responseObserver) {
+      asyncServerStreamingCall(
+          getChannel().newCall(getMostRecentDeploymentEventsMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -228,6 +332,21 @@ public final class PeripheralMeasurementEventServiceGrpc {
       return blockingServerStreamingCall(
           getChannel(), getFilterEventsMethod(), getCallOptions(), request);
     }
+
+    /**
+     */
+    public api.EmptyOuterClass.Empty deletePeripheralEvents(api.Events.DeletePeripheralEventsRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getDeletePeripheralEventsMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public java.util.Iterator<api.Events.MeasurementEvent> mostRecentDeploymentEvents(
+        api.Events.MostRecentEventsForDeploymentRequest request) {
+      return blockingServerStreamingCall(
+          getChannel(), getMostRecentDeploymentEventsMethod(), getCallOptions(), request);
+    }
   }
 
   /**
@@ -251,10 +370,20 @@ public final class PeripheralMeasurementEventServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getSendEventMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<api.EmptyOuterClass.Empty> deletePeripheralEvents(
+        api.Events.DeletePeripheralEventsRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getDeletePeripheralEventsMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_SEND_EVENT = 0;
   private static final int METHODID_FILTER_EVENTS = 1;
+  private static final int METHODID_DELETE_PERIPHERAL_EVENTS = 2;
+  private static final int METHODID_MOST_RECENT_DEPLOYMENT_EVENTS = 3;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -279,6 +408,14 @@ public final class PeripheralMeasurementEventServiceGrpc {
           break;
         case METHODID_FILTER_EVENTS:
           serviceImpl.filterEvents((api.Events.MeasurementEventFilterRequest) request,
+              (io.grpc.stub.StreamObserver<api.Events.MeasurementEvent>) responseObserver);
+          break;
+        case METHODID_DELETE_PERIPHERAL_EVENTS:
+          serviceImpl.deletePeripheralEvents((api.Events.DeletePeripheralEventsRequest) request,
+              (io.grpc.stub.StreamObserver<api.EmptyOuterClass.Empty>) responseObserver);
+          break;
+        case METHODID_MOST_RECENT_DEPLOYMENT_EVENTS:
+          serviceImpl.mostRecentDeploymentEvents((api.Events.MostRecentEventsForDeploymentRequest) request,
               (io.grpc.stub.StreamObserver<api.Events.MeasurementEvent>) responseObserver);
           break;
         default:
@@ -308,6 +445,8 @@ public final class PeripheralMeasurementEventServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .addMethod(getSendEventMethod())
               .addMethod(getFilterEventsMethod())
+              .addMethod(getDeletePeripheralEventsMethod())
+              .addMethod(getMostRecentDeploymentEventsMethod())
               .build();
         }
       }

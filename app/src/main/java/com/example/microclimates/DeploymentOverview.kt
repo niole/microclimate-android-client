@@ -11,17 +11,22 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Transformations
+import api.Events
 import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import kotlinx.android.synthetic.main.fragment_peripheral.view.*
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class DeploymentOverview : Fragment() {
 
     private val LOG_TAG = "DeploymentOverview"
-    private var listAdapter: ArrayAdapter<PeripheralOuterClass.Peripheral>? = null
+    private var listAdapter: ArrayAdapter<LivePeripheralModel>? = null
     private val coreViewModel: CoreStateViewModel by activityViewModels()
+    private val model : DeploymentOverviewViewModel by viewModels()
 
     companion object {
         fun newInstance(): Fragment = DeploymentOverview()
@@ -50,6 +55,11 @@ class DeploymentOverview : Fragment() {
                 Log.w(LOG_TAG, "Couldn't remove peripheral with id $peripheralId, because didn't exist in view model.")
             }
         }
+
+        model.getConnectedPeripherals().observe({ lifecycle }) {
+            listAdapter?.clear()
+            listAdapter?.addAll(it)
+        }
     }
 
     override fun onCreateView(
@@ -59,9 +69,9 @@ class DeploymentOverview : Fragment() {
         val parentLayout = inflater.inflate(R.layout.deployment_overview_fragment, container, false)
         var resourceId: Int = R.layout.fragment_peripheral
 
-        val adapterPeripherals = mutableListOf<PeripheralOuterClass.Peripheral>()
+        val adapterPeripherals = mutableListOf<LivePeripheralModel>()
 
-        listAdapter = object : ArrayAdapter<PeripheralOuterClass.Peripheral>(activity, resourceId, adapterPeripherals) {
+        listAdapter = object : ArrayAdapter<LivePeripheralModel>(activity, resourceId, adapterPeripherals) {
             override fun getCount(): Int {
                 val total = adapterPeripherals?.size
                 if (total != null) {
@@ -82,7 +92,7 @@ class DeploymentOverview : Fragment() {
                 val peripheral = getItem(position)
                 baseView.peripheral_name.text = peripheral.name
                 baseView.peripheral_type.text = peripheral.type.toString()
-                baseView.last_received_event_time.text = "unknown"
+                baseView.last_received_event_time.text = peripheral.lastEvent?.toString() ?: "unknown"
                 baseView.remove_peripheral_button.setOnClickListener {
                     val confirmModal = ConfirmRemovePeripheralDialog().apply {
                         arguments = Bundle().apply {
@@ -125,9 +135,29 @@ class DeploymentOverview : Fragment() {
             }
         }
 
-        coreViewModel.getPeripherals().observe({ lifecycle }) {
-            listAdapter?.clear()
-            listAdapter?.addAll(it)
+        coreViewModel.getPeripherals().observe({ lifecycle }) { peripherals ->
+            val deployment = coreViewModel.getDeployment().value
+            if (deployment != null) {
+                val eventsChannel = Channels.eventsChannel()
+                val stub = Stubs.eventsStub(eventsChannel)
+                val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
+                val events = stub.mostRecentDeploymentEvents(request).asSequence()
+
+                val newPeripherals = peripherals.map { p ->
+                    val lastEvent = events.find { event -> event.peripheralId == p.id }
+                    LivePeripheralModel(
+                        id = p.id,
+                        name = p.name,
+                        type = p.type.toString(),
+                        lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null
+                    )
+                }
+
+                model.setNewConnectedPeripherals(newPeripherals)
+
+                eventsChannel.shutdown()
+                eventsChannel.awaitTermination(5, TimeUnit.SECONDS)
+            }
         }
     }
 
