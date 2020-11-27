@@ -76,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             override fun onFailure(t: Throwable) {
                 Log.e(LOG_TAG, "Failed to get user, message: ${t.message}, cause: ${t.cause}")
                 userChannel.shutdown()
-                userChannel.awaitTermination(1, TimeUnit.SECONDS)
+                userChannel.awaitTermination(5, TimeUnit.SECONDS)
             }
         }, MoreExecutors.directExecutor())
     }

@@ -138,25 +138,29 @@ class DeploymentOverview : Fragment() {
         coreViewModel.getPeripherals().observe({ lifecycle }) { peripherals ->
             val deployment = coreViewModel.getDeployment().value
             if (deployment != null) {
-                val eventsChannel = Channels.eventsChannel()
-                val stub = Stubs.eventsStub(eventsChannel)
-                val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
-                val events = stub.mostRecentDeploymentEvents(request).asSequence()
+                Thread {
+                    val eventsChannel = Channels.eventsChannel()
+                    val stub = Stubs.eventsStub(eventsChannel)
+                    val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
+                    val events = stub.mostRecentDeploymentEvents(request).asSequence()
 
-                val newPeripherals = peripherals.map { p ->
-                    val lastEvent = events.find { event -> event.peripheralId == p.id }
-                    LivePeripheralModel(
-                        id = p.id,
-                        name = p.name,
-                        type = p.type.toString(),
-                        lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null
-                    )
-                }
+                    val newPeripherals = peripherals.map { p ->
+                        val lastEvent = events.find { event -> event.peripheralId == p.id }
+                        LivePeripheralModel(
+                            id = p.id,
+                            name = p.name,
+                            type = p.type.toString(),
+                            lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null
+                        )
+                    }
 
-                model.setNewConnectedPeripherals(newPeripherals)
+                    view?.post {
+                        model.setNewConnectedPeripherals(newPeripherals)
+                    }
 
-                eventsChannel.shutdown()
-                eventsChannel.awaitTermination(5, TimeUnit.SECONDS)
+                    eventsChannel.shutdown()
+                    eventsChannel.awaitTermination(5, TimeUnit.SECONDS)
+                }.start()
             }
         }
     }
