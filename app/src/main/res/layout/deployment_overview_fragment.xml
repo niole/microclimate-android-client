@@ -48,11 +48,19 @@
         </LinearLayout>
     </LinearLayout>
     <TextView
+            android:layout_gravity="center"
             android:text="Peripherals"
             android:textSize="28dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20sp"/>
+            android:layout_height="wrap_content" />
+    <TextView
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_margin="20sp"
+            android:id="@+id/empty_connected_peripherals_message"
+            android:text="Pair a peripheral in the setup view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     <ListView
             android:padding="20dp"
             android:id="@+id/peripherals"

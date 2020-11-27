@@ -16,6 +16,7 @@ import api.Events
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import kotlinx.android.synthetic.main.fragment_peripheral.view.*
+import org.w3c.dom.Text
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -75,6 +76,7 @@ class DeploymentOverview : Fragment() {
                 if (total != null) {
                     return total
                 }
+
                 return 0
             }
             override fun getItemId(position: Int): Long {
@@ -134,6 +136,13 @@ class DeploymentOverview : Fragment() {
         }
 
         coreViewModel.getPeripherals().observe({ lifecycle }) { peripherals ->
+
+            if (peripherals.size == 0) {
+                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.VISIBLE
+            } else {
+                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.GONE
+            }
+
             val deployment = coreViewModel.getDeployment().value
             if (deployment != null) {
                 Thread {
