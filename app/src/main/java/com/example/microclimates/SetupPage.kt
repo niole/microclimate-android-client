@@ -187,27 +187,10 @@ class SetupPage : Fragment() {
     private fun setupPeripheralList(viewModel: SetupPageViewModel): PeripheralListViewAdapter {
         val listAdaper = PeripheralListViewAdapter(
             viewModel,
-            peripheralSetupClient,
             requireActivity(),
             R.layout.pair_management_buttons,
-            devices,
-            { hardwareId ->
-                val deploymentId = parentViewModel.getDeployment().value?.id
-                val ownerId = parentViewModel.getOwner().value?.id
-                val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
-                    putExtra("hardwareId", hardwareId)
-                    putExtra("deploymentId", deploymentId)
-                    putExtra("ownerId", ownerId)
-                }
-
-                if (deploymentId != null && ownerId != null) {
-                    activity?.startActivity(intent)
-                } else {
-                    Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
-                    Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
-                }
-            }
-        )
+            devices
+        ) { device -> handleDeviceSetup(device) }
         val listView = parentLayout.findViewById(R.id.peripherals_list) as ListView
         listView.adapter = listAdaper
         return listAdaper
@@ -271,5 +254,32 @@ class SetupPage : Fragment() {
         }
 
         return pageViewModel
+    }
+
+    private fun handleDeviceSetup(device: BluetoothDevice): Unit {
+        device.createBond()
+        Thread(Runnable {
+            peripheralSetupClient.setupDevice(
+                parentViewModel.getDeployment().value?.id!!,
+                device,
+                { hardwareId ->
+                    val deploymentId = parentViewModel.getDeployment().value?.id
+                    val ownerId = parentViewModel.getOwner().value?.id
+                    val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
+                        putExtra("hardwareId", hardwareId)
+                        putExtra("deploymentId", deploymentId)
+                        putExtra("ownerId", ownerId)
+                    }
+
+                    if (deploymentId != null && ownerId != null) {
+                        activity?.startActivity(intent)
+                    } else {
+                        Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
+                        Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
+                    }
+                },
+            )
+        }).start()
+
     }
 }

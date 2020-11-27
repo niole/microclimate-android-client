@@ -49,10 +49,10 @@ public final class Events {
         getDeploymentIdBytes();
 
     /**
-     * <code>int32 value = 4;</code>
+     * <code>float value = 4;</code>
      * @return The value.
      */
-    int getValue();
+    float getValue();
 
     /**
      * <code>.google.protobuf.Timestamp time_stamp = 5;</code>
@@ -220,29 +220,29 @@ public final class Events {
     }
 
     public static final int VALUE_FIELD_NUMBER = 4;
-    private int value_;
+    private float value_;
     /**
-     * <code>int32 value = 4;</code>
+     * <code>float value = 4;</code>
      * @return The value.
      */
     @java.lang.Override
-    public int getValue() {
+    public float getValue() {
       return value_;
     }
     /**
-     * <code>int32 value = 4;</code>
+     * <code>float value = 4;</code>
      * @param value The value to set.
      */
-    private void setValue(int value) {
+    private void setValue(float value) {
       
       value_ = value;
     }
     /**
-     * <code>int32 value = 4;</code>
+     * <code>float value = 4;</code>
      */
     private void clearValue() {
       
-      value_ = 0;
+      value_ = 0F;
     }
 
     public static final int TIME_STAMP_FIELD_NUMBER = 5;
@@ -534,25 +534,25 @@ public final class Events {
       }
 
       /**
-       * <code>int32 value = 4;</code>
+       * <code>float value = 4;</code>
        * @return The value.
        */
       @java.lang.Override
-      public int getValue() {
+      public float getValue() {
         return instance.getValue();
       }
       /**
-       * <code>int32 value = 4;</code>
+       * <code>float value = 4;</code>
        * @param value The value to set.
        * @return This builder for chaining.
        */
-      public Builder setValue(int value) {
+      public Builder setValue(float value) {
         copyOnWrite();
         instance.setValue(value);
         return this;
       }
       /**
-       * <code>int32 value = 4;</code>
+       * <code>float value = 4;</code>
        * @return This builder for chaining.
        */
       public Builder clearValue() {
@@ -632,7 +632,7 @@ public final class Events {
             };
             java.lang.String info =
                 "\u0000\u0005\u0000\u0000\u0001\u0005\u0005\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
-                "\u0003\u0208\u0004\u0004\u0005\t";
+                "\u0003\u0208\u0004\u0001\u0005\t";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }
         // fall through
@@ -716,10 +716,10 @@ public final class Events {
         getDeploymentIdBytes();
 
     /**
-     * <code>int32 value = 3;</code>
+     * <code>float value = 3;</code>
      * @return The value.
      */
-    int getValue();
+    float getValue();
 
     /**
      * <code>.google.protobuf.Timestamp time_stamp = 4;</code>
@@ -839,29 +839,29 @@ public final class Events {
     }
 
     public static final int VALUE_FIELD_NUMBER = 3;
-    private int value_;
+    private float value_;
     /**
-     * <code>int32 value = 3;</code>
+     * <code>float value = 3;</code>
      * @return The value.
      */
     @java.lang.Override
-    public int getValue() {
+    public float getValue() {
       return value_;
     }
     /**
-     * <code>int32 value = 3;</code>
+     * <code>float value = 3;</code>
      * @param value The value to set.
      */
-    private void setValue(int value) {
+    private void setValue(float value) {
       
       value_ = value;
     }
     /**
-     * <code>int32 value = 3;</code>
+     * <code>float value = 3;</code>
      */
     private void clearValue() {
       
-      value_ = 0;
+      value_ = 0F;
     }
 
     public static final int TIME_STAMP_FIELD_NUMBER = 4;
@@ -1104,25 +1104,25 @@ public final class Events {
       }
 
       /**
-       * <code>int32 value = 3;</code>
+       * <code>float value = 3;</code>
        * @return The value.
        */
       @java.lang.Override
-      public int getValue() {
+      public float getValue() {
         return instance.getValue();
       }
       /**
-       * <code>int32 value = 3;</code>
+       * <code>float value = 3;</code>
        * @param value The value to set.
        * @return This builder for chaining.
        */
-      public Builder setValue(int value) {
+      public Builder setValue(float value) {
         copyOnWrite();
         instance.setValue(value);
         return this;
       }
       /**
-       * <code>int32 value = 3;</code>
+       * <code>float value = 3;</code>
        * @return This builder for chaining.
        */
       public Builder clearValue() {
@@ -1201,7 +1201,7 @@ public final class Events {
             };
             java.lang.String info =
                 "\u0000\u0004\u0000\u0000\u0001\u0004\u0004\u0000\u0000\u0000\u0001\u0208\u0002\u0208" +
-                "\u0003\u0004\u0004\t";
+                "\u0003\u0001\u0004\t";
             return newMessageInfo(DEFAULT_INSTANCE, info, objects);
         }
         // fall through

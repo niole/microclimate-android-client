@@ -27,10 +27,6 @@ class SetupPageViewModel : ViewModel() {
         return foundDevices
     }
 
-    fun setDevices(devices: Map<String, DeviceViewModel>): Unit {
-        foundDevices.value = devices
-    }
-
     fun getBluetoothEnabled(): LiveData<Boolean> {
         return bluetoothEnabled
     }

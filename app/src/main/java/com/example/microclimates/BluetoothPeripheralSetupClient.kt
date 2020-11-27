@@ -13,17 +13,19 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private var connectedSocket: BluetoothSocket? = null
 
-    fun setupDevice(device: BluetoothDevice, onSuccess: (String) -> Unit) {
-        val host = getHost()
+    fun setupDevice(deploymentId: String, device: BluetoothDevice, onSuccess: (String) -> Unit) {
         val hardwareId = UUID.randomUUID().toString()
-        val message = Json.encodeToString(PeripheralConfiguration(host, hardwareId))
+
+        val message = Json.encodeToString(
+            PeripheralConfiguration(
+                domain="192.168.1.162:6004",
+                peripheralId = hardwareId,
+                deploymentId = deploymentId
+            )
+        )
         sendMessage(message, device, {
             onSuccess(hardwareId)
         })
-    }
-
-    private fun getHost(): String {
-        return "ec2-35-161-83-246.us-west-2.compute.amazonaws.com" // TODO generate
     }
 
     private fun sendMessage(message: String, device: BluetoothDevice, onSuccess: () -> Unit): Unit {

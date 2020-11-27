@@ -1,6 +1,7 @@
 package com.example.microclimates
 
 import android.app.Activity
+import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,11 +13,10 @@ import android.widget.TextView
 
 class PeripheralListViewAdapter(
     val pageViewModel: SetupPageViewModel,
-    val peripheralSetupClient: BluetoothPeripheralSetupClient,
     activity: Activity,
     val resourceId: Int,
     val peripherals: List<DeviceViewModel>?,
-    val onSetupSuccess: (String) -> Unit
+    val handleDeviceSetup: (BluetoothDevice) -> Unit
 ) : ArrayAdapter<DeviceViewModel?>(activity, resourceId, peripherals) {
 
     override fun getCount(): Int {
@@ -50,10 +50,7 @@ class PeripheralListViewAdapter(
             }
 
             buttons.findViewById<Button>(R.id.pair_button).setOnClickListener {
-                device.createBond()
-                Thread(Runnable {
-                    peripheralSetupClient.setupDevice(device, onSetupSuccess)
-                }).start()
+                handleDeviceSetup(device)
             }
             buttons.findViewById<Button>(R.id.remove_button).setOnClickListener {
                 pageViewModel.removeDevice(viewModel)
