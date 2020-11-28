@@ -81,7 +81,8 @@ class DeploymentOverview : Fragment() {
                             id = p.id,
                             name = p.name,
                             type = p.type.toString(),
-                            lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null
+                            lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null,
+                            lastReading = if (lastEvent != null) "${lastEvent.value} ${p.unit}" else null
                         )
                     }
 
@@ -128,7 +129,12 @@ class DeploymentOverview : Fragment() {
                 val peripheral = getItem(position)
                 baseView.peripheral_name.text = peripheral?.name
                 baseView.peripheral_type.text = peripheral?.type.toString()
-                baseView.last_received_event_time.text = peripheral?.lastEvent?.toString() ?: "unknown"
+                baseView.last_received_event.text = if (peripheral?.lastEvent != null && peripheral?.lastReading != null) {
+                    "${peripheral.lastReading} on ${peripheral.lastEvent} "
+                } else {
+                    "No readings yet"
+                }
+
                 baseView.remove_peripheral_button.setOnClickListener {
                     val confirmModal = ConfirmRemovePeripheralDialog().apply {
                         arguments = Bundle().apply {

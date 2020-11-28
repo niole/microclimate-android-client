@@ -6,5 +6,6 @@ data class LivePeripheralModel(
     val id: String,
     val name: String,
     val type: String,
-    val lastEvent: Date?
+    val lastEvent: Date?,
+    val lastReading: String?
 )
