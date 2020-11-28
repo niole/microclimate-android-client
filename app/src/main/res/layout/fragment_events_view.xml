@@ -5,37 +5,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".EventsView">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
 
-        <Spinner
-                android:layout_marginBottom="40dp"
-                android:id="@+id/peripheral_events_selector"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        <TextView
-                android:id="@+id/peripheral_details"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-    </LinearLayout>
+            <Spinner
+                    android:layout_marginBottom="40dp"
+                    android:id="@+id/peripheral_events_selector"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            <TextView
+                    android:id="@+id/peripheral_details"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:id="@+id/date_pickers"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-        <FrameLayout
-                android:id="@+id/start_picker"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:id="@+id/date_pickers"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        <FrameLayout
-                android:id="@+id/end_picker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content">
+            <FrameLayout
+                    android:id="@+id/start_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            <FrameLayout
+                    android:id="@+id/end_picker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+        </LinearLayout>
     </LinearLayout>
     <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart_ui"

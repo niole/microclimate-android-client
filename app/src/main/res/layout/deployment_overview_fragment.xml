@@ -5,54 +5,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".DeploymentOverview">
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:padding="20dp"
-            android:orientation="vertical"
-            xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-
-        <LinearLayout
-                android:layout_width="match_parent"
+        <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hello" />
-
-            <TextView
-                    android:id="@+id/user_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20sp"
-                    android:textSize="28dp" />
-        </LinearLayout>
-
-        <LinearLayout
-                android:layout_width="match_parent"
+                android:text="hello " />
+        <TextView
+                android:id="@+id/user_name"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-            <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Deployment Name" />
-
-            <TextView
-                    android:id="@+id/deployment_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20sp"
-                    android:textSize="28dp" />
-        </LinearLayout>
+                android:textSize="32dp" />
     </LinearLayout>
-    <TextView
+    <LinearLayout
+            android:orientation="vertical"
             android:layout_gravity="center"
-            android:text="Peripherals"
-            android:textSize="28dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content">
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="these are the sensors for your deployment, " />
+        <TextView
+                android:layout_gravity="center"
+                android:id="@+id/deployment_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="32dp" />
+    </LinearLayout>
     <TextView
             android:visibility="gone"
             android:layout_gravity="center"
@@ -62,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     <ListView
+            android:divider="@null"
             android:padding="20dp"
             android:id="@+id/peripherals"
             android:layout_width="match_parent"

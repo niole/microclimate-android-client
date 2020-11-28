@@ -1,56 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
-        app:strokeWidth="1dp"
-        app:strokeColor="@drawable/stroke_color"
-        app:cardElevation="5dp"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
+<RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:padding="20dp"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    <TextView
-            android:textAppearance="?attr/textAppearanceHeadline6"
-            android:id="@+id/device_name"
-            android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+    <com.google.android.material.card.MaterialCardView
+            android:layout_margin="20dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@drawable/stroke_color"
+            app:cardElevation="5dp"
             android:layout_height="wrap_content"
-            android:text="unnamed"></TextView>
-
-    <TextView
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:id="@+id/device_address"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="address unknown"></TextView>
-
-    <TextView
-            android:textAppearance="?attr/textAppearanceBody2"
-            android:id="@+id/pair_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="status unknown"></TextView>
-
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:padding="20dp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <Button
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:id="@+id/pair_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Setup"></Button>
+            android:orientation="vertical">
 
-        <Button
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:id="@+id/remove_button"
-                android:layout_width="wrap_content"
+        <TextView
+                android:textAppearance="?attr/textAppearanceHeadline6"
+                android:id="@+id/device_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Remove"></Button>
+                android:text="unnamed"></TextView>
+
+        <TextView
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:id="@+id/device_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="address unknown"></TextView>
+
+        <TextView
+                android:textAppearance="?attr/textAppearanceBody2"
+                android:id="@+id/pair_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="status unknown"></TextView>
+        <com.google.android.material.button.MaterialButtonToggleGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <Button
+                    android:id="@+id/pair_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Setup"></Button>
+            <Button
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="Dismiss"
+                    android:id="@+id/remove_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/round_clear_black_24dp"/>
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
     </LinearLayout>
-</LinearLayout>
-</com.google.android.material.card.MaterialCardView>
+    </com.google.android.material.card.MaterialCardView>
+</RelativeLayout>
