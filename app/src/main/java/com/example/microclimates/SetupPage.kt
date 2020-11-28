@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -242,7 +243,7 @@ class SetupPage : Fragment() {
     }
 
     fun doOrWarnIfActivityNotExists(block: (activity: Activity) -> Unit, warning: String): Unit {
-        getOrWarn<Activity>(activity, block, warning)
+        getOrWarn<FragmentActivity>(activity, block, warning)
     }
 
     fun <T>getOrWarn(o: T?, block: (o: T) -> Unit, warning: String? = null): Unit {
