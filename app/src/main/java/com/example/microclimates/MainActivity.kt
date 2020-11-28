@@ -1,5 +1,6 @@
 package com.example.microclimates
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         val model: CoreStateViewModel by viewModels()
-        val email = "niolenelson@gmail.com"
+        val email = intent.getStringExtra("email")
         val mainHandler = Handler(baseContext.mainLooper)
 
         val request = UserOuterClass.GetUserByEmailRequest
@@ -128,6 +129,5 @@ class MainActivity : AppCompatActivity() {
         }
         return null
     }
-
 
 }
