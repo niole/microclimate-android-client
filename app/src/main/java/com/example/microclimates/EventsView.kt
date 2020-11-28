@@ -105,15 +105,7 @@ class EventsView : Fragment() {
         }.observe({ lifecycle }) {peripherals ->
             val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)
             if (spinner != null) {
-                val adapter = object : ArrayAdapter<PeripheralOuterClass.Peripheral>(requireContext(), R.layout.peripheral_spinner_item, peripherals) {
-                    override fun getCount(): Int {
-                        return peripherals.size
-                    }
-
-                    override fun getItemId(position: Int): Long {
-                        return position.toLong()
-                    }
-
+                spinner.adapter = object : ArrayAdapter<PeripheralOuterClass.Peripheral>(requireContext(), R.layout.peripheral_spinner_item, peripherals) {
                     override fun getDropDownView(
                         position: Int,
                         convertView: View?,
@@ -131,8 +123,6 @@ class EventsView : Fragment() {
                     }
                 }
 
-                spinner.adapter = adapter
-
                 spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
                     override fun onNothingSelected(parent: AdapterView<*>?) {}
                     override fun onItemSelected(
@@ -145,6 +135,9 @@ class EventsView : Fragment() {
                     }
                 })
             }
+
+            val selectedPeripheral = model.getEventSlice().value?.second
+            spinner.setSelection(Math.max(peripherals.indexOf(selectedPeripheral), 0))
         }
 
         return inflatedView
