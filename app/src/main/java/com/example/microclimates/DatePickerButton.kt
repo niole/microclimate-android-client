@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
@@ -33,10 +34,11 @@ class DatePickerButton : Fragment() {
     companion object {
         val DEFAULT_VALUE_ARG_KEY = "defaultValue"
 
-        fun newInstance(defaultDate: String): Fragment {
+        fun newInstance(defaultDate: String, label: String?): DatePickerButton {
             return DatePickerButton().apply {
                 arguments = Bundle().apply {
                     putString(DEFAULT_VALUE_ARG_KEY, defaultDate)
+                    putString("label", label)
                 }
             }
         }
@@ -80,7 +82,9 @@ class DatePickerButton : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val layout = inflater.inflate(R.layout.date_picker_button_fragment, container)
+        val layout = inflater.inflate(R.layout.date_picker_button_fragment, container, false)
+
+        layout.findViewById<TextView>(R.id.label).text = arguments?.getString("label")
 
         model.getSelectedDate().observe({ lifecycle }) { selectedDate ->
             val button = layout.findViewById<Button>(R.id.date_value_button)

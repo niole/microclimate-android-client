@@ -23,6 +23,9 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.protobuf.Timestamp
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.Period
+import java.time.temporal.TemporalUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -31,17 +34,26 @@ class EventsView : Fragment() {
     private val lineColors = listOf(Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK)
     private val coreStateViewModel: CoreStateViewModel by activityViewModels()
     private val model: EventsViewViewModel by viewModels()
-    private val defaultFilterDate = Date(Calendar.getInstance().timeInMillis)
+
+    lateinit var defaultStartDate: Date
+    private val defaultEndDate: Date = Calendar.getInstance().time
+
+    init {
+        val startDate = Calendar.getInstance()
+        startDate.add(Calendar.DAY_OF_MONTH, -1)
+        defaultStartDate = startDate.time
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         if (model.getEndDate().value == null) {
-            model.setEndDate(defaultFilterDate)
+            model.setEndDate(defaultEndDate)
         }
 
         if (model.getStartDate().value == null) {
-            model.setStartDate(defaultFilterDate)
+            model.setStartDate(defaultStartDate)
         }
 
         model.getSelectedPeripheral().observe({ lifecycle }) {
@@ -87,7 +99,8 @@ class EventsView : Fragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val inflatedView = inflater.inflate(R.layout.fragment_events_view, container, false)
@@ -95,15 +108,19 @@ class EventsView : Fragment() {
         val deployment = coreStateViewModel.getDeployment().value
         val peripherals = coreStateViewModel.getPeripherals().value
 
-        childFragmentManager.findFragmentById(R.id.start_picker)?.arguments = Bundle().apply {
-            putString("defaultValue", DateRangePicker.parser.format(defaultFilterDate))
-        }
+        val endDate = model.getEndDate().value ?: defaultEndDate
+        val startDate = model.getStartDate().value ?: defaultStartDate
 
-        childFragmentManager.findFragmentById(R.id.end_picker)?.arguments = Bundle().apply {
-            putString("defaultValue", DateRangePicker.parser.format(defaultFilterDate))
-        }
+        val startButton = DatePickerButton.newInstance(DateRangePicker.parser.format(startDate.time), "from: ")
+        val endButton = DatePickerButton.newInstance(DateRangePicker.parser.format(endDate.time), "to: ")
 
-        (childFragmentManager.findFragmentById(R.id.start_picker) as DatePickerButton).setOnChangeListener {
+        val t = childFragmentManager.beginTransaction()
+        t.add(R.id.date_pickers, startButton)
+        t.add(R.id.date_pickers, endButton)
+        t.addToBackStack(null)
+        t.commit()
+
+        startButton.setOnChangeListener {
             val endDate = model.getEndDate().value
             if (endDate != null && it > endDate) {
                 throw IllegalArgumentException("Start date must come before end date")
@@ -112,7 +129,7 @@ class EventsView : Fragment() {
             }
         }
 
-        (childFragmentManager.findFragmentById(R.id.end_picker) as DatePickerButton).setOnChangeListener {
+        endButton.setOnChangeListener {
             val startDate = model.getStartDate().value
             if (startDate != null && it < startDate) {
                 throw IllegalArgumentException("End date must come after start date")
@@ -169,12 +186,12 @@ class EventsView : Fragment() {
             try {
                 val startTime = Timestamp
                     .newBuilder()
-                    .setSeconds((startDate?.time ?: defaultFilterDate.time) / 1000)
+                    .setSeconds((startDate?.time ?: defaultStartDate.time) / 1000)
                     .build()
 
                 val endTime = Timestamp
                     .newBuilder()
-                    .setSeconds((endDate?.time ?: defaultFilterDate.time) / 1000)
+                    .setSeconds((endDate?.time ?: defaultEndDate.time) / 1000)
                     .build()
 
                 val filterRequest = Events.MeasurementEventFilterRequest

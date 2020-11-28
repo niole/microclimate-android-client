@@ -55,10 +55,42 @@ class DeploymentOverview : Fragment() {
             }
         }
 
-        model.getConnectedPeripherals().observe({ lifecycle }) {
-            listAdapter?.clear()
-            listAdapter?.addAll(it)
+        coreViewModel.getPeripherals().observe({ lifecycle }) { peripherals ->
+
+            if (peripherals.size == 0) {
+                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.VISIBLE
+            } else {
+                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.GONE
+            }
+
+            val deployment = coreViewModel.getDeployment().value
+            if (deployment != null) {
+                Thread {
+                    val eventsChannel = Channels.eventsChannel()
+                    val stub = Stubs.eventsStub(eventsChannel)
+                    val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
+                    val events = stub.mostRecentDeploymentEvents(request).asSequence()
+
+                    val newPeripherals = peripherals.map { p ->
+                        val lastEvent = events.find { event -> event.peripheralId == p.id }
+                        LivePeripheralModel(
+                            id = p.id,
+                            name = p.name,
+                            type = p.type.toString(),
+                            lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null
+                        )
+                    }
+
+                    view?.post {
+                        model.setNewConnectedPeripherals(newPeripherals)
+                    }
+
+                    eventsChannel.shutdown()
+                    eventsChannel.awaitTermination(5, TimeUnit.SECONDS)
+                }.start()
+            }
         }
+
     }
 
     override fun onCreateView(
@@ -108,19 +140,10 @@ class DeploymentOverview : Fragment() {
         val listView = parentLayout.findViewById(R.id.peripherals) as ListView
         listView.adapter = listAdapter
 
-        return parentLayout
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val existingDeployment = coreViewModel.getDeployment().value
-        if (existingDeployment != null) {
-            coreViewModel.refetchDeploymentPeripherals(existingDeployment.id)
+        model.getConnectedPeripherals().observe({ lifecycle }) {
+            listAdapter?.clear()
+            listAdapter?.addAll(it)
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
 
         coreViewModel.getOwner().observe({ lifecycle }) { user ->
             if (user != null) {
@@ -135,40 +158,14 @@ class DeploymentOverview : Fragment() {
             }
         }
 
-        coreViewModel.getPeripherals().observe({ lifecycle }) { peripherals ->
+        return parentLayout
+    }
 
-            if (peripherals.size == 0) {
-                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.VISIBLE
-            } else {
-                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.GONE
-            }
-
-            val deployment = coreViewModel.getDeployment().value
-            if (deployment != null) {
-                Thread {
-                    val eventsChannel = Channels.eventsChannel()
-                    val stub = Stubs.eventsStub(eventsChannel)
-                    val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
-                    val events = stub.mostRecentDeploymentEvents(request).asSequence()
-
-                    val newPeripherals = peripherals.map { p ->
-                        val lastEvent = events.find { event -> event.peripheralId == p.id }
-                        LivePeripheralModel(
-                            id = p.id,
-                            name = p.name,
-                            type = p.type.toString(),
-                            lastEvent = if (lastEvent != null) Date(lastEvent.timeStamp.seconds * 1000) else null
-                        )
-                    }
-
-                    view?.post {
-                        model.setNewConnectedPeripherals(newPeripherals)
-                    }
-
-                    eventsChannel.shutdown()
-                    eventsChannel.awaitTermination(5, TimeUnit.SECONDS)
-                }.start()
-            }
+    override fun onResume() {
+        super.onResume()
+        val existingDeployment = coreViewModel.getDeployment().value
+        if (existingDeployment != null) {
+            coreViewModel.refetchDeploymentPeripherals(existingDeployment.id)
         }
     }
 
