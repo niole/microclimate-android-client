@@ -105,9 +105,32 @@ class EventsView : Fragment() {
         }.observe({ lifecycle }) {peripherals ->
             val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)
             if (spinner != null) {
-                // TODO names are not unique
-                val peripheralNames = peripherals.map { it.name }
-                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, peripheralNames)
+                val adapter = object : ArrayAdapter<PeripheralOuterClass.Peripheral>(requireContext(), R.layout.peripheral_spinner_item, peripherals) {
+                    override fun getCount(): Int {
+                        return peripherals.size
+                    }
+
+                    override fun getItemId(position: Int): Long {
+                        return position.toLong()
+                    }
+
+                    override fun getDropDownView(
+                        position: Int,
+                        convertView: View?,
+                        parent: ViewGroup
+                    ): View {
+                        return getView(position, convertView, parent)
+                    }
+
+                    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                        val view = inflater.inflate(R.layout.peripheral_spinner_item, null)!!
+                        val p = getItem(position)
+                        view.findViewById<TextView>(R.id.name)?.text = p?.name
+                        view.findViewById<TextView>(R.id.ptype)?.text = " (${p?.unit})"
+                        return view
+                    }
+                }
+
                 spinner.adapter = adapter
 
                 spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {
@@ -118,13 +141,7 @@ class EventsView : Fragment() {
                         position: Int,
                         id: Long
                     ) {
-                        val selectedName = peripheralNames[position]
-                        val peripheral = peripherals.find { it.name == selectedName }
-                        val pType = peripheral?.type
-                        val pUnit = peripheral?.unit
-                        model.setSelectedPeripheral(peripheral)
-                        inflatedView.findViewById<TextView>(R.id.peripheral_details).text = "$pType ($pUnit)"
-
+                        model.setSelectedPeripheral(peripherals[position])
                     }
                 })
             }
