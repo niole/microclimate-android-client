@@ -28,6 +28,14 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+        <FrameLayout
+                android:id="@+id/start_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <FrameLayout
+                android:id="@+id/end_picker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
     </LinearLayout>
     <com.github.mikephil.charting.charts.LineChart
             android:id="@+id/line_chart_ui"

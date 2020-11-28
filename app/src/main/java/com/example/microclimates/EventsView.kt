@@ -93,6 +93,18 @@ class EventsView : Fragment() {
             }
         }
 
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val inflatedView = inflater.inflate(R.layout.fragment_events_view, container, false)
+
+        val deployment = coreStateViewModel.getDeployment().value
+        val peripherals = coreStateViewModel.getPeripherals().value
+
         val endDate = model.getEndDate().value ?: defaultEndDate
         val startDate = model.getStartDate().value ?: defaultStartDate
 
@@ -100,8 +112,8 @@ class EventsView : Fragment() {
         val endButton = DatePickerButton.newInstance(DateRangePicker.parser.format(endDate.time), "to: ")
 
         val t = childFragmentManager.beginTransaction()
-        t.add(R.id.date_pickers, startButton)
-        t.add(R.id.date_pickers, endButton)
+        t.replace(R.id.start_picker, startButton)
+        t.replace(R.id.end_picker, endButton)
         t.addToBackStack(null)
         t.commit()
 
@@ -122,17 +134,6 @@ class EventsView : Fragment() {
                 model.setEndDate(it)
             }
         }
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val inflatedView = inflater.inflate(R.layout.fragment_events_view, container, false)
-
-        val deployment = coreStateViewModel.getDeployment().value
-        val peripherals = coreStateViewModel.getPeripherals().value
 
         if (deployment != null && peripherals != null) {
             val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)
