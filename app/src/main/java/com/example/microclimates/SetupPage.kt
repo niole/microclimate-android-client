@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class SetupPage : Fragment() {
     companion object {
@@ -57,6 +58,9 @@ class SetupPage : Fragment() {
             viewModel
         )
         peripheralsListAdapter = setupPeripheralList(viewModel)
+
+        setupBluetoothButtons(parentLayout, bluetoothAdapter)
+
         viewModel.getBluetoothEnabled().observe({ lifecycle }) {
             if (it) {
                 setupBluetoothButtons(parentLayout, bluetoothAdapter)
@@ -75,8 +79,13 @@ class SetupPage : Fragment() {
             viewModel.updateDevice(device)
             Log.i(LOG_TAG, "Paired with ${device.name}.")
         }
-        bluetoothEvents.setOnDiscoveryStartedHandler { getDiscoverButton(parentLayout)?.text = "x" }
-        bluetoothEvents.setOnDiscoveryStoppecHandler { getDiscoverButton(parentLayout)?.text = "+" }
+        bluetoothEvents.setOnDiscoveryStartedHandler {
+            getDiscoverButton(parentLayout)?.icon = resources.getDrawable(R.drawable.round_clear_black_24dp)
+
+        }
+        bluetoothEvents.setOnDiscoveryStoppecHandler {
+            getDiscoverButton(parentLayout)?.icon = resources.getDrawable(R.drawable.round_add_black_24dp)
+        }
         bluetoothEvents.setOnDeviceBondStateChanged { device -> viewModel.updateDevice(device) }
 
         return parentLayout
@@ -168,8 +177,17 @@ class SetupPage : Fragment() {
 
     private fun setupBluetoothButtons(view: View, bluetoothAdapter: BluetoothAdapter): Unit {
         Log.d(LOG_TAG, "Setting up bluetooth buttons")
+
         val discoveryButton = getDiscoverButton(view)
-        discoveryButton?.text = if (bluetoothAdapter.isDiscovering) "x" else "+"
+
+        discoveryButton?.isEnabled = bluetoothAdapter.isEnabled
+
+        if (bluetoothAdapter.isDiscovering) {
+            discoveryButton?.icon = resources.getDrawable(R.drawable.round_clear_black_24dp)
+        } else {
+            discoveryButton?.icon = resources.getDrawable(R.drawable.round_add_black_24dp)
+        }
+
         discoveryButton?.setOnClickListener(View.OnClickListener {
             if (!bluetoothAdapter.isDiscovering) {
                 bluetoothAdapter.startDiscovery()
@@ -179,9 +197,9 @@ class SetupPage : Fragment() {
         })
     }
 
-    private fun getDiscoverButton(view: View?): Button? {
+    private fun getDiscoverButton(view: View?): ExtendedFloatingActionButton? {
         if (view != null) {
-            return view?.findViewById<Button>(R.id.discovery_button)
+            return view?.findViewById<ExtendedFloatingActionButton>(R.id.discovery_button)
         } else {
             Log.d(LOG_TAG,"Couldn't find the discovery button. Returning nothing.")
         }

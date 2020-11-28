@@ -5,7 +5,8 @@
         android:layout_height="match_parent"
         tools:context=".Login">
     <com.google.android.gms.common.SignInButton
-            android:id="@+id/sign_in_button"
-            android:layout_width="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/google_sign_in_button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 </LinearLayout>

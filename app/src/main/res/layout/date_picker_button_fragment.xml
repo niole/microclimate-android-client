@@ -9,6 +9,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/label" />
     <Button
+            style="@style/ButtonStyle"
             android:id="@+id/date_value_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" ></Button>

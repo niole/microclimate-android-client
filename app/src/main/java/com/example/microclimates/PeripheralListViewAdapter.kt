@@ -12,19 +12,15 @@ import android.widget.Button
 import android.widget.TextView
 
 class PeripheralListViewAdapter(
-    val pageViewModel: SetupPageViewModel,
+    private val pageViewModel: SetupPageViewModel,
     activity: Activity,
-    val resourceId: Int,
-    val peripherals: List<DeviceViewModel>?,
-    val handleDeviceSetup: (BluetoothDevice) -> Unit
+    private val resourceId: Int,
+    private val peripherals: List<DeviceViewModel>,
+    private val handleDeviceSetup: (BluetoothDevice) -> Unit
 ) : ArrayAdapter<DeviceViewModel?>(activity, resourceId, peripherals) {
 
     override fun getCount(): Int {
-        val total = peripherals?.size
-        if (total != null) {
-            return total
-        }
-        return 0
+        return peripherals.size
     }
 
     override fun getItemId(position: Int): Long {

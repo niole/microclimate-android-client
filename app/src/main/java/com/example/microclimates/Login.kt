@@ -21,12 +21,13 @@ class Login : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
 
-        val signInButton = findViewById<SignInButton>(R.id.sign_in_button)
-        signInButton.setSize(SignInButton.SIZE_STANDARD)
-        val gso: GoogleSignInOptions = GoogleSignInOptions.Builder().requestEmail().build()
+        val googleSignInButton = findViewById<SignInButton>(R.id.google_sign_in_button)
+        googleSignInButton.setSize(SignInButton.SIZE_STANDARD)
+
+        val gso = GoogleSignInOptions.Builder().requestEmail().build()
         val client = GoogleSignIn.getClient(this, gso)
 
-        findViewById<SignInButton>(R.id.sign_in_button).setOnClickListener {
+        googleSignInButton.setOnClickListener {
             val signInIntent: Intent = client.signInIntent
             startActivityForResult(signInIntent, RC_SIGN_IN)
         }
@@ -51,7 +52,7 @@ class Login : AppCompatActivity() {
                 }
                 startActivity(intent)
             } else {
-                Toast.makeText(applicationContext, "You must login in order to proceed.", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "You must sign in in order to proceed.", Toast.LENGTH_LONG).show()
             }
         } catch (e: ApiException) {
             Log.w(LOG_TAG, "signInResult:failed code=" + e.statusCode)

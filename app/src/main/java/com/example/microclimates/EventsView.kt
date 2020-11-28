@@ -107,7 +107,7 @@ class EventsView : Fragment() {
             if (spinner != null) {
                 // TODO names are not unique
                 val peripheralNames = peripherals.map { it.name }
-                val adapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, peripheralNames)
+                val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, peripheralNames)
                 spinner.adapter = adapter
 
                 spinner.setOnItemSelectedListener(object : AdapterView.OnItemSelectedListener {

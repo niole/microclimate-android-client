@@ -34,7 +34,7 @@ class DeploymentOverview : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setFragmentResultListener("onPeripheralRemoveSubmit") { _, bundle ->
-            val peripheralId = bundle.getString("peripheralId")
+            val peripheralId = bundle.getString("peripheralId")!!
             Log.i(LOG_TAG, "Removing peripheral with id $peripheralId")
             val perphChannel = Channels.peripheralChannel()
             val peripheral = coreViewModel.getPeripheralById(peripheralId)
@@ -106,7 +106,7 @@ class DeploymentOverview : Fragment() {
 
         val adapterPeripherals = mutableListOf<LivePeripheralModel>()
 
-        listAdapter = object : ArrayAdapter<LivePeripheralModel>(activity, resourceId, adapterPeripherals) {
+        listAdapter = object : ArrayAdapter<LivePeripheralModel>(requireContext(), resourceId, adapterPeripherals) {
             override fun getCount(): Int {
                 val total = adapterPeripherals?.size
                 if (total != null) {
@@ -126,14 +126,14 @@ class DeploymentOverview : Fragment() {
                 }
 
                 val peripheral = getItem(position)
-                baseView.peripheral_name.text = peripheral.name
-                baseView.peripheral_type.text = peripheral.type.toString()
-                baseView.last_received_event_time.text = peripheral.lastEvent?.toString() ?: "unknown"
+                baseView.peripheral_name.text = peripheral?.name
+                baseView.peripheral_type.text = peripheral?.type.toString()
+                baseView.last_received_event_time.text = peripheral?.lastEvent?.toString() ?: "unknown"
                 baseView.remove_peripheral_button.setOnClickListener {
                     val confirmModal = ConfirmRemovePeripheralDialog().apply {
                         arguments = Bundle().apply {
-                            putString("peripheralId", peripheral.id)
-                            putString("peripheralName", peripheral.name)
+                            putString("peripheralId", peripheral?.id)
+                            putString("peripheralName", peripheral?.name)
                         }
                     }
                     confirmModal.show(parentFragmentManager, "ConfirmRemovePeripheralDialog")

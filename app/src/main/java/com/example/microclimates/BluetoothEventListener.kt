@@ -43,7 +43,7 @@ class BluetoothEventListener : BroadcastReceiver() {
     override fun onReceive(context: Context?, nullableIntent: Intent?) {
         if (nullableIntent != null) {
             val intent = nullableIntent!!
-            val action: String = intent.action
+            val action: String = intent.action!!
 
             when(action) {
                 BluetoothAdapter.ACTION_DISCOVERY_STARTED -> {
