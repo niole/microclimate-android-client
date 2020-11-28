@@ -87,8 +87,8 @@ class MainActivity : AppCompatActivity() {
         private val deploymentOverviewPage = "deploymentPage"
         private val eventsPage = "eventsPage"
         private val pages = listOf<Pair<String, String>>(
-            Pair("Sensors", eventsPage),
             Pair("Deployment", deploymentOverviewPage),
+            Pair("Sensors", eventsPage),
             Pair("Add New Sensor", setupPage)
         )
 
