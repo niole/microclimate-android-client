@@ -86,16 +86,18 @@ class MainActivity : AppCompatActivity() {
         private val setupPage = "setupPage"
         private val deploymentOverviewPage = "deploymentPage"
         private val eventsPage = "eventsPage"
-        private val pages = listOf<String>(deploymentOverviewPage, setupPage, eventsPage)
-        private val pagesTitles = listOf<String>("Overview", "Add New Peripheral", "Measurements")
+        private val pages = listOf<Pair<String, String>>(
+            Pair("Sensors", eventsPage),
+            Pair("Deployment", deploymentOverviewPage),
+            Pair("Add New Sensor", setupPage)
+        )
 
         override fun getPageTitle(position: Int): String {
-            return pagesTitles[position]
+            return pages[position].first
         }
 
         override fun getItem(position: Int): Fragment {
-            val pageName = pages[position]
-            return when(pageName) {
+            return when(pages[position].second) {
                 setupPage -> SetupPage.newInstance()
                 deploymentOverviewPage -> DeploymentOverview.newInstance()
                 eventsPage -> EventsView.newInstance()

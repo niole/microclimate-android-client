@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Transformations
 import api.Events
 import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
@@ -31,68 +32,34 @@ class EventsView : Fragment() {
     private val lineColors = listOf(Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK)
     private val coreStateViewModel: CoreStateViewModel by activityViewModels()
     private val model: EventsViewViewModel by viewModels()
-
-    lateinit var defaultStartDate: Date
-    private val defaultEndDate: Date = Calendar.getInstance().time
+    lateinit var defaultDateRange: Pair<Date, Date>
 
     init {
         val startDate = Calendar.getInstance()
         startDate.add(Calendar.DAY_OF_MONTH, -1)
-        defaultStartDate = startDate.time
+        defaultDateRange  = Pair(startDate.time, Calendar.getInstance().time)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
-        if (model.getEndDate().value == null) {
-            model.setEndDate(defaultEndDate)
+        if (model.getDateRange().value == null) {
+            model.setDateRange(defaultDateRange)
         }
 
-        if (model.getStartDate().value == null) {
-            model.setStartDate(defaultStartDate)
-        }
-
-        model.getSelectedPeripheral().observe({ lifecycle }) {
-            Log.i(LOG_TAG, "Peripheral selection changed")
+        model.getEventSlice().observe({ lifecycle }) {
+            val dateRange = it?.first ?: defaultDateRange
+            val peripheral = it?.second
             val deployment = coreStateViewModel.getDeployment().value
-            val peripheral = it
-            val dateRange = model.getDateRange().value
             if (deployment != null && peripheral != null) {
                 fetchPeripheralEvents(
                     deploymentId = deployment.id,
                     peripheral = peripheral,
-                    startDate = dateRange?.first,
-                    endDate = dateRange?.second
+                    startDate = dateRange.first!!,
+                    endDate = dateRange.second!!
                 )
             }
         }
-
-        model.getDateRange().observe({ lifecycle}) {
-            Log.i(LOG_TAG, "Date range selection changed")
-            val deployment = coreStateViewModel.getDeployment().value
-            val peripheral = model.getSelectedPeripheral().value
-            if (deployment != null && peripheral != null) {
-                fetchPeripheralEvents(
-                    deploymentId = deployment.id,
-                    peripheral = peripheral,
-                    startDate = it.first,
-                    endDate = it.second
-                )
-            }
-        }
-
-        val peripherals = coreStateViewModel.getPeripherals().value
-        peripherals?.forEach { peripheral ->
-            model.getLivePeripheralEvents(peripheral.id).observe({ lifecycle }) {events ->
-                if (events != null) {
-                    addLine(peripheral, events)
-                } else {
-                    Log.w(LOG_TAG, "Couldn't add chart line for ${peripheral.id}. No events exist for it.")
-                }
-            }
-        }
-
     }
 
     override fun onCreateView(
@@ -102,11 +69,9 @@ class EventsView : Fragment() {
     ): View? {
         val inflatedView = inflater.inflate(R.layout.fragment_events_view, container, false)
 
-        val deployment = coreStateViewModel.getDeployment().value
-        val peripherals = coreStateViewModel.getPeripherals().value
-
-        val endDate = model.getEndDate().value ?: defaultEndDate
-        val startDate = model.getStartDate().value ?: defaultStartDate
+        val dateRange = model.getDateRange().value ?: defaultDateRange
+        val endDate = dateRange.second!!
+        val startDate = dateRange.first!!
 
         val startButton = DatePickerButton.newInstance(DateRangePicker.parser.format(startDate.time), "from: ")
         val endButton = DatePickerButton.newInstance(DateRangePicker.parser.format(endDate.time), "to: ")
@@ -118,7 +83,7 @@ class EventsView : Fragment() {
         t.commit()
 
         startButton.setOnChangeListener {
-            val endDate = model.getEndDate().value
+            val endDate = model.getDateRange().value?.second
             if (endDate != null && it > endDate) {
                 throw IllegalArgumentException("Start date must come before end date")
             } else {
@@ -127,7 +92,7 @@ class EventsView : Fragment() {
         }
 
         endButton.setOnChangeListener {
-            val startDate = model.getStartDate().value
+            val startDate = model.getDateRange().value?.first
             if (startDate != null && it < startDate) {
                 throw IllegalArgumentException("End date must come after start date")
             } else {
@@ -135,7 +100,9 @@ class EventsView : Fragment() {
             }
         }
 
-        if (deployment != null && peripherals != null) {
+        Transformations.switchMap(coreStateViewModel.getDeployment()) {
+            coreStateViewModel.getPeripherals()
+        }.observe({ lifecycle }) {peripherals ->
             val spinner = inflatedView.findViewById<Spinner>(R.id.peripheral_events_selector)
             if (spinner != null) {
                 // TODO names are not unique
@@ -151,7 +118,6 @@ class EventsView : Fragment() {
                         position: Int,
                         id: Long
                     ) {
-
                         val selectedName = peripheralNames[position]
                         val peripheral = peripherals.find { it.name == selectedName }
                         val pType = peripheral?.type
@@ -162,9 +128,6 @@ class EventsView : Fragment() {
                     }
                 })
             }
-
-        } else {
-            Log.e(LOG_TAG, "Couldn't build events chart. No deployment exists in core state.")
         }
 
         return inflatedView
@@ -173,8 +136,8 @@ class EventsView : Fragment() {
     private fun fetchPeripheralEvents(
         deploymentId: String,
         peripheral: PeripheralOuterClass.Peripheral,
-        startDate: Date?,
-        endDate: Date?
+        startDate: Date,
+        endDate: Date
     ): Unit {
         Log.i(LOG_TAG, "Fetching events for deployment $deploymentId, peripheral ${peripheral.id}, start date $startDate, end date $endDate")
         Thread(Runnable {
@@ -183,12 +146,12 @@ class EventsView : Fragment() {
             try {
                 val startTime = Timestamp
                     .newBuilder()
-                    .setSeconds((startDate?.time ?: defaultStartDate.time) / 1000)
+                    .setSeconds(startDate.time / 1000)
                     .build()
 
                 val endTime = Timestamp
                     .newBuilder()
-                    .setSeconds((endDate?.time ?: defaultEndDate.time) / 1000)
+                    .setSeconds(endDate.time / 1000)
                     .build()
 
                 val filterRequest = Events.MeasurementEventFilterRequest
@@ -205,6 +168,8 @@ class EventsView : Fragment() {
                     val eventsList = allEvents.asSequence().toList()
                     view?.post {
                         model.setEvents(peripheralId, eventsList)
+
+                        addLine(peripheral, eventsList)
 
                         eventsChannel.shutdown()
                         eventsChannel.awaitTermination(10, TimeUnit.SECONDS)

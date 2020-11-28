@@ -11,22 +11,28 @@ class EventsViewViewModel : ViewModel() {
     private val startDate: MutableLiveData<Date> = MutableLiveData()
     private val endDate: MutableLiveData<Date> = MutableLiveData()
     private val dateRange = MediatorLiveData<Pair<Date?, Date?>>()
+    private val eventSliceSpec = MediatorLiveData<Pair<Pair<Date?, Date?>?, PeripheralOuterClass.Peripheral?>>()
 
     init {
-        dateRange.addSource(startDate, { s -> dateRange.value = Pair(s, dateRange.value?.second) })
-        dateRange.addSource(endDate, { e -> dateRange.value = Pair(dateRange.value?.first, e) })
+        dateRange.addSource(startDate) { s -> dateRange.value = Pair(s, dateRange.value?.second) }
+        dateRange.addSource(endDate) { e -> dateRange.value = Pair(dateRange.value?.first, e) }
+
+        eventSliceSpec.addSource(dateRange) { dr -> eventSliceSpec.value = Pair(dr, eventSliceSpec.value?.second)}
+        eventSliceSpec.addSource(selectedPeripheral) { p ->
+            eventSliceSpec.value = Pair(eventSliceSpec.value?.first, p)
+        }
+    }
+
+    fun getEventSlice(): LiveData<Pair<Pair<Date?, Date?>?, PeripheralOuterClass.Peripheral?>> {
+        return eventSliceSpec
+    }
+
+    fun setDateRange(newRange: Pair<Date, Date>): Unit {
+        dateRange.value = newRange
     }
 
     fun getDateRange(): LiveData<Pair<Date?, Date?>> {
         return dateRange
-    }
-
-    fun getStartDate(): LiveData<Date?> {
-        return startDate
-    }
-
-    fun getEndDate(): LiveData<Date?> {
-        return endDate
     }
 
     fun setStartDate(date: Date): Unit {
@@ -37,16 +43,8 @@ class EventsViewViewModel : ViewModel() {
         endDate.value = date
     }
 
-    fun getLivePeripheralEvents(peripheralId: String): LiveData<List<Events.MeasurementEvent>?> {
-        return Transformations.map(peripheralEvents) { it.get(peripheralId) }
-    }
-
     fun setSelectedPeripheral(peripheral: PeripheralOuterClass.Peripheral?): Unit {
         selectedPeripheral.value = peripheral
-    }
-
-    fun getSelectedPeripheral(): LiveData<PeripheralOuterClass.Peripheral?> {
-        return selectedPeripheral
     }
 
     fun setEvents(peripheralId: String, newEvents: List<Events.MeasurementEvent>): Unit {

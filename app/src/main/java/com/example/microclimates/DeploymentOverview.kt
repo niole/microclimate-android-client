@@ -70,9 +70,13 @@ class DeploymentOverview : Fragment() {
                     val stub = Stubs.eventsStub(eventsChannel)
                     val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
                     val events = stub.mostRecentDeploymentEvents(request).asSequence()
+                    val eventsMap = mutableMapOf<String, Events.MeasurementEvent>()
+                    events.forEach {
+                        eventsMap += Pair(it.peripheralId, it)
+                    }
 
                     val newPeripherals = peripherals.map { p ->
-                        val lastEvent = events.find { event -> event.peripheralId == p.id }
+                        val lastEvent = eventsMap[p.id]
                         LivePeripheralModel(
                             id = p.id,
                             name = p.name,
