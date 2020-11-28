@@ -45,8 +45,9 @@ class Login : AppCompatActivity() {
     private fun handleSignInResult(completedTask: Task<GoogleSignInAccount>) {
         try {
             val account = completedTask.getResult(ApiException::class.java)
-            val email = account?.email
-            if (email != null) {
+            if (account != null) {
+                val email = account.email
+                val jwt = account.idToken
                 val intent = Intent(this, MainActivity::class.java).apply {
                     putExtra("email", email)
                 }
