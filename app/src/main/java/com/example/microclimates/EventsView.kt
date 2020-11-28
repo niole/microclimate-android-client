@@ -23,9 +23,6 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.google.protobuf.Timestamp
 import java.lang.IllegalArgumentException
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.Period
-import java.time.temporal.TemporalUnit
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -237,6 +234,7 @@ class EventsView : Fragment() {
             chart.data = lineData
 
             val xAxis = chart.xAxis
+            xAxis.labelCount = 4
             xAxis.position = XAxisPosition.BOTTOM
             xAxis.setDrawAxisLine(true)
             xAxis.setDrawGridLines(false)
@@ -257,7 +255,7 @@ class EventsView : Fragment() {
 
 class XAxisFormatter : ValueFormatter() {
     override fun getFormattedValue(value: Float): String {
-        val pattern = "yyyy-MM-dd HH:mm:ss"
+        val pattern = "HH:mm MM/dd/yy"
         val simpleDateFormat = SimpleDateFormat(pattern)
         return simpleDateFormat.format(Date(value.toLong() * 1000))
     }

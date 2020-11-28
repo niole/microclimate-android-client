@@ -12,13 +12,14 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
     private val LOG_TAG = "BluetoothPeripheralSetupClient"
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private var connectedSocket: BluetoothSocket? = null
+    private val eventServiceDomain: String = "192.168.1.162:6004"
 
     fun setupDevice(deploymentId: String, device: BluetoothDevice, onSuccess: (String) -> Unit) {
         val hardwareId = UUID.randomUUID().toString()
 
         val message = Json.encodeToString(
             PeripheralConfiguration(
-                domain="192.168.1.162:6004",
+                domain=eventServiceDomain,
                 peripheralId = hardwareId,
                 deploymentId = deploymentId
             )
