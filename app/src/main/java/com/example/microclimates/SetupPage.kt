@@ -64,8 +64,12 @@ class SetupPage : Fragment() {
         }
 
         bluetoothEvents.setOnFoundHandler { device ->
-            viewModel.addDevice(device)
-            Log.i(LOG_TAG,"Bonding status with ${device.name}: ${device.bondState}")
+            if (device.name != null) {
+                viewModel.addDevice(device)
+                Log.i(LOG_TAG,"Bonding status with ${device.name}: ${device.bondState}")
+            } else {
+                Log.i(LOG_TAG, "Found device ${device.address}, but it had no name")
+            }
         }
         bluetoothEvents.setOnBondedHandler { device ->
             viewModel.updateDevice(device)
@@ -245,8 +249,7 @@ class SetupPage : Fragment() {
             }
         }
 
-        pageViewModel.getDevices().observe({ lifecycle }) { it ->
-            val devices = it
+        pageViewModel.getDevices().observe({ lifecycle }) { devices ->
             if (devices != null) {
                 peripheralsListAdapter?.clear()
                 peripheralsListAdapter?.addAll(devices.map { it.value })
@@ -261,24 +264,23 @@ class SetupPage : Fragment() {
         Thread(Runnable {
             peripheralSetupClient.setupDevice(
                 parentViewModel.getDeployment().value?.id!!,
-                device,
-                { hardwareId ->
-                    val deploymentId = parentViewModel.getDeployment().value?.id
-                    val ownerId = parentViewModel.getOwner().value?.id
-                    val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
-                        putExtra("hardwareId", hardwareId)
-                        putExtra("deploymentId", deploymentId)
-                        putExtra("ownerId", ownerId)
-                    }
+                device
+            ) { hardwareId ->
+                val deploymentId = parentViewModel.getDeployment().value?.id
+                val ownerId = parentViewModel.getOwner().value?.id
+                val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
+                    putExtra("hardwareId", hardwareId)
+                    putExtra("deploymentId", deploymentId)
+                    putExtra("ownerId", ownerId)
+                }
 
-                    if (deploymentId != null && ownerId != null) {
-                        activity?.startActivity(intent)
-                    } else {
-                        Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
-                        Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
-                    }
-                },
-            )
+                if (deploymentId != null && ownerId != null) {
+                    activity?.startActivity(intent)
+                } else {
+                    Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
+                    Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
+                }
+            }
         }).start()
 
     }
