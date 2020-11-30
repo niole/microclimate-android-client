@@ -1,6 +1,5 @@
 package com.example.microclimates.api
 
-import io.grpc.Channel
 import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 

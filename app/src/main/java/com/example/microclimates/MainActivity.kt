@@ -56,8 +56,10 @@ class MainActivity : AppCompatActivity() {
 
         val userChannel = Channels.userChannel()
         val userFetch = Stubs.userStub(userChannel).getUserByEmail(request)
+        Log.i(LOG_TAG, "Requesting user by email $email")
         Futures.addCallback(userFetch, object : FutureCallback<UserOuterClass.User?> {
             override fun onSuccess(user: UserOuterClass.User?): Unit {
+                Log.i(LOG_TAG, "Got user ${user?.id}")
                 if (user != null) {
                     mainHandler.post {
                         model.setOwner(user)
@@ -69,9 +71,8 @@ class MainActivity : AppCompatActivity() {
                         }
                     }
                 }
-
                 userChannel.shutdown()
-                userChannel.awaitTermination(1, TimeUnit.SECONDS)
+                userChannel.awaitTermination(5, TimeUnit.SECONDS)
             }
 
             override fun onFailure(t: Throwable) {
@@ -80,6 +81,11 @@ class MainActivity : AppCompatActivity() {
                 userChannel.awaitTermination(5, TimeUnit.SECONDS)
             }
         }, MoreExecutors.directExecutor())
+
+        userChannel.notifyWhenStateChanged(userChannel.getState(true)) {
+            println("stat changed")
+            println(userChannel.getState(true))
+        }
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
