@@ -72,7 +72,12 @@ class SetupPairedDeviceActivity : Activity() {
                 val request = PeripheralOuterClass.NewPeripheral
                     .newBuilder()
                     .setDeploymentId(deploymentId)
-                    .setHardwareId(hardwareId)
+                    .setHardwareId(
+                        PeripheralOuterClass
+                            .NullableString
+                            .newBuilder()
+                            .setData(hardwareId)
+                    )
                     .setName(peripheralName)
                     .setOwnerUserId(ownerId)
                     .setType(peripheralType)

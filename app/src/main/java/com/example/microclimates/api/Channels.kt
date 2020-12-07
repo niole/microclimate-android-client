@@ -4,6 +4,7 @@ import io.grpc.ManagedChannel
 import io.grpc.ManagedChannelBuilder
 
 object Channels {
+    // TODO don't hardcode this
     private val host = "192.168.1.162"
 
     fun eventsChannel(): ManagedChannel {

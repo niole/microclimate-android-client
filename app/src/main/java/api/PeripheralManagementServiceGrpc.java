@@ -117,6 +117,36 @@ public final class PeripheralManagementServiceGrpc {
     return getRemovePeripheralMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<api.PeripheralOuterClass.LinkHardwareRequest,
+      api.PeripheralOuterClass.Peripheral> getLinkHardwareMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "LinkHardware",
+      requestType = api.PeripheralOuterClass.LinkHardwareRequest.class,
+      responseType = api.PeripheralOuterClass.Peripheral.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<api.PeripheralOuterClass.LinkHardwareRequest,
+      api.PeripheralOuterClass.Peripheral> getLinkHardwareMethod() {
+    io.grpc.MethodDescriptor<api.PeripheralOuterClass.LinkHardwareRequest, api.PeripheralOuterClass.Peripheral> getLinkHardwareMethod;
+    if ((getLinkHardwareMethod = PeripheralManagementServiceGrpc.getLinkHardwareMethod) == null) {
+      synchronized (PeripheralManagementServiceGrpc.class) {
+        if ((getLinkHardwareMethod = PeripheralManagementServiceGrpc.getLinkHardwareMethod) == null) {
+          PeripheralManagementServiceGrpc.getLinkHardwareMethod = getLinkHardwareMethod =
+              io.grpc.MethodDescriptor.<api.PeripheralOuterClass.LinkHardwareRequest, api.PeripheralOuterClass.Peripheral>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "LinkHardware"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.PeripheralOuterClass.LinkHardwareRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.PeripheralOuterClass.Peripheral.getDefaultInstance()))
+              .build();
+        }
+      }
+    }
+    return getLinkHardwareMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<api.PeripheralOuterClass.GetDeploymentPeripheralsRequest,
       api.PeripheralOuterClass.Peripheral> getGetDeploymentPeripheralsMethod;
 
@@ -218,6 +248,13 @@ public final class PeripheralManagementServiceGrpc {
 
     /**
      */
+    public void linkHardware(api.PeripheralOuterClass.LinkHardwareRequest request,
+        io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
+      asyncUnimplementedUnaryCall(getLinkHardwareMethod(), responseObserver);
+    }
+
+    /**
+     */
     public void getDeploymentPeripherals(api.PeripheralOuterClass.GetDeploymentPeripheralsRequest request,
         io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
       asyncUnimplementedUnaryCall(getGetDeploymentPeripheralsMethod(), responseObserver);
@@ -246,6 +283,13 @@ public final class PeripheralManagementServiceGrpc {
                 api.PeripheralOuterClass.Peripheral,
                 api.EmptyOuterClass.Empty>(
                   this, METHODID_REMOVE_PERIPHERAL)))
+          .addMethod(
+            getLinkHardwareMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                api.PeripheralOuterClass.LinkHardwareRequest,
+                api.PeripheralOuterClass.Peripheral>(
+                  this, METHODID_LINK_HARDWARE)))
           .addMethod(
             getGetDeploymentPeripheralsMethod(),
             asyncServerStreamingCall(
@@ -297,6 +341,14 @@ public final class PeripheralManagementServiceGrpc {
 
     /**
      */
+    public void linkHardware(api.PeripheralOuterClass.LinkHardwareRequest request,
+        io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getLinkHardwareMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
     public void getDeploymentPeripherals(api.PeripheralOuterClass.GetDeploymentPeripheralsRequest request,
         io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
       asyncServerStreamingCall(
@@ -337,6 +389,13 @@ public final class PeripheralManagementServiceGrpc {
     public api.EmptyOuterClass.Empty removePeripheral(api.PeripheralOuterClass.Peripheral request) {
       return blockingUnaryCall(
           getChannel(), getRemovePeripheralMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
+    public api.PeripheralOuterClass.Peripheral linkHardware(api.PeripheralOuterClass.LinkHardwareRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getLinkHardwareMethod(), getCallOptions(), request);
     }
 
     /**
@@ -385,12 +444,21 @@ public final class PeripheralManagementServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getRemovePeripheralMethod(), getCallOptions()), request);
     }
+
+    /**
+     */
+    public com.google.common.util.concurrent.ListenableFuture<api.PeripheralOuterClass.Peripheral> linkHardware(
+        api.PeripheralOuterClass.LinkHardwareRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getLinkHardwareMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_GET_PERIPHERAL = 0;
   private static final int METHODID_CREATE_PERIPHERAL = 1;
   private static final int METHODID_REMOVE_PERIPHERAL = 2;
-  private static final int METHODID_GET_DEPLOYMENT_PERIPHERALS = 3;
+  private static final int METHODID_LINK_HARDWARE = 3;
+  private static final int METHODID_GET_DEPLOYMENT_PERIPHERALS = 4;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -420,6 +488,10 @@ public final class PeripheralManagementServiceGrpc {
         case METHODID_REMOVE_PERIPHERAL:
           serviceImpl.removePeripheral((api.PeripheralOuterClass.Peripheral) request,
               (io.grpc.stub.StreamObserver<api.EmptyOuterClass.Empty>) responseObserver);
+          break;
+        case METHODID_LINK_HARDWARE:
+          serviceImpl.linkHardware((api.PeripheralOuterClass.LinkHardwareRequest) request,
+              (io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral>) responseObserver);
           break;
         case METHODID_GET_DEPLOYMENT_PERIPHERALS:
           serviceImpl.getDeploymentPeripherals((api.PeripheralOuterClass.GetDeploymentPeripheralsRequest) request,
@@ -453,6 +525,7 @@ public final class PeripheralManagementServiceGrpc {
               .addMethod(getGetPeripheralMethod())
               .addMethod(getCreatePeripheralMethod())
               .addMethod(getRemovePeripheralMethod())
+              .addMethod(getLinkHardwareMethod())
               .addMethod(getGetDeploymentPeripheralsMethod())
               .build();
         }
