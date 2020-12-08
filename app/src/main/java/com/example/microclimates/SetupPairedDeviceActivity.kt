@@ -79,6 +79,11 @@ class SetupPairedDeviceActivity : Activity() {
                     Thread(Runnable {
                         val newPeripheral = createPeripheral(peripheralName, peripheralType, unit)
 
+                        // TODO create peripheral, then close out this dialog
+                        // then do actual pairing in the edit view
+                        // if a user has pairing capabilities, the pair button will exist for them (me)
+                        // if a user is a raspberry pi super user, it won't have pairing cap., connection
+                        // will totally depend on the link request
                         peripheralSetupClient.setupDevice(
                             newPeripheral.id,
                             deploymentId,
@@ -88,6 +93,7 @@ class SetupPairedDeviceActivity : Activity() {
                                 finish()
                         }, {
                             Log.w(LOG_TAG, "Failed to paired with ${newPeripheral.id} with anything")
+                            Toast.makeText(baseContext, "Failed to connect with this peripheral. Try again.", Toast.LENGTH_LONG).show()
                         })
                     }).start()
 
