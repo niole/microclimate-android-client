@@ -5,35 +5,46 @@ import kotlinx.serialization.json.*
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.util.Log
-import android.view.View
+import com.example.microclimates.api.Channels.eventServiceDomain
+import com.example.microclimates.api.Channels.peripheralServiceDomain
 import java.util.*
 
-class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: SetupPageViewModel) {
+class BluetoothPeripheralSetupClient() {
     private val LOG_TAG = "BluetoothPeripheralSetupClient"
     private val serviceUuid: UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB")
     private var connectedSocket: BluetoothSocket? = null
-    private val eventServiceDomain: String = "192.168.1.162:6004"
 
-    fun setupDevice(deploymentId: String, device: BluetoothDevice, onSuccess: (String) -> Unit) {
+    // TODO get rid of function callbacks
+    fun setupDevice(
+        peripheralId: String,
+        deploymentId: String,
+        device: BluetoothDevice,
+        onSuccess: (String) -> Unit,
+        onFailure: () -> Unit
+    ) {
         val hardwareId = UUID.randomUUID().toString()
-
         val message = Json.encodeToString(
             PeripheralConfiguration(
-                domain=eventServiceDomain,
-                peripheralId = hardwareId,
+                peripheralServiceDomain=peripheralServiceDomain.url(),
+                eventServiceDomain=eventServiceDomain.url(),
+                hardwareId = hardwareId,
+                peripheralId = peripheralId,
                 deploymentId = deploymentId
             )
         )
         sendMessage(message, device, {
             onSuccess(hardwareId)
+        }, {
+            onFailure()
         })
     }
 
-    private fun sendMessage(message: String, device: BluetoothDevice, onSuccess: () -> Unit): Unit {
-        view.post {
-            setupPageViewModel.setPairing(device)
-        }
-
+    private fun sendMessage(
+        message: String,
+        device: BluetoothDevice,
+        onSuccess: () -> Unit,
+        onFailure: () -> Unit
+    ): Unit {
         Log.d(LOG_TAG,"Sending setup data: ${message}, to device: ${device}")
 
         try {
@@ -51,14 +62,10 @@ class BluetoothPeripheralSetupClient(val view: View, val setupPageViewModel: Set
 
             Log.d(LOG_TAG,"Wrote to socket for ${device}")
 
-            view.post {
-                onSuccess()
-            }
+            onSuccess()
         } catch (error: Exception) {
             Log.e(LOG_TAG,"Something happened when sending a message to ${device.name}: $error")
-            view.post {
-                setupPageViewModel.setPairingFailed(device)
-            }
+            onFailure()
 
         } finally {
             connectedSocket?.close()

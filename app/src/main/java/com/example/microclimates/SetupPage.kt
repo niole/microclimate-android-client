@@ -30,7 +30,6 @@ class SetupPage : Fragment() {
     private val LOG_TAG = "SetupPage"
     val REQUEST_ENABLE_BT = 1
     val bluetoothEvents: BluetoothEventListener = BluetoothEventListener()
-    lateinit var peripheralSetupClient: BluetoothPeripheralSetupClient
     lateinit var bluetoothAdapter: BluetoothAdapter
     lateinit var parentLayout: View
     lateinit var viewModel: SetupPageViewModel
@@ -54,10 +53,6 @@ class SetupPage : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         parentLayout = inflater.inflate(R.layout.fragment_setup_page, container, false)
-        peripheralSetupClient = BluetoothPeripheralSetupClient(
-            parentLayout.findViewById(R.id.peripheral_setup_page),
-            viewModel
-        )
         peripheralsListAdapter = setupPeripheralList(viewModel)
 
         setupBluetoothButtons(parentLayout, bluetoothAdapter)
@@ -280,27 +275,20 @@ class SetupPage : Fragment() {
 
     private fun handleDeviceSetup(device: BluetoothDevice): Unit {
         device.createBond()
-        Thread(Runnable {
-            peripheralSetupClient.setupDevice(
-                parentViewModel.getDeployment().value?.id!!,
-                device
-            ) { hardwareId ->
-                val deploymentId = parentViewModel.getDeployment().value?.id
-                val ownerId = parentViewModel.getOwner().value?.id
-                val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
-                    putExtra("hardwareId", hardwareId)
-                    putExtra("deploymentId", deploymentId)
-                    putExtra("ownerId", ownerId)
-                }
 
-                if (deploymentId != null && ownerId != null) {
-                    activity?.startActivity(intent)
-                } else {
-                    Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
-                    Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
-                }
-            }
-        }).start()
+        val deploymentId = parentViewModel.getDeployment().value?.id
+        val ownerId = parentViewModel.getOwner().value?.id
+        val intent = Intent(requireActivity(), SetupPairedDeviceActivity::class.java).apply {
+            putExtra("device", device)
+            putExtra("deploymentId", deploymentId)
+            putExtra("ownerId", ownerId)
+        }
 
+        if (deploymentId != null && ownerId != null) {
+            activity?.startActivity(intent)
+        } else {
+            Log.e(LOG_TAG, "Deployment id and owner id don't exist. Cannot open setup paried device view.")
+            Toast.makeText(context, "Cannot finish setup process. Couldn't get all data in order to complete setup.", Toast.LENGTH_LONG).show()
+        }
     }
 }
