@@ -45,7 +45,14 @@
                     android:id="@+id/link_hardware_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Link Hardware"></Button>
+                    android:text="Link"></Button>
+            <Button
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="Edit"
+                    android:id="@+id/edit_peripheral_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/baseline_create_black_24dp"/>
             <Button
                     style="?attr/materialButtonOutlinedStyle"
                     android:text="Delete"

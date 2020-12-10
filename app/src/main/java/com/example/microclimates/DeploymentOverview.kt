@@ -10,17 +10,13 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResultListener
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
 import api.Events
 import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.android.synthetic.main.fragment_peripheral.view.*
-import org.w3c.dom.Text
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -153,6 +149,32 @@ class DeploymentOverview : Fragment() {
                         startActivity(setupPageArguments)
                     }
                 }
+                baseView.edit_peripheral_button.setOnClickListener {
+                    val deploymentId = coreViewModel.getDeployment().value?.id
+                    val ownerId = coreViewModel.getOwner().value?.id
+                    val peripheral = coreViewModel.getPeripherals().value?.find { p -> p.id == peripheral?.id }
+
+                    if (peripheral != null && deploymentId != null && ownerId != null) {
+
+                        CreateEditPeripheralDialog
+                            .newInstance(
+                                ownerId,
+                                deploymentId,
+                                peripheral.id,
+                                peripheral.type,
+                                peripheral.name
+                            )
+                            .show(childFragmentManager, "CreateEditPeripheralDialog")
+
+                    } else {
+                        Log.e(
+                            LOG_TAG,
+                            "Missing data, can't open peripheral edit modal peripheral"+
+                                " $peripheral, ownerId $ownerId, deploymentId $deploymentId"
+                        )
+                        Toast.makeText(context, "Something went wrong. Can't open dialog", Toast.LENGTH_SHORT).show()
+                    }
+                }
 
                 baseView.remove_peripheral_button.setOnClickListener {
                     val confirmModal = ConfirmRemovePeripheralDialog().apply {
@@ -190,9 +212,10 @@ class DeploymentOverview : Fragment() {
         parentLayout.findViewById<ExtendedFloatingActionButton>(R.id.create_peripheral_button).setOnClickListener {
             val ownerId = coreViewModel.getOwner().value?.id!!
             val deploymentId = coreViewModel.getDeployment().value?.id!!
-            val dialog = CreatePeripheralDialog.newInstance(ownerId, deploymentId)
 
-            dialog.show(childFragmentManager, "CreatePeripheralDialog")
+            CreateEditPeripheralDialog
+                .newInstance(ownerId, deploymentId, null, null, null)
+                .show(childFragmentManager, "CreateEditPeripheralDialog")
         }
 
         return parentLayout

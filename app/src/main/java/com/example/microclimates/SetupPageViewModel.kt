@@ -35,32 +35,6 @@ class SetupPageViewModel : ViewModel() {
         bluetoothEnabled.value = isEnabled
     }
 
-    fun setPairing(deviceToUpdate: BluetoothDevice): Unit {
-        var devices = foundDevices.value
-        val device = devices?.get(deviceToUpdate.address)
-        if (devices != null && device != null) {
-            devices += Pair(deviceToUpdate.address, DeviceViewModel(
-                device.id,
-                BondStatus.PAIRING,
-                deviceToUpdate
-            ))
-            foundDevices.value = devices
-        }
-    }
-
-    fun setPairingFailed(deviceToUpdate: BluetoothDevice): Unit {
-        var devices = foundDevices.value
-        val device = devices?.get(deviceToUpdate.address)
-        if (devices != null && device != null) {
-            devices += Pair(deviceToUpdate.address, DeviceViewModel(
-                device.id,
-                BondStatus.NOT_PAIRED,
-                deviceToUpdate
-            ))
-            foundDevices.value = devices
-        }
-    }
-
     fun addDevice(deviceToAdd: BluetoothDevice): Unit {
         var devices = foundDevices.value
         if (devices == null) {

@@ -27,6 +27,36 @@ public final class PeripheralManagementServiceGrpc {
   public static final String SERVICE_NAME = "api.PeripheralManagementService";
 
   // Static method descriptors that strictly reflect the proto.
+  private static volatile io.grpc.MethodDescriptor<api.PeripheralOuterClass.EditPeripheralRequest,
+      api.PeripheralOuterClass.Peripheral> getEditPeripheralMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "EditPeripheral",
+      requestType = api.PeripheralOuterClass.EditPeripheralRequest.class,
+      responseType = api.PeripheralOuterClass.Peripheral.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<api.PeripheralOuterClass.EditPeripheralRequest,
+      api.PeripheralOuterClass.Peripheral> getEditPeripheralMethod() {
+    io.grpc.MethodDescriptor<api.PeripheralOuterClass.EditPeripheralRequest, api.PeripheralOuterClass.Peripheral> getEditPeripheralMethod;
+    if ((getEditPeripheralMethod = PeripheralManagementServiceGrpc.getEditPeripheralMethod) == null) {
+      synchronized (PeripheralManagementServiceGrpc.class) {
+        if ((getEditPeripheralMethod = PeripheralManagementServiceGrpc.getEditPeripheralMethod) == null) {
+          PeripheralManagementServiceGrpc.getEditPeripheralMethod = getEditPeripheralMethod =
+              io.grpc.MethodDescriptor.<api.PeripheralOuterClass.EditPeripheralRequest, api.PeripheralOuterClass.Peripheral>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "EditPeripheral"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.PeripheralOuterClass.EditPeripheralRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.lite.ProtoLiteUtils.marshaller(
+                  api.PeripheralOuterClass.Peripheral.getDefaultInstance()))
+              .build();
+        }
+      }
+    }
+    return getEditPeripheralMethod;
+  }
+
   private static volatile io.grpc.MethodDescriptor<api.PeripheralOuterClass.GetPeripheralRequest,
       api.PeripheralOuterClass.Peripheral> getGetPeripheralMethod;
 
@@ -227,6 +257,13 @@ public final class PeripheralManagementServiceGrpc {
 
     /**
      */
+    public void editPeripheral(api.PeripheralOuterClass.EditPeripheralRequest request,
+        io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
+      asyncUnimplementedUnaryCall(getEditPeripheralMethod(), responseObserver);
+    }
+
+    /**
+     */
     public void getPeripheral(api.PeripheralOuterClass.GetPeripheralRequest request,
         io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
       asyncUnimplementedUnaryCall(getGetPeripheralMethod(), responseObserver);
@@ -262,6 +299,13 @@ public final class PeripheralManagementServiceGrpc {
 
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
+          .addMethod(
+            getEditPeripheralMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                api.PeripheralOuterClass.EditPeripheralRequest,
+                api.PeripheralOuterClass.Peripheral>(
+                  this, METHODID_EDIT_PERIPHERAL)))
           .addMethod(
             getGetPeripheralMethod(),
             asyncUnaryCall(
@@ -313,6 +357,14 @@ public final class PeripheralManagementServiceGrpc {
     protected PeripheralManagementServiceStub build(
         io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
       return new PeripheralManagementServiceStub(channel, callOptions);
+    }
+
+    /**
+     */
+    public void editPeripheral(api.PeripheralOuterClass.EditPeripheralRequest request,
+        io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getEditPeripheralMethod(), getCallOptions()), request, responseObserver);
     }
 
     /**
@@ -372,6 +424,13 @@ public final class PeripheralManagementServiceGrpc {
 
     /**
      */
+    public api.PeripheralOuterClass.Peripheral editPeripheral(api.PeripheralOuterClass.EditPeripheralRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getEditPeripheralMethod(), getCallOptions(), request);
+    }
+
+    /**
+     */
     public api.PeripheralOuterClass.Peripheral getPeripheral(api.PeripheralOuterClass.GetPeripheralRequest request) {
       return blockingUnaryCall(
           getChannel(), getGetPeripheralMethod(), getCallOptions(), request);
@@ -423,6 +482,14 @@ public final class PeripheralManagementServiceGrpc {
 
     /**
      */
+    public com.google.common.util.concurrent.ListenableFuture<api.PeripheralOuterClass.Peripheral> editPeripheral(
+        api.PeripheralOuterClass.EditPeripheralRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getEditPeripheralMethod(), getCallOptions()), request);
+    }
+
+    /**
+     */
     public com.google.common.util.concurrent.ListenableFuture<api.PeripheralOuterClass.Peripheral> getPeripheral(
         api.PeripheralOuterClass.GetPeripheralRequest request) {
       return futureUnaryCall(
@@ -454,11 +521,12 @@ public final class PeripheralManagementServiceGrpc {
     }
   }
 
-  private static final int METHODID_GET_PERIPHERAL = 0;
-  private static final int METHODID_CREATE_PERIPHERAL = 1;
-  private static final int METHODID_REMOVE_PERIPHERAL = 2;
-  private static final int METHODID_LINK_HARDWARE = 3;
-  private static final int METHODID_GET_DEPLOYMENT_PERIPHERALS = 4;
+  private static final int METHODID_EDIT_PERIPHERAL = 0;
+  private static final int METHODID_GET_PERIPHERAL = 1;
+  private static final int METHODID_CREATE_PERIPHERAL = 2;
+  private static final int METHODID_REMOVE_PERIPHERAL = 3;
+  private static final int METHODID_LINK_HARDWARE = 4;
+  private static final int METHODID_GET_DEPLOYMENT_PERIPHERALS = 5;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -477,6 +545,10 @@ public final class PeripheralManagementServiceGrpc {
     @java.lang.SuppressWarnings("unchecked")
     public void invoke(Req request, io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_EDIT_PERIPHERAL:
+          serviceImpl.editPeripheral((api.PeripheralOuterClass.EditPeripheralRequest) request,
+              (io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral>) responseObserver);
+          break;
         case METHODID_GET_PERIPHERAL:
           serviceImpl.getPeripheral((api.PeripheralOuterClass.GetPeripheralRequest) request,
               (io.grpc.stub.StreamObserver<api.PeripheralOuterClass.Peripheral>) responseObserver);
@@ -522,6 +594,7 @@ public final class PeripheralManagementServiceGrpc {
         result = serviceDescriptor;
         if (result == null) {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
+              .addMethod(getEditPeripheralMethod())
               .addMethod(getGetPeripheralMethod())
               .addMethod(getCreatePeripheralMethod())
               .addMethod(getRemovePeripheralMethod())

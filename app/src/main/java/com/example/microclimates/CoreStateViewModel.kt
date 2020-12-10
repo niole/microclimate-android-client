@@ -44,6 +44,18 @@ class CoreStateViewModel : ViewModel() {
         return peripherals.value?.find { it.id == peripheralId }
     }
 
+    fun upsertPeripheral(peripheral: PeripheralOuterClass.Peripheral): Unit {
+        val ps = peripherals.value ?: listOf()
+        peripherals.value = ps.map {
+            if (it.id == peripheral.id) {
+                peripheral
+            } else {
+                it
+            }
+        }
+
+    }
+
     fun removePeripheral(peripheralId: String): Unit {
         peripherals.value = peripherals.value?.filter { it.id != peripheralId }
     }

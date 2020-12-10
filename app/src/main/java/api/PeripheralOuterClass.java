@@ -2939,6 +2939,509 @@ public final class PeripheralOuterClass {
     }
   }
 
+  public interface EditPeripheralRequestOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:api.EditPeripheralRequest)
+      com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The peripheralId.
+     */
+    java.lang.String getPeripheralId();
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The bytes for peripheralId.
+     */
+    com.google.protobuf.ByteString
+        getPeripheralIdBytes();
+
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     * @return Whether the newName field is set.
+     */
+    boolean hasNewName();
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     * @return The newName.
+     */
+    api.PeripheralOuterClass.NullableString getNewName();
+
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     * @return Whether the newType field is set.
+     */
+    boolean hasNewType();
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     * @return The newType.
+     */
+    api.PeripheralOuterClass.NullablePType getNewType();
+  }
+  /**
+   * Protobuf type {@code api.EditPeripheralRequest}
+   */
+  public  static final class EditPeripheralRequest extends
+      com.google.protobuf.GeneratedMessageLite<
+          EditPeripheralRequest, EditPeripheralRequest.Builder> implements
+      // @@protoc_insertion_point(message_implements:api.EditPeripheralRequest)
+      EditPeripheralRequestOrBuilder {
+    private EditPeripheralRequest() {
+      peripheralId_ = "";
+    }
+    public static final int PERIPHERALID_FIELD_NUMBER = 1;
+    private java.lang.String peripheralId_;
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The peripheralId.
+     */
+    @java.lang.Override
+    public java.lang.String getPeripheralId() {
+      return peripheralId_;
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @return The bytes for peripheralId.
+     */
+    @java.lang.Override
+    public com.google.protobuf.ByteString
+        getPeripheralIdBytes() {
+      return com.google.protobuf.ByteString.copyFromUtf8(peripheralId_);
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @param value The peripheralId to set.
+     */
+    private void setPeripheralId(
+        java.lang.String value) {
+      value.getClass();
+  
+      peripheralId_ = value;
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     */
+    private void clearPeripheralId() {
+      
+      peripheralId_ = getDefaultInstance().getPeripheralId();
+    }
+    /**
+     * <code>string peripheralId = 1;</code>
+     * @param value The bytes for peripheralId to set.
+     */
+    private void setPeripheralIdBytes(
+        com.google.protobuf.ByteString value) {
+      checkByteStringIsUtf8(value);
+      peripheralId_ = value.toStringUtf8();
+      
+    }
+
+    public static final int NEWNAME_FIELD_NUMBER = 2;
+    private api.PeripheralOuterClass.NullableString newName_;
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     */
+    @java.lang.Override
+    public boolean hasNewName() {
+      return newName_ != null;
+    }
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     */
+    @java.lang.Override
+    public api.PeripheralOuterClass.NullableString getNewName() {
+      return newName_ == null ? api.PeripheralOuterClass.NullableString.getDefaultInstance() : newName_;
+    }
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     */
+    private void setNewName(api.PeripheralOuterClass.NullableString value) {
+      value.getClass();
+  newName_ = value;
+      
+      }
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     */
+    @java.lang.SuppressWarnings({"ReferenceEquality"})
+    private void mergeNewName(api.PeripheralOuterClass.NullableString value) {
+      value.getClass();
+  if (newName_ != null &&
+          newName_ != api.PeripheralOuterClass.NullableString.getDefaultInstance()) {
+        newName_ =
+          api.PeripheralOuterClass.NullableString.newBuilder(newName_).mergeFrom(value).buildPartial();
+      } else {
+        newName_ = value;
+      }
+      
+    }
+    /**
+     * <code>.api.NullableString newName = 2;</code>
+     */
+    private void clearNewName() {  newName_ = null;
+      
+    }
+
+    public static final int NEWTYPE_FIELD_NUMBER = 3;
+    private api.PeripheralOuterClass.NullablePType newType_;
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     */
+    @java.lang.Override
+    public boolean hasNewType() {
+      return newType_ != null;
+    }
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     */
+    @java.lang.Override
+    public api.PeripheralOuterClass.NullablePType getNewType() {
+      return newType_ == null ? api.PeripheralOuterClass.NullablePType.getDefaultInstance() : newType_;
+    }
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     */
+    private void setNewType(api.PeripheralOuterClass.NullablePType value) {
+      value.getClass();
+  newType_ = value;
+      
+      }
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     */
+    @java.lang.SuppressWarnings({"ReferenceEquality"})
+    private void mergeNewType(api.PeripheralOuterClass.NullablePType value) {
+      value.getClass();
+  if (newType_ != null &&
+          newType_ != api.PeripheralOuterClass.NullablePType.getDefaultInstance()) {
+        newType_ =
+          api.PeripheralOuterClass.NullablePType.newBuilder(newType_).mergeFrom(value).buildPartial();
+      } else {
+        newType_ = value;
+      }
+      
+    }
+    /**
+     * <code>.api.NullablePType newType = 3;</code>
+     */
+    private void clearNewType() {  newType_ = null;
+      
+    }
+
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.PeripheralOuterClass.EditPeripheralRequest parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return (Builder) DEFAULT_INSTANCE.createBuilder();
+    }
+    public static Builder newBuilder(api.PeripheralOuterClass.EditPeripheralRequest prototype) {
+      return (Builder) DEFAULT_INSTANCE.createBuilder(prototype);
+    }
+
+    /**
+     * Protobuf type {@code api.EditPeripheralRequest}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          api.PeripheralOuterClass.EditPeripheralRequest, Builder> implements
+        // @@protoc_insertion_point(builder_implements:api.EditPeripheralRequest)
+        api.PeripheralOuterClass.EditPeripheralRequestOrBuilder {
+      // Construct using api.PeripheralOuterClass.EditPeripheralRequest.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @return The peripheralId.
+       */
+      @java.lang.Override
+      public java.lang.String getPeripheralId() {
+        return instance.getPeripheralId();
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @return The bytes for peripheralId.
+       */
+      @java.lang.Override
+      public com.google.protobuf.ByteString
+          getPeripheralIdBytes() {
+        return instance.getPeripheralIdBytes();
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @param value The peripheralId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeripheralId(
+          java.lang.String value) {
+        copyOnWrite();
+        instance.setPeripheralId(value);
+        return this;
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearPeripheralId() {
+        copyOnWrite();
+        instance.clearPeripheralId();
+        return this;
+      }
+      /**
+       * <code>string peripheralId = 1;</code>
+       * @param value The bytes for peripheralId to set.
+       * @return This builder for chaining.
+       */
+      public Builder setPeripheralIdBytes(
+          com.google.protobuf.ByteString value) {
+        copyOnWrite();
+        instance.setPeripheralIdBytes(value);
+        return this;
+      }
+
+      /**
+       * <code>.api.NullableString newName = 2;</code>
+       */
+      @java.lang.Override
+      public boolean hasNewName() {
+        return instance.hasNewName();
+      }
+      /**
+       * <code>.api.NullableString newName = 2;</code>
+       */
+      @java.lang.Override
+      public api.PeripheralOuterClass.NullableString getNewName() {
+        return instance.getNewName();
+      }
+      /**
+       * <code>.api.NullableString newName = 2;</code>
+       */
+      public Builder setNewName(api.PeripheralOuterClass.NullableString value) {
+        copyOnWrite();
+        instance.setNewName(value);
+        return this;
+        }
+      /**
+       * <code>.api.NullableString newName = 2;</code>
+       */
+      public Builder setNewName(
+          api.PeripheralOuterClass.NullableString.Builder builderForValue) {
+        copyOnWrite();
+        instance.setNewName(builderForValue.build());
+        return this;
+      }
+      /**
+       * <code>.api.NullableString newName = 2;</code>
+       */
+      public Builder mergeNewName(api.PeripheralOuterClass.NullableString value) {
+        copyOnWrite();
+        instance.mergeNewName(value);
+        return this;
+      }
+      /**
+       * <code>.api.NullableString newName = 2;</code>
+       */
+      public Builder clearNewName() {  copyOnWrite();
+        instance.clearNewName();
+        return this;
+      }
+
+      /**
+       * <code>.api.NullablePType newType = 3;</code>
+       */
+      @java.lang.Override
+      public boolean hasNewType() {
+        return instance.hasNewType();
+      }
+      /**
+       * <code>.api.NullablePType newType = 3;</code>
+       */
+      @java.lang.Override
+      public api.PeripheralOuterClass.NullablePType getNewType() {
+        return instance.getNewType();
+      }
+      /**
+       * <code>.api.NullablePType newType = 3;</code>
+       */
+      public Builder setNewType(api.PeripheralOuterClass.NullablePType value) {
+        copyOnWrite();
+        instance.setNewType(value);
+        return this;
+        }
+      /**
+       * <code>.api.NullablePType newType = 3;</code>
+       */
+      public Builder setNewType(
+          api.PeripheralOuterClass.NullablePType.Builder builderForValue) {
+        copyOnWrite();
+        instance.setNewType(builderForValue.build());
+        return this;
+      }
+      /**
+       * <code>.api.NullablePType newType = 3;</code>
+       */
+      public Builder mergeNewType(api.PeripheralOuterClass.NullablePType value) {
+        copyOnWrite();
+        instance.mergeNewType(value);
+        return this;
+      }
+      /**
+       * <code>.api.NullablePType newType = 3;</code>
+       */
+      public Builder clearNewType() {  copyOnWrite();
+        instance.clearNewType();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:api.EditPeripheralRequest)
+    }
+    @java.lang.Override
+    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
+    protected final java.lang.Object dynamicMethod(
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+        java.lang.Object arg0, java.lang.Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new api.PeripheralOuterClass.EditPeripheralRequest();
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case BUILD_MESSAGE_INFO: {
+            java.lang.Object[] objects = new java.lang.Object[] {
+              "peripheralId_",
+              "newName_",
+              "newType_",
+            };
+            java.lang.String info =
+                "\u0000\u0003\u0000\u0000\u0001\u0003\u0003\u0000\u0000\u0000\u0001\u0208\u0002\t" +
+                "\u0003\t";
+            return newMessageInfo(DEFAULT_INSTANCE, info, objects);
+        }
+        // fall through
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          com.google.protobuf.Parser<api.PeripheralOuterClass.EditPeripheralRequest> parser = PARSER;
+          if (parser == null) {
+            synchronized (api.PeripheralOuterClass.EditPeripheralRequest.class) {
+              parser = PARSER;
+              if (parser == null) {
+                parser =
+                    new DefaultInstanceBasedParser<api.PeripheralOuterClass.EditPeripheralRequest>(
+                        DEFAULT_INSTANCE);
+                PARSER = parser;
+              }
+            }
+          }
+          return parser;
+      }
+      case GET_MEMOIZED_IS_INITIALIZED: {
+        return (byte) 1;
+      }
+      case SET_MEMOIZED_IS_INITIALIZED: {
+        return null;
+      }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:api.EditPeripheralRequest)
+    private static final api.PeripheralOuterClass.EditPeripheralRequest DEFAULT_INSTANCE;
+    static {
+      EditPeripheralRequest defaultInstance = new EditPeripheralRequest();
+      // New instances are implicitly immutable so no need to make
+      // immutable.
+      DEFAULT_INSTANCE = defaultInstance;
+      com.google.protobuf.GeneratedMessageLite.registerDefaultInstance(
+        EditPeripheralRequest.class, defaultInstance);
+    }
+
+    public static api.PeripheralOuterClass.EditPeripheralRequest getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<EditPeripheralRequest> PARSER;
+
+    public static com.google.protobuf.Parser<EditPeripheralRequest> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
   public interface NullableStringOrBuilder extends
       // @@protoc_insertion_point(interface_extends:api.NullableString)
       com.google.protobuf.MessageLiteOrBuilder {
@@ -3401,6 +3904,462 @@ public final class PeripheralOuterClass {
     private static volatile com.google.protobuf.Parser<NullableString> PARSER;
 
     public static com.google.protobuf.Parser<NullableString> parser() {
+      return DEFAULT_INSTANCE.getParserForType();
+    }
+  }
+
+  public interface NullablePTypeOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:api.NullablePType)
+      com.google.protobuf.MessageLiteOrBuilder {
+
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    int getNullValue();
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    com.google.protobuf.NullValue getNull();
+
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     * @return The enum numeric value on the wire for data.
+     */
+    int getDataValue();
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     * @return The data.
+     */
+    api.PeripheralOuterClass.Peripheral.PeripheralType getData();
+
+    public api.PeripheralOuterClass.NullablePType.KindCase getKindCase();
+  }
+  /**
+   * Protobuf type {@code api.NullablePType}
+   */
+  public  static final class NullablePType extends
+      com.google.protobuf.GeneratedMessageLite<
+          NullablePType, NullablePType.Builder> implements
+      // @@protoc_insertion_point(message_implements:api.NullablePType)
+      NullablePTypeOrBuilder {
+    private NullablePType() {
+    }
+    private int kindCase_ = 0;
+    private java.lang.Object kind_;
+    public enum KindCase {
+      NULL(1),
+      DATA(2),
+      KIND_NOT_SET(0);
+      private final int value;
+      private KindCase(int value) {
+        this.value = value;
+      }
+      /**
+       * @deprecated Use {@link #forNumber(int)} instead.
+       */
+      @java.lang.Deprecated
+      public static KindCase valueOf(int value) {
+        return forNumber(value);
+      }
+
+      public static KindCase forNumber(int value) {
+        switch (value) {
+          case 1: return NULL;
+          case 2: return DATA;
+          case 0: return KIND_NOT_SET;
+          default: return null;
+        }
+      }
+      public int getNumber() {
+        return this.value;
+      }
+    };
+
+    @java.lang.Override
+    public KindCase
+    getKindCase() {
+      return KindCase.forNumber(
+          kindCase_);
+    }
+
+    private void clearKind() {
+      kindCase_ = 0;
+      kind_ = null;
+    }
+
+    public static final int NULL_FIELD_NUMBER = 1;
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The enum numeric value on the wire for null.
+     */
+    @java.lang.Override
+    public int getNullValue() {
+      if (kindCase_ == 1) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @return The null.
+     */
+    @java.lang.Override
+    public com.google.protobuf.NullValue getNull() {
+      if (kindCase_ == 1) {
+        com.google.protobuf.NullValue result = com.google.protobuf.NullValue.forNumber((java.lang.Integer) kind_);
+        return result == null ? com.google.protobuf.NullValue.UNRECOGNIZED : result;
+      }
+      return com.google.protobuf.NullValue.NULL_VALUE;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @param value The enum numeric value on the wire for null to set.
+     */
+    private void setNullValue(int value) {
+      kindCase_ = 1;
+      kind_ = value;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     * @param value The null to set.
+     */
+    private void setNull(com.google.protobuf.NullValue value) {
+      kind_ = value.getNumber();
+      kindCase_ = 1;
+    }
+    /**
+     * <code>.google.protobuf.NullValue null = 1;</code>
+     */
+    private void clearNull() {
+      if (kindCase_ == 1) {
+        kindCase_ = 0;
+        kind_ = null;
+      }
+    }
+
+    public static final int DATA_FIELD_NUMBER = 2;
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     * @return The enum numeric value on the wire for data.
+     */
+    @java.lang.Override
+    public int getDataValue() {
+      if (kindCase_ == 2) {
+        return (java.lang.Integer) kind_;
+      }
+      return 0;
+    }
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     * @return The data.
+     */
+    @java.lang.Override
+    public api.PeripheralOuterClass.Peripheral.PeripheralType getData() {
+      if (kindCase_ == 2) {
+        api.PeripheralOuterClass.Peripheral.PeripheralType result = api.PeripheralOuterClass.Peripheral.PeripheralType.forNumber((java.lang.Integer) kind_);
+        return result == null ? api.PeripheralOuterClass.Peripheral.PeripheralType.UNRECOGNIZED : result;
+      }
+      return api.PeripheralOuterClass.Peripheral.PeripheralType.THERMAL;
+    }
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     * @param value The enum numeric value on the wire for data to set.
+     */
+    private void setDataValue(int value) {
+      kindCase_ = 2;
+      kind_ = value;
+    }
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     * @param value The data to set.
+     */
+    private void setData(api.PeripheralOuterClass.Peripheral.PeripheralType value) {
+      kind_ = value.getNumber();
+      kindCase_ = 2;
+    }
+    /**
+     * <code>.api.Peripheral.PeripheralType data = 2;</code>
+     */
+    private void clearData() {
+      if (kindCase_ == 2) {
+        kindCase_ = 0;
+        kind_ = null;
+      }
+    }
+
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        java.nio.ByteBuffer data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        java.nio.ByteBuffer data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, data, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return parseDelimitedFrom(DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input);
+    }
+    public static api.PeripheralOuterClass.NullablePType parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return com.google.protobuf.GeneratedMessageLite.parseFrom(
+          DEFAULT_INSTANCE, input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() {
+      return (Builder) DEFAULT_INSTANCE.createBuilder();
+    }
+    public static Builder newBuilder(api.PeripheralOuterClass.NullablePType prototype) {
+      return (Builder) DEFAULT_INSTANCE.createBuilder(prototype);
+    }
+
+    /**
+     * Protobuf type {@code api.NullablePType}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessageLite.Builder<
+          api.PeripheralOuterClass.NullablePType, Builder> implements
+        // @@protoc_insertion_point(builder_implements:api.NullablePType)
+        api.PeripheralOuterClass.NullablePTypeOrBuilder {
+      // Construct using api.PeripheralOuterClass.NullablePType.newBuilder()
+      private Builder() {
+        super(DEFAULT_INSTANCE);
+      }
+
+      @java.lang.Override
+      public KindCase
+          getKindCase() {
+        return instance.getKindCase();
+      }
+
+      public Builder clearKind() {
+        copyOnWrite();
+        instance.clearKind();
+        return this;
+      }
+
+
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The enum numeric value on the wire for null.
+       */
+      @java.lang.Override
+      public int getNullValue() {
+        return instance.getNullValue();
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The enum numeric value on the wire for null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNullValue(int value) {
+        copyOnWrite();
+        instance.setNullValue(value);
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return The null.
+       */
+      @java.lang.Override
+      public com.google.protobuf.NullValue getNull() {
+        return instance.getNull();
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @param value The null to set.
+       * @return This builder for chaining.
+       */
+      public Builder setNull(com.google.protobuf.NullValue value) {
+        copyOnWrite();
+        instance.setNull(value);
+        return this;
+      }
+      /**
+       * <code>.google.protobuf.NullValue null = 1;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearNull() {
+        copyOnWrite();
+        instance.clearNull();
+        return this;
+      }
+
+      /**
+       * <code>.api.Peripheral.PeripheralType data = 2;</code>
+       * @return The enum numeric value on the wire for data.
+       */
+      @java.lang.Override
+      public int getDataValue() {
+        return instance.getDataValue();
+      }
+      /**
+       * <code>.api.Peripheral.PeripheralType data = 2;</code>
+       * @param value The enum numeric value on the wire for data to set.
+       * @return This builder for chaining.
+       */
+      public Builder setDataValue(int value) {
+        copyOnWrite();
+        instance.setDataValue(value);
+        return this;
+      }
+      /**
+       * <code>.api.Peripheral.PeripheralType data = 2;</code>
+       * @return The data.
+       */
+      @java.lang.Override
+      public api.PeripheralOuterClass.Peripheral.PeripheralType getData() {
+        return instance.getData();
+      }
+      /**
+       * <code>.api.Peripheral.PeripheralType data = 2;</code>
+       * @param value The data to set.
+       * @return This builder for chaining.
+       */
+      public Builder setData(api.PeripheralOuterClass.Peripheral.PeripheralType value) {
+        copyOnWrite();
+        instance.setData(value);
+        return this;
+      }
+      /**
+       * <code>.api.Peripheral.PeripheralType data = 2;</code>
+       * @return This builder for chaining.
+       */
+      public Builder clearData() {
+        copyOnWrite();
+        instance.clearData();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:api.NullablePType)
+    }
+    @java.lang.Override
+    @java.lang.SuppressWarnings({"unchecked", "fallthrough"})
+    protected final java.lang.Object dynamicMethod(
+        com.google.protobuf.GeneratedMessageLite.MethodToInvoke method,
+        java.lang.Object arg0, java.lang.Object arg1) {
+      switch (method) {
+        case NEW_MUTABLE_INSTANCE: {
+          return new api.PeripheralOuterClass.NullablePType();
+        }
+        case NEW_BUILDER: {
+          return new Builder();
+        }
+        case BUILD_MESSAGE_INFO: {
+            java.lang.Object[] objects = new java.lang.Object[] {
+              "kind_",
+              "kindCase_",
+            };
+            java.lang.String info =
+                "\u0000\u0002\u0001\u0000\u0001\u0002\u0002\u0000\u0000\u0000\u0001?\u0000\u0002?" +
+                "\u0000";
+            return newMessageInfo(DEFAULT_INSTANCE, info, objects);
+        }
+        // fall through
+        case GET_DEFAULT_INSTANCE: {
+          return DEFAULT_INSTANCE;
+        }
+        case GET_PARSER: {
+          com.google.protobuf.Parser<api.PeripheralOuterClass.NullablePType> parser = PARSER;
+          if (parser == null) {
+            synchronized (api.PeripheralOuterClass.NullablePType.class) {
+              parser = PARSER;
+              if (parser == null) {
+                parser =
+                    new DefaultInstanceBasedParser<api.PeripheralOuterClass.NullablePType>(
+                        DEFAULT_INSTANCE);
+                PARSER = parser;
+              }
+            }
+          }
+          return parser;
+      }
+      case GET_MEMOIZED_IS_INITIALIZED: {
+        return (byte) 1;
+      }
+      case SET_MEMOIZED_IS_INITIALIZED: {
+        return null;
+      }
+      }
+      throw new UnsupportedOperationException();
+    }
+
+
+    // @@protoc_insertion_point(class_scope:api.NullablePType)
+    private static final api.PeripheralOuterClass.NullablePType DEFAULT_INSTANCE;
+    static {
+      NullablePType defaultInstance = new NullablePType();
+      // New instances are implicitly immutable so no need to make
+      // immutable.
+      DEFAULT_INSTANCE = defaultInstance;
+      com.google.protobuf.GeneratedMessageLite.registerDefaultInstance(
+        NullablePType.class, defaultInstance);
+    }
+
+    public static api.PeripheralOuterClass.NullablePType getDefaultInstance() {
+      return DEFAULT_INSTANCE;
+    }
+
+    private static volatile com.google.protobuf.Parser<NullablePType> PARSER;
+
+    public static com.google.protobuf.Parser<NullablePType> parser() {
       return DEFAULT_INSTANCE.getParserForType();
     }
   }

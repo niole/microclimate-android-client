@@ -2,24 +2,21 @@ package com.example.microclimates
 
 import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
 import api.PeripheralOuterClass.NewPeripheral.PeripheralType
-import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.setFragmentResult
 import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import java.util.concurrent.TimeUnit
 
-class CreatePeripheralDialog : DialogFragment() {
+class CreateEditPeripheralDialog : DialogFragment() {
 
-    private val LOG_TAG = "CreatePeripheralDialog"
+    private val LOG_TAG = "CreateEditPeripheralDialog"
     private val noTypeSelected = "No type selected"
     private val thermalType = "Thermal"
     private val particleType = "Particle"
@@ -33,11 +30,20 @@ class CreatePeripheralDialog : DialogFragment() {
     private val coreViewModel: CoreStateViewModel by activityViewModels()
 
     companion object {
-        fun newInstance(ownerId: String, deploymentId: String): DialogFragment {
-            return CreatePeripheralDialog().apply {
+        fun newInstance(
+            ownerId: String,
+            deploymentId: String,
+            peripheralId: String?,
+            type: PeripheralOuterClass.Peripheral.PeripheralType?,
+            name: String?
+        ): DialogFragment {
+            return CreateEditPeripheralDialog().apply {
                 arguments = Bundle().apply {
                     putString("deploymentId", deploymentId)
                     putString("ownerId", ownerId)
+                    putString("peripheralId", peripheralId)
+                    putInt("type", type?.number ?: -1)
+                    putString("name", name)
                 }
             }
         }
@@ -47,6 +53,9 @@ class CreatePeripheralDialog : DialogFragment() {
         return activity?.let {
             val deploymentId = arguments?.getString("deploymentId")!!
             val ownerId = arguments?.getString("ownerId")!!
+            val peripheralId = arguments?.getString("peripheralId")
+            val type = arguments?.getInt("type")!!
+            val name = arguments?.getString("name")
 
             val builder = AlertDialog.Builder(it)
 
@@ -61,7 +70,18 @@ class CreatePeripheralDialog : DialogFragment() {
                     peripheralTypes.map { t -> t.second }
                 )
                 spinner.adapter = adapter
+                if (type > -1) {
+                    val currentSelection = spinner.selectedItemPosition
+                    if (currentSelection == 0) {
+                        val defaultType = PeripheralOuterClass.Peripheral.PeripheralType.forNumber(type)
+                        val selectedIndex = peripheralTypes.map { toPeripheralType(it.first) } .indexOf(defaultType)
+                        spinner.setSelection(selectedIndex)
+                    }
+                }
             }
+
+            val editInput = dialogView.findViewById<EditText>(R.id.device_name_input)
+            editInput.setText(name)
 
             dialogView.findViewById<EditText>(R.id.device_name_input).validate(
                 "Name can only contain alphanumeric characters"
@@ -69,14 +89,40 @@ class CreatePeripheralDialog : DialogFragment() {
 
             dialogView.findViewById<Button>(R.id.submit_new_peripheral).setOnClickListener {
                 validateInputs(dialogView) { peripheralName, peripheralType, unit ->
-                    val newPeripheral = createPeripheral(
-                        deploymentId,
-                        ownerId,
-                        peripheralName,
-                        peripheralType,
-                        unit
-                    )
-                    coreViewModel.addPeripheral(newPeripheral)
+
+                    try {
+                        if (peripheralId != null) {
+
+                            // editing
+                            val updatedPeripheral = editPeripheral(
+                                peripheralId,
+                                peripheralName,
+                                toPeripheralType(peripheralType)
+                            )
+                            coreViewModel.upsertPeripheral(updatedPeripheral)
+
+                        } else {
+
+                            // creating
+                            val newPeripheral = createPeripheral(
+                                deploymentId,
+                                ownerId,
+                                peripheralName,
+                                peripheralType,
+                                unit
+                            )
+                            coreViewModel.addPeripheral(newPeripheral)
+
+                        }
+                    } catch (error: Throwable) {
+                        Log.e(LOG_TAG, "Failed to create or update peripheral: $error")
+                        Toast.makeText(
+                            context,
+                            "Something went wrong while doing this operation. Please try again.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
                     dialog?.dismiss()
                 }
             }
@@ -121,6 +167,47 @@ class CreatePeripheralDialog : DialogFragment() {
         return newPeripheral
     }
 
+    private fun editPeripheral(
+        peripheralId: String,
+        peripheralName: String,
+        peripheralType: PeripheralOuterClass.Peripheral.PeripheralType
+    ): PeripheralOuterClass.Peripheral {
+        var updateType = PeripheralOuterClass.NullablePType
+            .newBuilder()
+            .setNull(com.google.protobuf.NullValue.NULL_VALUE)
+            .build()
+
+        if (peripheralType != PeripheralOuterClass.Peripheral.PeripheralType.UNRECOGNIZED) {
+            updateType = PeripheralOuterClass.NullablePType
+                .newBuilder()
+                .setData(peripheralType)
+                .build()
+        }
+
+        val request = PeripheralOuterClass.EditPeripheralRequest
+            .newBuilder()
+            .setPeripheralId(peripheralId)
+            .setNewName(
+                PeripheralOuterClass
+                    .NullableString
+                    .newBuilder()
+                    .setData(peripheralName)
+                    .build()
+            )
+            .setNewType(updateType)
+            .build()
+
+        // create peripheral
+        val perphChannel = Channels.peripheralChannel()
+        val stub = Stubs.peripheralStub(perphChannel)
+        val updatedPeripheral = stub.editPeripheral(request)
+
+        perphChannel.shutdownNow()
+        perphChannel.awaitTermination(1, TimeUnit.SECONDS)
+
+        return updatedPeripheral
+    }
+
     private fun validateInputs(dView: View, callback: (String, PeripheralType, String) -> Unit): Unit {
         val nameEditText = dView.findViewById<EditText>(R.id.device_name_input)
         val newName = nameEditText.text.toString()
@@ -149,6 +236,14 @@ class CreatePeripheralDialog : DialogFragment() {
             }
         }
 
+    }
+
+    private fun toPeripheralType(pType: PeripheralType): PeripheralOuterClass.Peripheral.PeripheralType {
+        return when(pType) {
+            PeripheralType.PARTICLE -> PeripheralOuterClass.Peripheral.PeripheralType.PARTICLE
+            PeripheralType.THERMAL -> PeripheralOuterClass.Peripheral.PeripheralType.THERMAL
+            PeripheralType.UNRECOGNIZED -> PeripheralOuterClass.Peripheral.PeripheralType.UNRECOGNIZED
+        }
     }
 
 }
