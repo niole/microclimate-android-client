@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:orientation="vertical"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
@@ -29,7 +30,7 @@
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="these are the sensors for your deployment, " />
+            android:text="this is your deployment," />
         <TextView
                 android:layout_gravity="center"
                 android:id="@+id/deployment_name"
@@ -37,14 +38,16 @@
                 android:layout_height="wrap_content"
                 android:textSize="32dp" />
     </LinearLayout>
-    <TextView
-            android:visibility="gone"
-            android:layout_gravity="center"
-            android:layout_margin="20sp"
-            android:id="@+id/empty_connected_peripherals_message"
-            android:text="Pair a peripheral in the setup view"
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:text="Add New Sensor"
+            android:id="@+id/create_peripheral_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            app:srcCompat="@drawable/round_add_black_24dp"/>
+
     <ListView
             android:divider="@null"
             android:padding="20dp"

@@ -37,12 +37,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-        <Button
-                android:text="Delete"
-                android:id="@+id/remove_peripheral_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:icon="@drawable/round_clear_black_24dp"/>
+        <com.google.android.material.button.MaterialButtonToggleGroup
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+            <Button
+                    app:icon="@drawable/round_add_black_24dp"
+                    android:id="@+id/link_hardware_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Link Hardware"></Button>
+            <Button
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="Delete"
+                    android:id="@+id/remove_peripheral_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/round_clear_black_24dp"/>
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
     </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

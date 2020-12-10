@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/create_peripheral_dialog_view"
         android:padding="20dp"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".SetupPairedDeviceActivity">
+        android:layout_height="match_parent">
 
     <EditText
             android:layout_marginBottom="20dp"
@@ -23,7 +23,6 @@
             android:text="Select a Peripheral Type" />
     <Spinner
             android:layout_marginBottom="40dp"
-            android:spinnerMode="dialog"
             android:id="@+id/peripheral_type_selector"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,5 +33,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Submit"></Button>
+
+    <Button
+            android:id="@+id/cancel_new_peripheral"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cancel"></Button>
 
 </LinearLayout>

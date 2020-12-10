@@ -15,13 +15,8 @@ class PeripheralListViewAdapter(
     private val pageViewModel: SetupPageViewModel,
     activity: Activity,
     private val resourceId: Int,
-    private val peripherals: List<DeviceViewModel>,
     private val handleDeviceSetup: (BluetoothDevice) -> Unit
-) : ArrayAdapter<DeviceViewModel?>(activity, resourceId, peripherals) {
-
-    override fun getCount(): Int {
-        return peripherals.size
-    }
+) : ArrayAdapter<DeviceViewModel?>(activity, resourceId) {
 
     override fun getItemId(position: Int): Long {
         return position.toLong()
@@ -29,6 +24,7 @@ class PeripheralListViewAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val viewModel = getItem(position)!!
+        println("GET VIEW CALLED $viewModel")
         var buttons = convertView
         try {
             if (buttons == null) {
@@ -64,7 +60,7 @@ class PeripheralListViewAdapter(
 
     init {
         try {
-            inflater = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            inflater = activity.layoutInflater
         } catch (e: java.lang.Exception) {
             Log.e("Failure", "couldn't get inflater service")
         }

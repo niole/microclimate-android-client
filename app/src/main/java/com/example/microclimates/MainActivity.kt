@@ -1,6 +1,5 @@
 package com.example.microclimates
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -89,13 +88,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
-        private val setupPage = "setupPage"
         private val deploymentOverviewPage = "deploymentPage"
         private val eventsPage = "eventsPage"
         private val pages = listOf<Pair<String, String>>(
             Pair("Deployment", deploymentOverviewPage),
-            Pair("Sensors", eventsPage),
-            Pair("Add New Sensor", setupPage)
+            Pair("Sensors", eventsPage)
         )
 
         override fun getPageTitle(position: Int): String {
@@ -104,10 +101,9 @@ class MainActivity : AppCompatActivity() {
 
         override fun getItem(position: Int): Fragment {
             return when(pages[position].second) {
-                setupPage -> SetupPage.newInstance()
                 deploymentOverviewPage -> DeploymentOverview.newInstance()
                 eventsPage -> EventsView.newInstance()
-                else -> SetupPage()
+                else -> DeploymentOverview.newInstance()
             }
         }
 

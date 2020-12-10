@@ -32,6 +32,10 @@ class CoreStateViewModel : ViewModel() {
         return deployment
     }
 
+    fun addPeripheral(newPeripheral: PeripheralOuterClass.Peripheral): Unit {
+        peripherals.value = (peripherals.value ?: listOf()) + newPeripheral
+    }
+
     fun getPeripherals(): LiveData<List<PeripheralOuterClass.Peripheral>> {
         return peripherals
     }

@@ -1,5 +1,6 @@
 package com.example.microclimates
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,13 +9,16 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import api.Events
+import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import kotlinx.android.synthetic.main.fragment_peripheral.view.*
 import org.w3c.dom.Text
 import java.util.*
@@ -56,13 +60,6 @@ class DeploymentOverview : Fragment() {
         }
 
         coreViewModel.getPeripherals().observe({ lifecycle }) { peripherals ->
-
-            if (peripherals.size == 0) {
-                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.VISIBLE
-            } else {
-                view?.findViewById<TextView>(R.id.empty_connected_peripherals_message)?.visibility = View.GONE
-            }
-
             val deployment = coreViewModel.getDeployment().value
             if (deployment != null) {
                 Thread {
@@ -109,13 +106,9 @@ class DeploymentOverview : Fragment() {
 
         listAdapter = object : ArrayAdapter<LivePeripheralModel>(requireContext(), resourceId, adapterPeripherals) {
             override fun getCount(): Int {
-                val total = adapterPeripherals?.size
-                if (total != null) {
-                    return total
-                }
-
-                return 0
+                return adapterPeripherals.size
             }
+
             override fun getItemId(position: Int): Long {
                 return position.toLong()
             }
@@ -133,6 +126,32 @@ class DeploymentOverview : Fragment() {
                     "${peripheral.lastReading} on ${peripheral.lastEvent} "
                 } else {
                     "No readings yet"
+                }
+
+                baseView.link_hardware_button.setOnClickListener {
+                    val deploymentId = coreViewModel.getDeployment().value?.id
+                    val ownerId = coreViewModel.getOwner().value?.id
+                    val peripheralId = peripheral?.id
+
+                    if (deploymentId == null || ownerId == null || peripheralId == null) {
+                        Log.e(
+                            LOG_TAG,
+                            "Can't start hardware setup page activity, some arguments are null: " +
+                                    "peripheralId: $peripheralId, ownerId: $ownerId, deploymentId: $deploymentId"
+                        )
+                        Toast.makeText(
+                            context,
+                            "Something went wrong. Can't start linking process.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        val setupPageArguments = Intent(context, SetupPageActivity::class.java).apply {
+                            putExtra("peripheralId", peripheralId)
+                            putExtra("deploymentId", deploymentId)
+                            putExtra("ownerId", ownerId)
+                        }
+                        startActivity(setupPageArguments)
+                    }
                 }
 
                 baseView.remove_peripheral_button.setOnClickListener {
@@ -166,6 +185,14 @@ class DeploymentOverview : Fragment() {
                 view?.findViewById<TextView>(R.id.deployment_name)?.text = deployment.name
                 coreViewModel.refetchDeploymentPeripherals(deployment.id)
             }
+        }
+
+        parentLayout.findViewById<ExtendedFloatingActionButton>(R.id.create_peripheral_button).setOnClickListener {
+            val ownerId = coreViewModel.getOwner().value?.id!!
+            val deploymentId = coreViewModel.getDeployment().value?.id!!
+            val dialog = CreatePeripheralDialog.newInstance(ownerId, deploymentId)
+
+            dialog.show(childFragmentManager, "CreatePeripheralDialog")
         }
 
         return parentLayout
