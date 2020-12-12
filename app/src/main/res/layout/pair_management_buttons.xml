@@ -27,17 +27,11 @@
 
         <TextView
                 android:textAppearance="?attr/textAppearanceBody2"
-                android:id="@+id/device_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="address unknown"></TextView>
-
-        <TextView
-                android:textAppearance="?attr/textAppearanceBody2"
                 android:id="@+id/pair_status"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="status unknown"></TextView>
+
         <com.google.android.material.button.MaterialButtonToggleGroup
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">

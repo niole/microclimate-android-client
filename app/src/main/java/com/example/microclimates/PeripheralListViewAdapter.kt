@@ -2,7 +2,6 @@ package com.example.microclimates
 
 import android.app.Activity
 import android.bluetooth.BluetoothDevice
-import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +23,6 @@ class PeripheralListViewAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val viewModel = getItem(position)!!
-        println("GET VIEW CALLED $viewModel")
         var buttons = convertView
         try {
             if (buttons == null) {
@@ -33,7 +31,6 @@ class PeripheralListViewAdapter(
 
             val device = viewModel.device
             buttons.id = viewModel.id
-            buttons.findViewById<TextView>(R.id.device_address).text = device.address
             buttons.findViewById<TextView>(R.id.device_name).text = if (device.name == null) "unnamed" else device.name
             buttons.findViewById<TextView>(R.id.pair_status).text = when(viewModel.bondStatus) {
                 BondStatus.PAIRING -> "connecting..."

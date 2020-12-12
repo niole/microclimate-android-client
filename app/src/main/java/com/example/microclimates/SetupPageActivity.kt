@@ -65,8 +65,6 @@ class SetupPageActivity : AppCompatActivity() {
 
         viewModel.getDevices().observe({ lifecycle }) { createdDevices ->
             if (devices != null) {
-                println("PER")
-                println(peripheralsListAdapter)
                 devices = createdDevices.map { it.value }
                 peripheralsListAdapter?.clear()
                 peripheralsListAdapter?.addAll(devices)
@@ -236,29 +234,29 @@ class SetupPageActivity : AppCompatActivity() {
     private fun handleDeviceSetup(device: BluetoothDevice): Unit {
         device.createBond()
 
-        // TODO should probably save some data on what device is expected
-        // to be linked with this peripheral
-        // also, provide a way to cancel out? no they can just do back button
-
         Thread(Runnable {
             peripheralSetupClient.setupDevice(
                 peripheralId,
                 deploymentId,
                 device!!, { hid ->
                     Log.i(LOG_TAG, "Paired with $peripheralId with hardware $hid")
-                    Toast.makeText(
-                        this,
-                        "Finished linking device with sensor",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    runOnUiThread {
+                        Toast.makeText(
+                            baseContext,
+                            "Finished linking device with sensor",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                     finish()
                 }, {
                     Log.w(LOG_TAG, "Failed to paired with $peripheralId with anything")
-                    Toast.makeText(
-                        this,
-                        "Failed to link this device with this peripheral. Try again.",
-                        Toast.LENGTH_LONG
-                    ).show()
+                    runOnUiThread {
+                        Toast.makeText(
+                            this,
+                            "Failed to link this device with this peripheral. Try again.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 })
         }).start()
     }
