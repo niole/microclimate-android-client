@@ -16,6 +16,8 @@ import java.util.concurrent.TimeUnit
 
 class CreateEditPeripheralDialog : DialogFragment() {
 
+    lateinit var stubs: Stubs
+
     private val LOG_TAG = "CreateEditPeripheralDialog"
     private val noTypeSelected = "No type selected"
     private val thermalType = "Thermal"
@@ -50,6 +52,7 @@ class CreateEditPeripheralDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        stubs = Stubs(requireContext())
         return activity?.let {
             val deploymentId = arguments?.getString("deploymentId")!!
             val ownerId = arguments?.getString("ownerId")!!
@@ -158,8 +161,8 @@ class CreateEditPeripheralDialog : DialogFragment() {
             .build()
 
         // create peripheral
-        val perphChannel = Channels.peripheralChannel()
-        val stub = Stubs.peripheralStub(perphChannel)
+        val perphChannel = Channels.getInstance(requireContext()).peripheralChannel()
+        val stub = stubs.peripheralStub(perphChannel)
         val newPeripheral = stub.createPeripheral(request)
         perphChannel.shutdownNow()
         perphChannel.awaitTermination(1, TimeUnit.SECONDS)
@@ -198,8 +201,8 @@ class CreateEditPeripheralDialog : DialogFragment() {
             .build()
 
         // create peripheral
-        val perphChannel = Channels.peripheralChannel()
-        val stub = Stubs.peripheralStub(perphChannel)
+        val perphChannel = Channels.getInstance(requireContext()).peripheralChannel()
+        val stub = stubs.peripheralStub(perphChannel)
         val updatedPeripheral = stub.editPeripheral(request)
 
         perphChannel.shutdownNow()

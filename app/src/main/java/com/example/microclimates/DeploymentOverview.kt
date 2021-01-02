@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.*
 import api.Events
-import api.PeripheralOuterClass
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -22,6 +21,7 @@ import java.util.concurrent.TimeUnit
 
 class DeploymentOverview : Fragment() {
 
+    private lateinit var stubs: Stubs
     private val LOG_TAG = "DeploymentOverview"
     private var listAdapter: ArrayAdapter<LivePeripheralModel>? = null
     private val coreViewModel: CoreStateViewModel by activityViewModels()
@@ -33,14 +33,15 @@ class DeploymentOverview : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stubs = Stubs(requireContext())
         setFragmentResultListener("onPeripheralRemoveSubmit") { _, bundle ->
             val peripheralId = bundle.getString("peripheralId")!!
             Log.i(LOG_TAG, "Removing peripheral with id $peripheralId")
-            val perphChannel = Channels.peripheralChannel()
+            val perphChannel = Channels.getInstance(requireContext()).peripheralChannel()
             val peripheral = coreViewModel.getPeripheralById(peripheralId)
             if (peripheral != null) {
                 try {
-                    val stub = Stubs.peripheralStub(perphChannel)
+                    val stub = stubs.peripheralStub(perphChannel)
                     stub.removePeripheral(peripheral)
                     coreViewModel.removePeripheral(peripheral.id)
                 } catch (error: Throwable) {
@@ -59,8 +60,8 @@ class DeploymentOverview : Fragment() {
             val deployment = coreViewModel.getDeployment().value
             if (deployment != null) {
                 Thread {
-                    val eventsChannel = Channels.eventsChannel()
-                    val stub = Stubs.eventsStub(eventsChannel)
+                    val eventsChannel = Channels.getInstance(requireContext()).eventsChannel()
+                    val stub = stubs.eventsStub(eventsChannel)
                     val request = Events.MostRecentEventsForDeploymentRequest.newBuilder().setDeploymentId(deployment.id).build()
                     val events = stub.mostRecentDeploymentEvents(request).asSequence()
                     val eventsMap = mutableMapOf<String, Events.MeasurementEvent>()
@@ -205,7 +206,7 @@ class DeploymentOverview : Fragment() {
         coreViewModel.getDeployment().observe({ lifecycle }) { deployment ->
             if (deployment != null) {
                 view?.findViewById<TextView>(R.id.deployment_name)?.text = deployment.name
-                coreViewModel.refetchDeploymentPeripherals(deployment.id)
+                coreViewModel.refetchDeploymentPeripherals(deployment.id, requireContext())
             }
         }
 
@@ -225,7 +226,7 @@ class DeploymentOverview : Fragment() {
         super.onResume()
         val existingDeployment = coreViewModel.getDeployment().value
         if (existingDeployment != null) {
-            coreViewModel.refetchDeploymentPeripherals(existingDeployment.id)
+            coreViewModel.refetchDeploymentPeripherals(existingDeployment.id, requireContext())
         }
     }
 

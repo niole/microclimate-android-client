@@ -28,6 +28,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class EventsView : Fragment() {
+    private lateinit var stubs: Stubs
     private val LOG_TAG  = "EventsView"
     private val lineColors = listOf(Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK)
     private val coreStateViewModel: CoreStateViewModel by activityViewModels()
@@ -42,6 +43,7 @@ class EventsView : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stubs = Stubs(requireContext())
 
         if (model.getDateRange().value == null) {
             model.setDateRange(defaultDateRange)
@@ -151,7 +153,7 @@ class EventsView : Fragment() {
     ): Unit {
         Log.i(LOG_TAG, "Fetching events for deployment $deploymentId, peripheral ${peripheral.id}, start date $startDate, end date $endDate")
         Thread(Runnable {
-            val eventsChannel = Channels.eventsChannel()
+            val eventsChannel = Channels.getInstance(requireContext()).eventsChannel()
             val peripheralId = peripheral.id
             try {
                 val startTime = Timestamp
@@ -172,7 +174,7 @@ class EventsView : Fragment() {
                     .setEndTime(endTime)
                     .build()
 
-                val allEvents = Stubs.eventsStub(eventsChannel).filterEvents(filterRequest)
+                val allEvents = stubs.eventsStub(eventsChannel).filterEvents(filterRequest)
 
                 if (allEvents != null) {
                     val eventsList = allEvents.asSequence().toList()

@@ -19,12 +19,15 @@ import com.google.common.util.concurrent.MoreExecutors
 import java.util.concurrent.TimeUnit
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var stubs: Stubs
     private val LOG_TAG = "MainActivity"
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private var pagerLayout: ViewPager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        stubs = Stubs(applicationContext)
+
         setContentView(R.layout.activity_main)
 
         pagerLayout = findViewById<ViewPager>(R.id.container)
@@ -46,6 +49,14 @@ class MainActivity : AppCompatActivity() {
 
         val model: CoreStateViewModel by viewModels()
         val email = intent.getStringExtra("email")
+        val jwt = intent.getStringExtra("jwt")
+
+        applicationContext
+            .getSharedPreferences("microclimate-prefs", MODE_PRIVATE)
+            .edit()
+            .putString("jwt", jwt)
+            .commit()
+
         val mainHandler = Handler(baseContext.mainLooper)
 
         val request = UserOuterClass.GetUserByEmailRequest
@@ -53,12 +64,10 @@ class MainActivity : AppCompatActivity() {
             .setEmail(email)
             .build()
 
-        val userChannel = Channels.userChannel()
-        val userFetch = Stubs.userStub(userChannel).getUserByEmail(request)
-        Log.i(LOG_TAG, "Requesting user by email $email")
+        val userChannel = Channels.getInstance(applicationContext).userChannel()
+        val userFetch = stubs.userStub(userChannel).getUserByEmail(request)
         Futures.addCallback(userFetch, object : FutureCallback<UserOuterClass.User?> {
             override fun onSuccess(user: UserOuterClass.User?): Unit {
-                Log.i(LOG_TAG, "Got user ${user?.id}")
                 if (user != null) {
                     mainHandler.post {
                         model.setOwner(user)
@@ -80,11 +89,6 @@ class MainActivity : AppCompatActivity() {
                 userChannel.awaitTermination(5, TimeUnit.SECONDS)
             }
         }, MoreExecutors.directExecutor())
-
-        userChannel.notifyWhenStateChanged(userChannel.getState(true)) {
-            println("stat changed")
-            println(userChannel.getState(true))
-        }
     }
 
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
@@ -120,8 +124,12 @@ class MainActivity : AppCompatActivity() {
                 .setUserId(ownerId)
                 .build()
 
-            val deploymentChannel = Channels.deploymentChannel()
-            val deployments = Stubs.blockingDeploymentStub(deploymentChannel).getDeploymentsForUser(request)
+            val deploymentChannel = Channels.getInstance(applicationContext).deploymentChannel()
+
+            val deployments = stubs
+                .blockingDeploymentStub(deploymentChannel)
+                .getDeploymentsForUser(request)
+
             val deployment = deployments.asSequence().elementAtOrNull(0)
 
             deploymentChannel.shutdown()

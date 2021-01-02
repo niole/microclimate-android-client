@@ -5,8 +5,7 @@ import kotlinx.serialization.json.*
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothSocket
 import android.util.Log
-import com.example.microclimates.api.Channels.eventServiceDomain
-import com.example.microclimates.api.Channels.peripheralServiceDomain
+import com.example.microclimates.api.Channels
 import java.util.*
 
 class BluetoothPeripheralSetupClient() {
@@ -25,8 +24,8 @@ class BluetoothPeripheralSetupClient() {
         val hardwareId = UUID.randomUUID().toString()
         val message = Json.encodeToString(
             PeripheralConfiguration(
-                peripheralServiceDomain=peripheralServiceDomain.url(),
-                eventServiceDomain=eventServiceDomain.url(),
+                peripheralServiceDomain=Channels.peripheralServiceDomain.url(),
+                eventServiceDomain=Channels.eventServiceDomain.url(),
                 hardwareId = hardwareId,
                 peripheralId = peripheralId,
                 deploymentId = deploymentId

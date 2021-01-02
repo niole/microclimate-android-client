@@ -1,5 +1,6 @@
 package com.example.microclimates
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -60,13 +61,13 @@ class CoreStateViewModel : ViewModel() {
         peripherals.value = peripherals.value?.filter { it.id != peripheralId }
     }
 
-    fun refetchDeploymentPeripherals(deploymentId: String): Unit {
+    fun refetchDeploymentPeripherals(deploymentId: String, context: Context): Unit {
        val request = PeripheralOuterClass.GetDeploymentPeripheralsRequest
            .newBuilder()
            .setDeploymentId(deploymentId)
            .build()
-        val perphChannel = Channels.peripheralChannel()
-        peripherals.value = Stubs.peripheralStub(perphChannel).getDeploymentPeripherals(request).asSequence().toList()
+        val perphChannel = Channels.getInstance(context).peripheralChannel()
+        peripherals.value = Stubs(context).peripheralStub(perphChannel).getDeploymentPeripherals(request).asSequence().toList()
         perphChannel.shutdownNow()
         perphChannel.awaitTermination(1, TimeUnit.SECONDS)
     }

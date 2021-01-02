@@ -6,6 +6,12 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'com.google.gms.google-services'
+
+def apikeyPropertiesFile = rootProject.file("prod.properties")
+def apikeyProperties = new Properties()
+apikeyProperties.load(new FileInputStream(apikeyPropertiesFile))
+
 android {
     compileSdkVersion 29
     defaultConfig {
@@ -16,6 +22,12 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
+
+        buildConfigField("String", "DEPLOYMENT_API_HOST", apikeyProperties['API_HOST'])
+        buildConfigField("String", "EVENTS_API_HOST", apikeyProperties['API_HOST'])
+        buildConfigField("String", "USERS_API_HOST", apikeyProperties['API_HOST'])
+        buildConfigField("String", "PERIPHERALS_API_HOST", apikeyProperties['API_HOST'])
+        buildConfigField("int", "API_PORT", apikeyProperties['API_PORT'])
     }
     buildTypes {
         release {
@@ -60,10 +72,12 @@ dependencies {
     implementation 'io.grpc:grpc-stub:1.33.1'
     compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
 
-    // google auth
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
-
     // material ui
     implementation 'com.google.android.material:material:1.2.1'
 
+    // firebase crap
+    implementation platform('com.google.firebase:firebase-bom:26.2.0')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
 }
