@@ -16,6 +16,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker
+import androidx.fragment.app.setFragmentResultListener
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 
 class SetupPageActivity : AppCompatActivity() {
@@ -28,7 +33,7 @@ class SetupPageActivity : AppCompatActivity() {
     lateinit var bluetoothAdapter: BluetoothAdapter
     lateinit var parentLayout: View
     private var peripheralsListAdapter: PeripheralListViewAdapter? = null
-    private var devices: List<DeviceViewModel> = mutableListOf()
+    private val devices: ArrayList<DeviceViewModel> = arrayListOf()
     private var isBluetoothEventsRegistered = false
     private lateinit var deploymentId: String
     private lateinit var ownerId: String
@@ -43,6 +48,13 @@ class SetupPageActivity : AppCompatActivity() {
         peripheralId = intent.getStringExtra("peripheralId")!!
 
         parentLayout = layoutInflater.inflate(R.layout.activity_setup_page,null)
+
+        supportFragmentManager
+            .setFragmentResultListener("sensorSetupRequest", this) { _, bundle ->
+                val device = bundle.getParcelable<BluetoothDevice>("device")!!
+                val wifiSpecs = bundle.getParcelable<WifiSpecs>("wifiSpecs")
+                handleDeviceSetup(device, wifiSpecs)
+            }
 
         requestLocationPermissions {
             bluetoothAdapter = setupBluetoothAdapter()
@@ -64,11 +76,9 @@ class SetupPageActivity : AppCompatActivity() {
         }
 
         viewModel.getDevices().observe({ lifecycle }) { createdDevices ->
-            if (devices != null) {
-                devices = createdDevices.map { it.value }
-                peripheralsListAdapter?.clear()
-                peripheralsListAdapter?.addAll(devices)
-            }
+            devices.clear()
+            devices.addAll(createdDevices.map { it.value })
+            peripheralsListAdapter?.notifyDataSetChanged()
         }
 
         bluetoothEvents.setOnFoundHandler { device ->
@@ -198,13 +208,9 @@ class SetupPageActivity : AppCompatActivity() {
     }
 
     private fun setupPeripheralList(): PeripheralListViewAdapter {
-        val listAdapter = PeripheralListViewAdapter(
-            viewModel,
-            this,
-            R.layout.pair_management_buttons
-        ) { device -> handleDeviceSetup(device) }
+        val listAdapter = PeripheralListViewAdapter(supportFragmentManager, lifecycle, devices)
 
-        val listView = findViewById<ListView>(R.id.peripherals_list)
+        val listView = findViewById<ViewPager2>(R.id.peripherals_list)
         listView.adapter = listAdapter
 
         return listAdapter
@@ -231,11 +237,12 @@ class SetupPageActivity : AppCompatActivity() {
         isBluetoothEventsRegistered  = true
     }
 
-    private fun handleDeviceSetup(device: BluetoothDevice): Unit {
+    private fun handleDeviceSetup(device: BluetoothDevice, wifiSpecs: WifiSpecs?): Unit {
         device.createBond()
 
         Thread(Runnable {
             peripheralSetupClient.setupDevice(
+                wifiSpecs,
                 peripheralId,
                 deploymentId,
                 device!!, { hid ->

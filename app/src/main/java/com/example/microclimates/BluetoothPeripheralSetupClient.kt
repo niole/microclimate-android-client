@@ -15,6 +15,7 @@ class BluetoothPeripheralSetupClient() {
 
     // TODO get rid of function callbacks
     fun setupDevice(
+        wifiSpecs: WifiSpecs?,
         peripheralId: String,
         deploymentId: String,
         device: BluetoothDevice,
@@ -24,6 +25,8 @@ class BluetoothPeripheralSetupClient() {
         val hardwareId = UUID.randomUUID().toString()
         val message = Json.encodeToString(
             PeripheralConfiguration(
+                wifi_key = wifiSpecs?.password,
+                ssid = wifiSpecs?.ssid,
                 peripheralServiceDomain=Channels.peripheralServiceDomain.url(),
                 eventServiceDomain=Channels.eventServiceDomain.url(),
                 hardwareId = hardwareId,
@@ -44,7 +47,7 @@ class BluetoothPeripheralSetupClient() {
         onSuccess: () -> Unit,
         onFailure: () -> Unit
     ): Unit {
-        Log.d(LOG_TAG,"Sending setup data: ${message}, to device: ${device}")
+        Log.d(LOG_TAG,"Sending setup data to device: ${device}")
 
         try {
             connectedSocket = device.createRfcommSocketToServiceRecord(serviceUuid)

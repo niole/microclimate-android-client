@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/peripheral_setup_page"
-        tools:context=".SetupPageActivity"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:text="Discover Hardware"
-            android:id="@+id/discovery_button"
-            android:enabled="false"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|right"
-            android:layout_margin="16dp"
-            app:srcCompat="@drawable/round_add_black_24dp"/>
-
-    <ListView
-            android:divider="@null"
-            android:id="@+id/peripherals_list"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/peripheral_setup_page"
+            tools:context=".SetupPageActivity"
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent">
 
-</LinearLayout>
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+                android:text="Discover Hardware"
+                android:id="@+id/discovery_button"
+                android:enabled="false"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                app:srcCompat="@drawable/round_add_black_24dp"/>
+
+        <androidx.viewpager2.widget.ViewPager2
+                android:orientation="vertical"
+                android:id="@+id/peripherals_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>

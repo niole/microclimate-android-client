@@ -1,6 +1,8 @@
 package com.example.microclimates
 
 import android.content.Intent
+import android.net.NetworkRequest
+import android.net.wifi.WifiNetworkSpecifier
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast

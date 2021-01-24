@@ -6,16 +6,12 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.ListView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.*
 import api.Events
 import com.example.microclimates.api.Channels
 import com.example.microclimates.api.Stubs
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import kotlinx.android.synthetic.main.fragment_peripheral.view.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -117,15 +113,15 @@ class DeploymentOverview : Fragment() {
                 }
 
                 val peripheral = getItem(position)
-                baseView.peripheral_name.text = peripheral?.name
-                baseView.peripheral_type.text = peripheral?.type.toString()
-                baseView.last_received_event.text = if (peripheral?.lastEvent != null && peripheral?.lastReading != null) {
+                baseView.findViewById<TextView>(R.id.peripheral_name).text = peripheral?.name
+                baseView.findViewById<TextView>(R.id.peripheral_type).text = peripheral?.type.toString()
+                baseView.findViewById<TextView>(R.id.last_received_event).text = if (peripheral?.lastEvent != null && peripheral?.lastReading != null) {
                     "${peripheral.lastReading} on ${peripheral.lastEvent} "
                 } else {
                     "No readings yet"
                 }
 
-                baseView.link_hardware_button.setOnClickListener {
+                baseView.findViewById<Button>(R.id.link_hardware_button).setOnClickListener {
                     val deploymentId = coreViewModel.getDeployment().value?.id
                     val ownerId = coreViewModel.getOwner().value?.id
                     val peripheralId = peripheral?.id
@@ -150,7 +146,7 @@ class DeploymentOverview : Fragment() {
                         startActivity(setupPageArguments)
                     }
                 }
-                baseView.edit_peripheral_button.setOnClickListener {
+                baseView.findViewById<Button>(R.id.edit_peripheral_button).setOnClickListener {
                     val deploymentId = coreViewModel.getDeployment().value?.id
                     val ownerId = coreViewModel.getOwner().value?.id
                     val peripheral = coreViewModel.getPeripherals().value?.find { p -> p.id == peripheral?.id }
@@ -177,7 +173,7 @@ class DeploymentOverview : Fragment() {
                     }
                 }
 
-                baseView.remove_peripheral_button.setOnClickListener {
+                baseView.findViewById<Button>(R.id.remove_peripheral_button).setOnClickListener {
                     val confirmModal = ConfirmRemovePeripheralDialog().apply {
                         arguments = Bundle().apply {
                             putString("peripheralId", peripheral?.id)
