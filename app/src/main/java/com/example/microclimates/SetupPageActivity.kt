@@ -238,6 +238,7 @@ class SetupPageActivity : AppCompatActivity() {
     }
 
     private fun handleDeviceSetup(device: BluetoothDevice, wifiSpecs: WifiSpecs?): Unit {
+        findViewById<ProgressBar>(R.id.sending_data_bar).visibility = View.VISIBLE
         device.createBond()
 
         Thread(Runnable {
@@ -248,6 +249,7 @@ class SetupPageActivity : AppCompatActivity() {
                 device!!, { hid ->
                     Log.i(LOG_TAG, "Paired with $peripheralId with hardware $hid")
                     runOnUiThread {
+                        findViewById<ProgressBar>(R.id.sending_data_bar).visibility = View.GONE
                         Toast.makeText(
                             baseContext,
                             "Finished linking device with sensor",
@@ -258,6 +260,7 @@ class SetupPageActivity : AppCompatActivity() {
                 }, {
                     Log.w(LOG_TAG, "Failed to paired with $peripheralId with anything")
                     runOnUiThread {
+                        findViewById<ProgressBar>(R.id.sending_data_bar).visibility = View.GONE
                         Toast.makeText(
                             this,
                             "Failed to link this device with this peripheral. Try again.",
