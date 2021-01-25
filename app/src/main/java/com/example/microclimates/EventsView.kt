@@ -30,7 +30,6 @@ import java.util.concurrent.TimeUnit
 class EventsView : Fragment() {
     private lateinit var stubs: Stubs
     private val LOG_TAG  = "EventsView"
-    private val lineColors = listOf(Color.BLUE, Color.MAGENTA, Color.GREEN, Color.CYAN, Color.YELLOW, Color.BLACK)
     private val coreStateViewModel: CoreStateViewModel by activityViewModels()
     private val model: EventsViewViewModel by viewModels()
     lateinit var defaultDateRange: Pair<Date, Date>
@@ -206,7 +205,7 @@ class EventsView : Fragment() {
             }
 
             val dataset = LineDataSet(chartableEntries, peripheral.name)
-            dataset.color = lineColors[Math.abs(peripheral.id.hashCode()) % lineColors.size]
+            dataset.color = Color.BLACK
             dataset.valueTextColor = Color.BLACK
             val lineData = LineData(dataset)
             chart.data = lineData
