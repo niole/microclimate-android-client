@@ -7,7 +7,6 @@
         android:layout_height="match_parent"
         tools:context=".Login">
     <LinearLayout
-            android:layout_marginTop="-50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
@@ -16,14 +15,15 @@
                 android:textStyle="bold"
                 android:textColor="#FFFF"
                 android:gravity="center"
-                android:layout_marginBottom="50dp"
+                android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Microclimates" />
 
         <com.google.android.gms.common.SignInButton
+                android:layout_gravity="center"
                 android:id="@+id/google_sign_in_button"
-                android:layout_width="match_parent"
+                android:layout_width="250dp"
                 android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>

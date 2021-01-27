@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit
 class MainActivity : AppCompatActivity() {
     private lateinit var stubs: Stubs
     private val LOG_TAG = "MainActivity"
+    private val model: CoreStateViewModel by viewModels()
     private var mSectionsPagerAdapter: SectionsPagerAdapter? = null
     private var pagerLayout: ViewPager? = null
 
@@ -29,6 +30,20 @@ class MainActivity : AppCompatActivity() {
         stubs = Stubs(applicationContext)
 
         setContentView(R.layout.activity_main)
+
+        val loadingScreen = LoadingScreenFragment
+            .newInstance(null)
+            .show(supportFragmentManager, R.id.main_content)
+
+        model.getFetchOwnerState().observe({ lifecycle }) { fetchState ->
+            if (fetchState == FetchState.FAILED) {
+                loadingScreen.setFailed("Failed to fetch your data. Try again later")
+            } else if (fetchState == FetchState.SUCCESS) {
+                loadingScreen.hide(supportFragmentManager)
+            } else {
+                loadingScreen.show(supportFragmentManager, R.id.main_content)
+            }
+        }
 
         pagerLayout = findViewById<ViewPager>(R.id.container)
         mSectionsPagerAdapter = SectionsPagerAdapter(supportFragmentManager)
@@ -47,10 +62,10 @@ class MainActivity : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {}
         })
 
-        val model: CoreStateViewModel by viewModels()
         val email = intent.getStringExtra("email")
         val jwt = intent.getStringExtra("jwt")
 
+        // TODO do this in the login activity
         applicationContext
             .getSharedPreferences("microclimate-prefs", MODE_PRIVATE)
             .edit()
@@ -59,6 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         val mainHandler = Handler(baseContext.mainLooper)
 
+        model.setFetchOwnerState(FetchState.FETCHING)
         val request = UserOuterClass.GetUserByEmailRequest
             .newBuilder()
             .setEmail(email)
@@ -68,23 +84,25 @@ class MainActivity : AppCompatActivity() {
         val userFetch = stubs.userStub(userChannel).getUserByEmail(request)
         Futures.addCallback(userFetch, object : FutureCallback<UserOuterClass.User?> {
             override fun onSuccess(user: UserOuterClass.User?): Unit {
-                if (user != null) {
-                    mainHandler.post {
-                        model.setOwner(user)
-                    }
-                    val deployment = getDeployment(user.id)
-                    if (deployment != null) {
-                        mainHandler.post {
-                            model.setDeployment(deployment)
-                        }
-                    }
+                mainHandler.post {
+                    model.setFetchOwnerState(FetchState.SUCCESS)
+                    model.setOwner(user)
                 }
+
+                if (user != null) {
+                    getDeployment(user.id, mainHandler)
+                }
+
                 userChannel.shutdown()
                 userChannel.awaitTermination(5, TimeUnit.SECONDS)
             }
 
             override fun onFailure(t: Throwable) {
                 Log.e(LOG_TAG, "Failed to get user, message: ${t.message}, cause: ${t.cause}")
+                mainHandler.post {
+                    model.setFetchOwnerState(FetchState.FAILED)
+                }
+
                 userChannel.shutdown()
                 userChannel.awaitTermination(5, TimeUnit.SECONDS)
             }
@@ -116,7 +134,11 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDeployment(ownerId: String): DeploymentOuterClass.Deployment? {
+    private fun getDeployment(ownerId: String, messageLoop: Handler): DeploymentOuterClass.Deployment? {
+        messageLoop.post {
+            model.setFetchDeploymentState(FetchState.FETCHING)
+        }
+
         try {
             val request = DeploymentOuterClass
                 .GetDeploymentsForUserRequest
@@ -132,12 +154,20 @@ class MainActivity : AppCompatActivity() {
 
             val deployment = deployments.asSequence().elementAtOrNull(0)
 
+            messageLoop.post {
+                model.setDeployment(deployment)
+                model.setFetchDeploymentState(FetchState.SUCCESS)
+            }
+
             deploymentChannel.shutdown()
             deploymentChannel.awaitTermination(5, TimeUnit.SECONDS)
 
             return deployment
         } catch (e: Exception) {
             Log.e(LOG_TAG, "Failed to get deployment, error: $e")
+            messageLoop.post {
+                model.setFetchDeploymentState(FetchState.FAILED)
+            }
         }
         return null
     }
